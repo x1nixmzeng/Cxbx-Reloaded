@@ -87,6 +87,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalOptions>/D ASMJIT_STATIC</AdditionalOptions>
+      <ObjectFileName>$(IntDir)\%(RelativeDir)\%(Filename)</ObjectFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -149,6 +151,8 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/D ASMJIT_STATIC</AdditionalOptions>
+      <ObjectFileName>$(IntDir)\%(RelativeDir)\%(Filename)</ObjectFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -195,6 +199,45 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\asmjit.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\asmjit_apibegin.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\asmjit_apiend.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\asmjit_build.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\arch.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\assembler.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\codebuilder.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\codecompiler.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\codeemitter.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\codeholder.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\constpool.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\cpuinfo.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\func.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\globals.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\logging.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\operand.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\osutils.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\regalloc_p.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\runtime.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\simdtypes.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\string.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\utils.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\vmem.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\zone.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\zonecontainers.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\base\zoneheap.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\x86.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\x86\x86assembler.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\x86\x86builder.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\x86\x86compiler.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\x86\x86emitter.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\x86\x86inst.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\x86\x86internal_p.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\x86\x86logging.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\x86\x86misc.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\x86\x86operand.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\x86\x86regalloc_p.h" />
+    <ClInclude Include="..\..\import\asmjit-next\src\asmjit\x86\x86ssetoavxpass_p.h" />
     <ClInclude Include="..\..\src\Common\Logging.h" />
     <ClInclude Include="..\..\src\Common\Win32\AlignPosfix1.h" />
     <ClInclude Include="..\..\src\Common\Win32\AlignPrefix1.h" />
@@ -458,6 +501,37 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\arch.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\assembler.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\codebuilder.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\codecompiler.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\codeemitter.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\codeholder.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\constpool.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\cpuinfo.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\func.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\globals.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\logging.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\operand.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\osutils.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\regalloc.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\runtime.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\string.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\utils.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\vmem.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\zone.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\zonecontainers.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\base\zoneheap.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\x86\x86assembler.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\x86\x86builder.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\x86\x86compiler.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\x86\x86inst.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\x86\x86internal.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\x86\x86logging.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\x86\x86operand.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\x86\x86operand_regs.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\x86\x86regalloc.cpp" />
+    <ClCompile Include="..\..\import\asmjit-next\src\asmjit\x86\x86ssetoavxpass.cpp" />
     <ClCompile Include="..\..\src\Common\Exe.cpp" />
     <ClCompile Include="..\..\src\Common\Logging.cpp" />
     <ClCompile Include="..\..\src\CxbxKrnl\CxbxKrnl.cpp">
