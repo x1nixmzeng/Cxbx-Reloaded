@@ -34,25 +34,14 @@
 #ifndef EMUX86_H
 #define EMUX86_H
 
-#define EMUX86_EFLAG_CF 0
-#define EMUX86_EFLAG_PF 2
-#define EMUX86_EFLAG_AF 4
-#define EMUX86_EFLAG_ZF 6
-#define EMUX86_EFLAG_SF 7
-#define EMUX86_EFLAG_TF 8
-#define EMUX86_EFLAG_IF 9
-#define EMUX86_EFLAG_DF 10
-#define EMUX86_EFLAG_OF 11
-#define EMUX86_EFLAG_IOPL1 12
-#define EMUX86_EFLAG_IOPL2 13
-#define EMUX86_EFLAG_NT 14
-#define EMUX86_EFLAG_RF 16
-#define EMUX86_EFLAG_VM 17
-#define EMUX86_EFLAG_AC 18
-#define EMUX86_EFLAG_VIF 19
-#define EMUX86_EFLAG_VIP 20
-#define EMUX86_EFLAG_ID 21
+#include <cstdint>
 
 bool EmuX86_DecodeException(LPEXCEPTION_POINTERS e);
+uint8_t __stdcall EmuX86_Read8(uint32_t addr);
+uint16_t __stdcall EmuX86_Read16(uint32_t addr);
+uint32_t __stdcall EmuX86_Read32(uint32_t addr);
+void __stdcall EmuX86_Write8(uint32_t addr, uint8_t value);
+void __stdcall EmuX86_Write16(uint32_t addr, uint16_t value);
+void __stdcall EmuX86_Write32(uint32_t addr, uint32_t value);
 
 #endif
