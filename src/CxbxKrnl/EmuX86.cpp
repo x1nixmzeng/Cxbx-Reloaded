@@ -40,11 +40,12 @@
 #include "Emu.h"
 #include "EmuX86.h"
 #include "EmuNV2A.h"
-#include <map>
 
 #include "../../import/asmjit-next/src/asmjit/asmjit.h"
-
 asmjit::VMemMgr vm;
+
+// Function Definitions
+bool EmuX86_CompileMOV(Zydis::InstructionInfo& info, asmjit::X86Assembler& a);
 
 bool EmuX86_CompileBlock(uint32_t addr)
 {
@@ -78,86 +79,27 @@ bool EmuX86_CompileBlock(uint32_t addr)
 		{
 			DbgPrintf("EmuX86: 0x%08X: %s\n", (uint32_t)info.instrAddress, formatter.formatInstruction(info));
 
+			bool result = false;
 			switch (info.mnemonic) {
-				case Zydis::InstructionMnemonic::MOV:
-					if (info.operand[0].type == Zydis::OperandType::MEMORY && info.operand[1].type == Zydis::OperandType::REGISTER) {
-						// backup registers
-						a.push(eax);
-						a.push(ecx);
-						a.push(edx);
-
-						// eax = base
-						switch (info.operand[0].base) {
-							case Zydis::Register::EAX:
-								// Base is already in EAX, we can do nothing
-								break;
-							case Zydis::Register::EBX:
-								a.mov(eax, ebx);
-								break;
-							default:
-								goto unimplemented_opcode;
-						}
-						
-						// ecx = index
-						switch (info.operand[0].index) {
-							case Zydis::Register::NONE:
-								a.mov(ecx, 0);
-								break;
-							case Zydis::Register::ECX:
-								// Index is already in ECX, we can do nothing
-								break;
-							default:
-								goto unimplemented_opcode;
-						}
-						
-						// Apply the displacement
-						a.mul(ecx, info.operand[0].scale);
-
-						// Make eax = base + index * displacement
-						a.add(eax, ecx);
-						
-						switch (info.operand[1].size) {
-						case 8:
-							a.push(info.operand[1].lval.ubyte);
-							a.push(eax);
-							a.call((uint32_t)EmuX86_Write8);
-							break;
-						case 16:
-							a.push(info.operand[1].lval.uword);
-							a.push(eax);
-							a.call((uint32_t)EmuX86_Write16);
-							break;
-						case 32:
-							a.push(info.operand[1].lval.udword);
-							a.push(eax);
-							a.call((uint32_t)EmuX86_Write32);
-							break;
-						}
-						
-						// Restore registers
-						a.pop(edx);
-						a.pop(ecx);
-						a.pop(eax);
-					}
-					else {
-						goto unimplemented_opcode;
-					}
+			case Zydis::InstructionMnemonic::MOV:
+				result = EmuX86_CompileMOV(info, a);
 				break;
-				// If we hit any instruction that alters the program counter, insert a jmp to that instruction and mark completed
-				case Zydis::InstructionMnemonic::CALL: case Zydis::InstructionMnemonic::JB:  case Zydis::InstructionMnemonic::JBE:
-				case Zydis::InstructionMnemonic::JCXZ: case Zydis::InstructionMnemonic::JL:  case Zydis::InstructionMnemonic::JLE: 
-				case Zydis::InstructionMnemonic::JMP:  case Zydis::InstructionMnemonic::JNB: case Zydis::InstructionMnemonic::JNO: 
-				case Zydis::InstructionMnemonic::JNP:  case Zydis::InstructionMnemonic::JNS: case Zydis::InstructionMnemonic::JO: 
-				case Zydis::InstructionMnemonic::JP:   case Zydis::InstructionMnemonic::JS:  case Zydis::InstructionMnemonic::LOOP:
-				case Zydis::InstructionMnemonic::RETF: case Zydis::InstructionMnemonic::RSM: case Zydis::InstructionMnemonic::SYSENTER: 
-				case Zydis::InstructionMnemonic::SYSEXIT:
-					a.jmp(info.instrAddress);
-					completed = true;
-					break;
-				default:
-				unimplemented_opcode:
-					CxbxKrnlCleanup("EmuX86: 0x%08X: %s Not Implemented\n", (uint32_t)info.instrAddress, formatter.formatInstruction(info));
-					return false;
+			// If we hit any instruction that alters the program counter, insert a jmp to that instruction and mark completed
+			case Zydis::InstructionMnemonic::CALL: case Zydis::InstructionMnemonic::JB:  case Zydis::InstructionMnemonic::JBE:
+			case Zydis::InstructionMnemonic::JCXZ: case Zydis::InstructionMnemonic::JL:  case Zydis::InstructionMnemonic::JLE:
+			case Zydis::InstructionMnemonic::JMP:  case Zydis::InstructionMnemonic::JNB: case Zydis::InstructionMnemonic::JNO:
+			case Zydis::InstructionMnemonic::JNP:  case Zydis::InstructionMnemonic::JNS: case Zydis::InstructionMnemonic::JO:
+			case Zydis::InstructionMnemonic::JP:   case Zydis::InstructionMnemonic::JS:  case Zydis::InstructionMnemonic::LOOP:
+			case Zydis::InstructionMnemonic::RETF: case Zydis::InstructionMnemonic::RSM: case Zydis::InstructionMnemonic::SYSENTER:
+			case Zydis::InstructionMnemonic::SYSEXIT:
+				a.jmp(info.instrAddress);
+				//completed = true;
+				result = true;
+				break;
+			}
+
+			if (!result) {
+				CxbxKrnlCleanup("EmuX86: 0x%08X: %s Not Implemented\n", (uint32_t)info.instrAddress, formatter.formatInstruction(info));
 			}
 		}
 	}
@@ -170,6 +112,76 @@ bool EmuX86_CompileBlock(uint32_t addr)
 	*(uint08*)addr = 0xE9;
 	*(uint32*)(addr + 1) = (uint32)buffer - addr - 5;
 	return true;
+}
+
+bool EmuX86_CompileMOV(Zydis::InstructionInfo& info, asmjit::X86Assembler& a)
+{
+	using namespace asmjit;
+	using namespace asmjit::x86;
+
+	if (info.operand[0].type == Zydis::OperandType::MEMORY && info.operand[1].type == Zydis::OperandType::REGISTER) {
+		// backup registers
+		a.push(eax);
+		a.push(ecx);
+		a.push(edx);
+
+		// eax = base
+		switch (info.operand[0].base) {
+		case Zydis::Register::EAX:
+			// Base is already in EAX, we can do nothing
+			break;
+		case Zydis::Register::EBX:
+			a.mov(eax, ebx);
+			break;
+		default:
+			return false;
+		}
+
+		// ecx = index
+		switch (info.operand[0].index) {
+		case Zydis::Register::NONE:
+			a.mov(ecx, 0);
+			break;
+		case Zydis::Register::ECX:
+			// Index is already in ECX, we can do nothing
+			break;
+		default:
+			return false;
+		}
+
+		// Apply the displacement
+		a.mul(ecx, info.operand[0].scale);
+
+		// Make eax = base + index * displacement
+		a.add(eax, ecx);
+
+		switch (info.operand[1].size) {
+		case 8:
+			a.push(info.operand[1].lval.uword);
+			a.push(eax);
+			a.call((uint32_t)EmuX86_Write8);
+			break;
+		case 16:
+			a.push(info.operand[1].lval.uword);
+			a.push(eax);
+			a.call((uint32_t)EmuX86_Write16);
+			break;
+		case 32:
+			a.push(info.operand[1].lval.udword);
+			a.push(eax);
+			a.call((uint32_t)EmuX86_Write32);
+			break;
+		}
+
+		// Restore registers
+		a.pop(edx);
+		a.pop(ecx);
+		a.pop(eax);
+
+		return true;
+	}
+
+	return false;
 }
 
 bool EmuX86_DecodeException(LPEXCEPTION_POINTERS e)
@@ -210,7 +222,7 @@ void __stdcall EmuX86_Write8(uint32_t addr, uint8_t value)
 
 void __stdcall EmuX86_Write16(uint32_t addr, uint16_t value)
 {
-	EmuWarning("EmuX86_Write8: Unknown Write Address %08X (value %04X)", addr, value);
+	EmuWarning("EmuX86_Write16: Unknown Write Address %08X (value %04X)", addr, value);
 }
 
 void __stdcall EmuX86_Write32(uint32_t addr, uint32_t value)
