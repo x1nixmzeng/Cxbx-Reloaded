@@ -44,7 +44,33 @@
 #include "../../import/asmjit-next/src/asmjit/asmjit.h"
 asmjit::VMemMgr vm;
 
-// Function Definitions
+bool EmuX86_AsmJitGp(asmjit::X86Gp* out, Zydis::Register reg)
+{
+	using namespace asmjit::x86;
+
+	switch (reg) {
+		case Zydis::Register::AH: *out = ah; break;
+		case Zydis::Register::AL: *out = al; break;
+		case Zydis::Register::AX: *out = ax; break;
+		case Zydis::Register::BH: *out = bh; break;
+		case Zydis::Register::BL: *out = bl; break;
+		case Zydis::Register::BP: *out = bp; break;
+		case Zydis::Register::BPL: *out = bpl; break;
+		case Zydis::Register::BX: *out = bx; break;
+		case Zydis::Register::CH: *out = ch; break;
+		case Zydis::Register::CL: *out = cl; break;
+		case Zydis::Register::EAX: *out = eax; break;
+		case Zydis::Register::EBX: *out = ebx; break;
+		case Zydis::Register::ECX: *out = ecx; break;
+		case Zydis::Register::EDI: *out = edi; break;
+		case Zydis::Register::EDX: *out = edx; break;
+		case Zydis::Register::ESI: *out = esi; break;
+		default: return false;
+	}
+
+	return true;
+}
+
 bool EmuX86_CompileMOV(Zydis::InstructionInfo& info, asmjit::X86Assembler& a);
 
 bool EmuX86_CompileBlock(uint32_t addr)
@@ -93,7 +119,7 @@ bool EmuX86_CompileBlock(uint32_t addr)
 			case Zydis::InstructionMnemonic::RETF: case Zydis::InstructionMnemonic::RSM: case Zydis::InstructionMnemonic::SYSENTER:
 			case Zydis::InstructionMnemonic::SYSEXIT:
 				a.jmp(info.instrAddress);
-				//completed = true;
+				completed = true;
 				result = true;
 				break;
 			}
@@ -116,71 +142,68 @@ bool EmuX86_CompileBlock(uint32_t addr)
 
 bool EmuX86_CompileMOV(Zydis::InstructionInfo& info, asmjit::X86Assembler& a)
 {
-	using namespace asmjit;
-	using namespace asmjit::x86;
+	Zydis::Register src_reg = Zydis::Register::NONE;
+	Zydis::Register dst_reg = Zydis::Register::NONE;
 
-	if (info.operand[0].type == Zydis::OperandType::MEMORY && info.operand[1].type == Zydis::OperandType::REGISTER) {
-		// backup registers
-		a.push(eax);
-		a.push(ecx);
-		a.push(edx);
+	if (info.operand[0].type == Zydis::OperandType::REGISTER) {
+		dst_reg = info.operand[0].base;
+	}
 
-		// eax = base
-		switch (info.operand[0].base) {
-		case Zydis::Register::EAX:
-			// Base is already in EAX, we can do nothing
-			break;
-		case Zydis::Register::EBX:
-			a.mov(eax, ebx);
-			break;
-		default:
+	if (info.operand[1].type == Zydis::OperandType::REGISTER) {
+		src_reg = info.operand[1].base;
+	}
+
+	if (info.operand[0].type == Zydis::OperandType::REGISTER && info.operand[1].type == Zydis::OperandType::REGISTER) {
+		asmjit::X86Gp src, dst;
+		
+		if (!EmuX86_AsmJitGp(&src, src_reg) || !EmuX86_AsmJitGp(&dst, dst_reg)) {
 			return false;
 		}
 
-		// ecx = index
-		switch (info.operand[0].index) {
-		case Zydis::Register::NONE:
-			a.mov(ecx, 0);
-			break;
-		case Zydis::Register::ECX:
-			// Index is already in ECX, we can do nothing
-			break;
-		default:
-			return false;
-		}
-
-		// Apply the displacement
-		a.mul(ecx, info.operand[0].scale);
-
-		// Make eax = base + index * displacement
-		a.add(eax, ecx);
-
-		switch (info.operand[1].size) {
-		case 8:
-			a.push(info.operand[1].lval.uword);
-			a.push(eax);
-			a.call((uint32_t)EmuX86_Write8);
-			break;
-		case 16:
-			a.push(info.operand[1].lval.uword);
-			a.push(eax);
-			a.call((uint32_t)EmuX86_Write16);
-			break;
-		case 32:
-			a.push(info.operand[1].lval.udword);
-			a.push(eax);
-			a.call((uint32_t)EmuX86_Write32);
-			break;
-		}
-
-		// Restore registers
-		a.pop(edx);
-		a.pop(ecx);
-		a.pop(eax);
-
+		a.mov(src, dst);
 		return true;
 	}
 
+	// Memory Write
+	if (info.operand[0].type == Zydis::OperandType::MEMORY) {
+		if (src_reg != Zydis::Register::NONE) {
+			a.pusha();
+
+			asmjit::X86Gp src;
+			asmjit::X86Gp base;
+			asmjit::X86Gp index;
+
+			// Setup registers
+			EmuX86_AsmJitGp(&src, src_reg);
+			EmuX86_AsmJitGp(&base, info.operand[0].base);
+			EmuX86_AsmJitGp(&index, info.operand[0].index);
+
+			// Make Base register = full memory address
+			a.mul(index, info.operand[0].scale);
+			a.add(base, index);
+
+			a.push(src);
+			a.push(base);
+
+			switch (info.operand[1].size) {
+				case 8:
+					a.call((uint32_t)EmuX86_Write8);
+					break;
+				case 16:
+					a.call((uint32_t)EmuX86_Write16);
+					break;
+				case 32:
+					a.call((uint32_t)EmuX86_Write32);
+					break;
+			}
+
+			a.popa();
+			return true;
+		}
+	}
+
+	// Memory Read
+	
 	return false;
 }
 
