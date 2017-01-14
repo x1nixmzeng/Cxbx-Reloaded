@@ -33,7 +33,7 @@
 // ******************************************************************
 // * 0x0001 - AvGetSavedDataAddress()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(1) PVOID NTAPI AvGetSavedDataAddress(void);
+XBSYSAPI EXPORTNUM(1) PVOID NTAPI AvGetSavedDataAddress();
 
 // ******************************************************************
 // * 0x0002 - AvSendTVEncoderOption()
@@ -43,7 +43,7 @@ XBSYSAPI EXPORTNUM(2) VOID NTAPI AvSendTVEncoderOption
     IN  PVOID   RegisterBase,
     IN  ULONG   Option,
     IN  ULONG   Param,
-    OUT ULONG   *Result
+    OUT PULONG  Result
 );
 
 // ******************************************************************
@@ -53,8 +53,8 @@ XBSYSAPI EXPORTNUM(3) ULONG NTAPI AvSetDisplayMode
 (
     IN PVOID    RegisterBase,
     IN ULONG    Step,
-    IN ULONG    Mode,
-    IN ULONG    Format,
+    IN ULONG    DisplayMode,
+    IN ULONG    SourceColorFormat,
     IN ULONG    Pitch,
     IN ULONG    FrameBuffer
 );

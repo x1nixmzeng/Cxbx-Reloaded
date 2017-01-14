@@ -58,15 +58,15 @@ namespace NtDll
 // ******************************************************************
 // * 0x0009 - HalReadSMCTrayState()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(9) xboxkrnl::VOID NTAPI xboxkrnl::HalReadSMCTrayState
+XBSYSAPI EXPORTNUM(9) xboxkrnl::NTSTATUS NTAPI xboxkrnl::HalReadSMCTrayState
 (
-	DWORD*	State,
-	DWORD*	Count
+    OUT PULONG TrayState,
+    OUT PULONG TrayStateChangeCount OPTIONAL
 )
 {
 	LOG_FUNC_BEGIN
-		LOG_FUNC_ARG(State)
-		LOG_FUNC_ARG(Count)
+		LOG_FUNC_ARG_OUT(TrayState)
+		LOG_FUNC_ARG_OUT(TrayStateChangeCount)
 		LOG_FUNC_END;
 
 #define TRAY_CLOSED_MEDIA_PRESENT 96
@@ -76,15 +76,15 @@ XBSYSAPI EXPORTNUM(9) xboxkrnl::VOID NTAPI xboxkrnl::HalReadSMCTrayState
 	// TODO: Make this configurable?
 	// TODO: What is the count parameter for??
 
-	if (Count)
-		*Count = 1;
+	if (TrayStateChangeCount)
+		*TrayStateChangeCount = 1;
 
 	// Pretend the tray is open
 	// TRAY_CLOSED_NO_MEDIA causes Dashboard to call DeviceIoControl, which we do not implement
 	// TRAY_CLOSED_MEDIA_PRESENT causes Dashboard to attempt to launch media, causing errors.
-	*State = TRAY_OPEN;
+	*TrayState = TRAY_OPEN;
 
-	//	*Count = 1;
+    RETURN(STATUS_SUCCESS);
 }
 
 // ******************************************************************

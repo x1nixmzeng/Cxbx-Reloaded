@@ -12,22 +12,24 @@
 #ifndef XBOXKRNL_EX_H
 #define XBOXKRNL_EX_H
 
-XBSYSAPI EXPORTNUM(12) NTSTATUS NTAPI ExAcquireReadWriteLockExclusive
-(
-	IN PERWLOCK ReadWriteLock
-);
-
-XBSYSAPI EXPORTNUM(13) NTSTATUS NTAPI ExAcquireReadWriteLockShared
+// ******************************************************************
+// * 0x000C - ExAcquireReadWriteLockExclusive()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(12) VOID NTAPI ExAcquireReadWriteLockExclusive
 (
 	IN PERWLOCK ReadWriteLock
 );
 
 // ******************************************************************
-// * ExAllocatePool
+// * 0x000D - ExAcquireReadWriteLockShared()
 // ******************************************************************
-// *
-// * Allocates pool memory
-// *
+XBSYSAPI EXPORTNUM(13) VOID NTAPI ExAcquireReadWriteLockShared
+(
+	IN PERWLOCK ReadWriteLock
+);
+
+// ******************************************************************
+// * 0x000E - ExAllocatePool()
 // ******************************************************************
 XBSYSAPI EXPORTNUM(14) PVOID NTAPI ExAllocatePool
 (
@@ -35,11 +37,7 @@ XBSYSAPI EXPORTNUM(14) PVOID NTAPI ExAllocatePool
 );
 
 // ******************************************************************
-// * ExAllocatePoolWithTag
-// ******************************************************************
-// *
-// * Allocates pool memory with a tag
-// *
+// * 0x000F - ExAllocatePoolWithTag()
 // ******************************************************************
 XBSYSAPI EXPORTNUM(15) PVOID NTAPI ExAllocatePoolWithTag
 (
@@ -47,53 +45,62 @@ XBSYSAPI EXPORTNUM(15) PVOID NTAPI ExAllocatePoolWithTag
     IN ULONG Tag
 );
 
+// ******************************************************************
+// * 0x0010 - ExEventObjectType
+// ******************************************************************
 XBSYSAPI EXPORTNUM(16) OBJECT_TYPE ExEventObjectType;
 
 // ******************************************************************
-// * ExFreePool
-// ******************************************************************
-// *
-// * Deallocates a block  of pool memory
-// *
+// * 0x0011 - ExFreePool()
 // ******************************************************************
 XBSYSAPI EXPORTNUM(17) VOID NTAPI ExFreePool
 (
     IN PVOID P
 );
 
-XBSYSAPI EXPORTNUM(18) NTSTATUS NTAPI ExInitializeReadWriteLock
+// ******************************************************************
+// * 0x0012 - ExInitializeReadWriteLock()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(18) VOID NTAPI ExInitializeReadWriteLock
 (
 	IN PERWLOCK ReadWriteLock
 );
 
-// Source:APILogger - Uncertain
+// ******************************************************************
+// * 0x0013 - ExInterlockedAddLargeInteger()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(19) LARGE_INTEGER NTAPI ExInterlockedAddLargeInteger
 (
-	IN OUT PLARGE_INTEGER Addend,
-	IN LARGE_INTEGER Increment,
-	IN OUT PKSPIN_LOCK Lock
+    IN PLARGE_INTEGER Addend,
+    IN LARGE_INTEGER Increment
 );
 
-// Source:ReactOS
+// ******************************************************************
+// * 0x0014 - ExInterlockedAddLargeStatistic()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(20) VOID FASTCALL ExInterlockedAddLargeStatistic
 (
-	IN PLARGE_INTEGER Addend,
-	IN ULONG Increment
+    IN PLARGE_INTEGER Addend,
+    IN ULONG Increment
 );
 
-// Source:ReactOS
+// ******************************************************************
+// * 0x0015 - ExInterlockedCompareExchange64()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(21) LONGLONG FASTCALL ExInterlockedCompareExchange64
 (
-	IN OUT PLONGLONG Destination,
-	IN PLONGLONG Exchange,
-	IN PLONGLONG Comparand,
-	IN PKSPIN_LOCK Lock
+    IN PLONGLONG Destination,
+    IN PLONGLONG Exchange,
+    IN PLONGLONG Comperand
 );
 
+// ******************************************************************
+// * 0x0016 - ExMutantObjectType
+// ******************************************************************
 XBSYSAPI EXPORTNUM(22) OBJECT_TYPE ExMutantObjectType;
 
 // ******************************************************************
-// * ExQueryPoolBlockSize
+// * 0x0017 - ExQueryPoolBlockSize()
 // ******************************************************************
 XBSYSAPI EXPORTNUM(23) ULONG NTAPI ExQueryPoolBlockSize
 (
@@ -105,21 +112,21 @@ XBSYSAPI EXPORTNUM(23) ULONG NTAPI ExQueryPoolBlockSize
 // ******************************************************************
 XBSYSAPI EXPORTNUM(24) NTSTATUS NTAPI ExQueryNonVolatileSetting
 (
-	IN  DWORD               ValueIndex,
-	OUT DWORD              *Type,
-	OUT PVOID               Value,
-	IN  SIZE_T              ValueLength,
-	OUT PSIZE_T             ResultLength OPTIONAL
+    IN  ULONG   ValueIndex,
+    OUT PULONG  Type,
+    OUT PVOID   Value,
+    IN  ULONG   ValueLength,
+    OUT PULONG  ResultLength
 );
 
 // ******************************************************************
-// * ExReadWriteRefurbInfo
+// * 0x0019 - ExReadWriteRefurbInfo()
 // ******************************************************************
 XBSYSAPI EXPORTNUM(25) NTSTATUS NTAPI ExReadWriteRefurbInfo
 (
-	IN OUT PXBOX_REFURB_INFO	pRefurbInfo,
-	IN ULONG	dwBufferSize,
-	IN BOOLEAN	bIsWriteMode
+    OUT PXBOX_REFURB_INFO   RefurbInfo,
+    IN  ULONG               ValueLength,
+    IN  BOOLEAN             DoWrite
 );
 
 XBSYSAPI EXPORTNUM(26) VOID NTAPI ExRaiseException

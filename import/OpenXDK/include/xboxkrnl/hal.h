@@ -13,12 +13,12 @@
 #define XBOXKRNL_HAL_H
 
 // ******************************************************************
-// * HalReadSMCTrayState
+// * 0x0009 - HalReadSMCTrayState()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(9) VOID NTAPI HalReadSMCTrayState
+XBSYSAPI EXPORTNUM(9) NTSTATUS NTAPI HalReadSMCTrayState
 (
-	DWORD*	State,
-	DWORD*	Count
+    OUT PULONG TrayState,
+    OUT PULONG TrayStateChangeCount OPTIONAL
 );
 
 XBSYSAPI EXPORTNUM(38) VOID FASTCALL HalClearSoftwareInterrupt

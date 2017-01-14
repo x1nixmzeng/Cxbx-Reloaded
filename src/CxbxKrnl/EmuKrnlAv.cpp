@@ -61,13 +61,11 @@ PVOID g_pPersistedData = NULL;
 // ******************************************************************
 // * 0x0001 - AvGetSavedDataAddress()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(1) xboxkrnl::PVOID NTAPI xboxkrnl::AvGetSavedDataAddress(void)
+XBSYSAPI EXPORTNUM(1) xboxkrnl::PVOID NTAPI xboxkrnl::AvGetSavedDataAddress()
 {
 	LOG_FUNC();
 
-	__asm int 3;
-
-	// Allocate a buffer the size of the screen buffer and return that.
+    // Allocate a buffer the size of the screen buffer and return that.
 	// TODO: Fill this buffer with the contents of the front buffer.
 	// TODO: This isn't always the size we need...
 
@@ -113,10 +111,10 @@ XBSYSAPI EXPORTNUM(1) xboxkrnl::PVOID NTAPI xboxkrnl::AvGetSavedDataAddress(void
 // ******************************************************************
 XBSYSAPI EXPORTNUM(2) xboxkrnl::VOID NTAPI xboxkrnl::AvSendTVEncoderOption
 (
-	IN  PVOID   RegisterBase,
-	IN  ULONG   Option,
-	IN  ULONG   Param,
-	OUT ULONG   *Result
+    IN  PVOID   RegisterBase,
+    IN  ULONG   Option,
+    IN  ULONG   Param,
+    OUT PULONG  Result
 )
 {
 	LOG_FUNC_BEGIN
@@ -144,19 +142,19 @@ XBSYSAPI EXPORTNUM(2) xboxkrnl::VOID NTAPI xboxkrnl::AvSendTVEncoderOption
 // ******************************************************************
 XBSYSAPI EXPORTNUM(3) xboxkrnl::ULONG NTAPI xboxkrnl::AvSetDisplayMode
 (
-	IN  PVOID   RegisterBase,
-	IN  ULONG   Step,
-	IN  ULONG   Mode,
-	IN  ULONG   Format,
-	IN  ULONG   Pitch,
-	IN  ULONG   FrameBuffer
+    IN PVOID    RegisterBase,
+    IN ULONG    Step,
+    IN ULONG    DisplayMode,
+    IN ULONG    SourceColorFormat,
+    IN ULONG    Pitch,
+    IN ULONG    FrameBuffer
 )
 {
 	LOG_FUNC_BEGIN
 		LOG_FUNC_ARG(RegisterBase)
 		LOG_FUNC_ARG(Step)
-		LOG_FUNC_ARG(Mode)
-		LOG_FUNC_ARG(Format)
+		LOG_FUNC_ARG(DisplayMode)
+		LOG_FUNC_ARG(SourceColorFormat)
 		LOG_FUNC_ARG(Pitch)
 		LOG_FUNC_ARG(FrameBuffer)
 		LOG_FUNC_END;
@@ -176,9 +174,7 @@ XBSYSAPI EXPORTNUM(4) xboxkrnl::VOID NTAPI xboxkrnl::AvSetSavedDataAddress
 	IN  PVOID   Address
 )
 {
-	LOG_FUNC_BEGIN
-		LOG_FUNC_ARG(Address)
-		LOG_FUNC_END;
+    LOG_FUNC_ONE_ARG(Address);
 
 	LOG_UNIMPLEMENTED();
 }

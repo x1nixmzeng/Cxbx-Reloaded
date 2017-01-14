@@ -63,8 +63,7 @@ namespace NtDll
 // ******************************************************************
 // * 0x000C - ExAcquireReadWriteLockExclusive()
 // ******************************************************************
-// Source:APILogger - Uncertain
-XBSYSAPI EXPORTNUM(12) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExAcquireReadWriteLockExclusive
+XBSYSAPI EXPORTNUM(12) xboxkrnl::VOID NTAPI xboxkrnl::ExAcquireReadWriteLockExclusive
 (
 	IN PERWLOCK ReadWriteLock
 )
@@ -73,15 +72,12 @@ XBSYSAPI EXPORTNUM(12) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExAcquireReadWriteLock
 
 	// KeWaitForSingleObject
 	LOG_UNIMPLEMENTED();
-
-	RETURN(S_OK);
 }
 
 // ******************************************************************
 // * 0x000D - ExAcquireReadWriteLockShared()
 // ******************************************************************
-// Source:APILogger - Uncertain
-XBSYSAPI EXPORTNUM(13) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExAcquireReadWriteLockShared
+XBSYSAPI EXPORTNUM(13) xboxkrnl::VOID NTAPI xboxkrnl::ExAcquireReadWriteLockShared
 (
 	IN PERWLOCK ReadWriteLock
 )
@@ -90,8 +86,6 @@ XBSYSAPI EXPORTNUM(13) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExAcquireReadWriteLock
 
 	// KeWaitForSingleObject
 	LOG_UNIMPLEMENTED();
-
-	RETURN(S_OK);
 }
 
 // ******************************************************************
@@ -162,8 +156,7 @@ XBSYSAPI EXPORTNUM(17) xboxkrnl::VOID NTAPI xboxkrnl::ExFreePool
 // ******************************************************************
 // * 0x0012 - ExInitializeReadWriteLock()
 // ******************************************************************
-// Source:APILogger - Uncertain
-XBSYSAPI EXPORTNUM(18) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExInitializeReadWriteLock
+XBSYSAPI EXPORTNUM(18) xboxkrnl::VOID NTAPI xboxkrnl::ExInitializeReadWriteLock
 (
 	IN PERWLOCK ReadWriteLock
 )
@@ -171,25 +164,20 @@ XBSYSAPI EXPORTNUM(18) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExInitializeReadWriteL
 	LOG_FUNC_ONE_ARG(ReadWriteLock);
 
 	LOG_UNIMPLEMENTED();
-
-	RETURN(S_OK);
 }
 
 // ******************************************************************
 // * 0x0013 - ExInterlockedAddLargeInteger()
 // ******************************************************************
-// Source:ReactOS https://doxygen.reactos.org/d0/d35/ntoskrnl_2ex_2interlocked_8c_source.html#l00062
 XBSYSAPI EXPORTNUM(19) xboxkrnl::LARGE_INTEGER NTAPI xboxkrnl::ExInterlockedAddLargeInteger
 (
-	IN OUT PLARGE_INTEGER Addend,
-	IN LARGE_INTEGER Increment,
-	IN OUT PKSPIN_LOCK Lock
+    IN PLARGE_INTEGER Addend,
+    IN LARGE_INTEGER Increment
 )
 {
 	LOG_FUNC_BEGIN
 		LOG_FUNC_ARG(Addend)
 // TODO : operator<<(LARGE_INTERGER) enables 		LOG_FUNC_ARG(Increment)
-		LOG_FUNC_ARG(Lock)
 		LOG_FUNC_END;
 
 	LARGE_INTEGER OldValue;
@@ -214,7 +202,6 @@ XBSYSAPI EXPORTNUM(19) xboxkrnl::LARGE_INTEGER NTAPI xboxkrnl::ExInterlockedAddL
 // ******************************************************************
 // * 0x0014 - ExInterlockedAddLargeStatistic()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(20) xboxkrnl::VOID FASTCALL xboxkrnl::ExInterlockedAddLargeStatistic
 (
 	IN PLARGE_INTEGER Addend,
@@ -232,20 +219,17 @@ XBSYSAPI EXPORTNUM(20) xboxkrnl::VOID FASTCALL xboxkrnl::ExInterlockedAddLargeSt
 // ******************************************************************
 // * 0x0015 - ExInterlockedCompareExchange64()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(21) xboxkrnl::LONGLONG FASTCALL xboxkrnl::ExInterlockedCompareExchange64
 (
-	IN OUT PLONGLONG Destination,
-	IN PLONGLONG Exchange,
-	IN PLONGLONG Comparand,
-	IN PKSPIN_LOCK Lock
+    IN PLONGLONG Destination,
+    IN PLONGLONG Exchange,
+    IN PLONGLONG Comperand
 )
 {
 	LOG_FUNC_BEGIN
 		LOG_FUNC_ARG_OUT(Destination)
 		LOG_FUNC_ARG(Exchange)
-		LOG_FUNC_ARG(Comparand)
-		LOG_FUNC_ARG(Lock)
+		LOG_FUNC_ARG(Comperand)
 		LOG_FUNC_END;
 
 	LOG_UNIMPLEMENTED();
@@ -335,11 +319,11 @@ const EEPROMInfo* FindEEPROMInfo(xboxkrnl::XC_VALUE_INDEX index)
 // ******************************************************************
 XBSYSAPI EXPORTNUM(24) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExQueryNonVolatileSetting
 (
-	IN  DWORD               ValueIndex,
-	OUT DWORD              *Type,
-	OUT PVOID               Value,
-	IN  SIZE_T              ValueLength,
-	OUT PSIZE_T             ResultLength OPTIONAL
+    IN  ULONG   ValueIndex,
+    OUT PULONG  Type,
+    OUT PVOID   Value,
+    IN  ULONG   ValueLength,
+    OUT PULONG  ResultLength
 )
 {
 	LOG_FUNC_BEGIN
@@ -392,15 +376,15 @@ XBSYSAPI EXPORTNUM(24) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExQueryNonVolatileSett
 // ******************************************************************
 XBSYSAPI EXPORTNUM(25) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExReadWriteRefurbInfo
 (
-	IN OUT PXBOX_REFURB_INFO	pRefurbInfo,
-	IN ULONG	dwBufferSize,
-	IN BOOLEAN	bIsWriteMode
+    OUT PXBOX_REFURB_INFO   RefurbInfo,
+    IN  ULONG               ValueLength,
+    IN  BOOLEAN             DoWrite
 )
 {
 	LOG_FUNC_BEGIN
-		LOG_FUNC_ARG(pRefurbInfo)
-		LOG_FUNC_ARG(dwBufferSize)
-		LOG_FUNC_ARG(bIsWriteMode)
+		LOG_FUNC_ARG_OUT(RefurbInfo)
+		LOG_FUNC_ARG(ValueLength)
+		LOG_FUNC_ARG(DoWrite)
 		LOG_FUNC_END;
 
 	NTSTATUS Result = STATUS_SUCCESS;

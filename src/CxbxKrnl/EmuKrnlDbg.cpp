@@ -83,14 +83,14 @@ XBSYSAPI EXPORTNUM(6) xboxkrnl::VOID NTAPI xboxkrnl::DbgBreakPointWithStatus
 // ******************************************************************
 XBSYSAPI EXPORTNUM(7) xboxkrnl::NTSTATUS NTAPI xboxkrnl::DbgLoadImageSymbols
 (
-	IN PANSI_STRING Name,
-	IN PVOID Base,
-	IN ULONG_PTR ProcessId
+    IN PSTRING FileName,
+    IN PVOID ImageBase,
+    IN ULONG_PTR ProcessId
 )
 {
 	LOG_FUNC_BEGIN
-		LOG_FUNC_ARG(Name)
-		LOG_FUNC_ARG(Base)
+		LOG_FUNC_ARG(FileName)
+		LOG_FUNC_ARG(ImageBase)
 		LOG_FUNC_ARG(ProcessId)
 		LOG_FUNC_END;
 
@@ -106,7 +106,8 @@ XBSYSAPI EXPORTNUM(7) xboxkrnl::NTSTATUS NTAPI xboxkrnl::DbgLoadImageSymbols
 // ******************************************************************
 XBSYSAPI EXPORTNUM(8) xboxkrnl::ULONG _cdecl xboxkrnl::DbgPrint
 (
-	PCHAR  Format, ...
+    IN PCHAR  Format,
+    ...
 )
 {
 	LOG_FUNC_BEGIN
@@ -114,7 +115,7 @@ XBSYSAPI EXPORTNUM(8) xboxkrnl::ULONG _cdecl xboxkrnl::DbgPrint
 		LOG_FUNC_ARG("...")
 		LOG_FUNC_END;
 
-	if (Format != NULL)
+	if (Format != nullptr)
 	{
 		char szBuffer[MAX_PATH];
 
@@ -124,10 +125,7 @@ XBSYSAPI EXPORTNUM(8) xboxkrnl::ULONG _cdecl xboxkrnl::DbgPrint
 		vsprintf(szBuffer, Format, argp);
 		va_end(argp);
 
-		//LogPrintf("[EmuKrnl] DbgPrint: %s", szBuffer);
-
 		EmuWarning(szBuffer);
-		//DbgPrintf(szBuffer);
 	}
 
 	RETURN(STATUS_SUCCESS);
@@ -136,12 +134,11 @@ XBSYSAPI EXPORTNUM(8) xboxkrnl::ULONG _cdecl xboxkrnl::DbgPrint
 // ******************************************************************
 // * 0x000A - DbgPrompt()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(10) xboxkrnl::ULONG NTAPI xboxkrnl::DbgPrompt
 (
-	IN PCCH Prompt,
-	OUT PCH Response,
-	IN ULONG MaximumResponseLength
+    IN PCH Prompt,
+    OUT PCH Response,
+    IN ULONG MaximumResponseLength
 )
 {
 	LOG_FUNC_BEGIN
@@ -150,27 +147,24 @@ XBSYSAPI EXPORTNUM(10) xboxkrnl::ULONG NTAPI xboxkrnl::DbgPrompt
 		LOG_FUNC_ARG(MaximumResponseLength)
 		LOG_FUNC_END;
 
-	NTSTATUS result = S_OK;
-
 	LOG_UNIMPLEMENTED();
 
-	RETURN(result);
+	RETURN(S_OK);
 }
 
 // ******************************************************************
 // * 0x000B - DbgUnLoadImageSymbols()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(11) xboxkrnl::VOID NTAPI xboxkrnl::DbgUnLoadImageSymbols
 (
-	IN PANSI_STRING Name,
-	IN PVOID Base,
-	IN ULONG_PTR ProcessId
+    IN PSTRING FileName,
+    IN PVOID ImageBase,
+    IN ULONG_PTR ProcessId
 )
 {
 	LOG_FUNC_BEGIN
-		LOG_FUNC_ARG(Name)
-		LOG_FUNC_ARG(Base)
+		LOG_FUNC_ARG(FileName)
+		LOG_FUNC_ARG(ImageBase)
 		LOG_FUNC_ARG(ProcessId)
 		LOG_FUNC_END;
 
