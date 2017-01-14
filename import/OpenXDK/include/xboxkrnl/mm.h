@@ -178,7 +178,45 @@ XBSYSAPI EXPORTNUM(183) NTSTATUS NTAPI MmUnmapIoSpace
     IN ULONG NumberOfBytes
 );
 
+// ******************************************************************
+// * 0x0176 - MmDbgAllocateMemory()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(374) PVOID NTAPI MmDbgAllocateMemory
+(
+    IN SIZE_T   NumberOfBytes,
+    IN ULONG    Protect
+);
+
+// ******************************************************************
+// * 0x0177 - MmDbgFreeMemory()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(375) ULONG NTAPI MmDbgFreeMemory
+(
+    IN PVOID    BaseAddress,
+    IN SIZE_T   NumberOfBytes
+);
+
+// ******************************************************************
+// * 0x0178 - MmDbgQueryAvailablePages()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(376) PFN_COUNT NTAPI MmDbgQueryAvailablePages( );
+
+// ******************************************************************
+// * 0x179 - MmDbgReleaseAddress()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(377) VOID NTAPI MmDbgReleaseAddress
+(
+    IN PVOID            VirtualAddress,
+    IN PHARDWARE_PTE    Opaque
+);
+
+// ******************************************************************
+// * 0x017A - MmDbgWriteCheck()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(378) PVOID NTAPI MmDbgWriteCheck
+(
+    IN PVOID            VirtualAddress,
+    IN PHARDWARE_PTE    Opaque
+);
+
 #endif
-
-
-

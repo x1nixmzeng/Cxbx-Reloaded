@@ -600,3 +600,96 @@ XBSYSAPI EXPORTNUM(183) xboxkrnl::NTSTATUS NTAPI xboxkrnl::MmUnmapIoSpace
 	RETURN(STATUS_SUCCESS);
 }
 
+// ******************************************************************
+// * 0x0177 - MmDbgAllocateMemory()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(374) xboxkrnl::PVOID NTAPI xboxkrnl::MmDbgAllocateMemory
+(
+    IN SIZE_T   NumberOfBytes,
+    IN ULONG    Protect
+)
+{
+    LOG_FUNC_BEGIN
+        LOG_FUNC_ARG(NumberOfBytes)
+        LOG_FUNC_ARG(Protect)
+        LOG_FUNC_END;
+
+    xboxkrnl::PVOID result = nullptr;
+
+    LOG_UNIMPLEMENTED();
+
+    RETURN(result);
+}
+
+// ******************************************************************
+// * 0x0177 - MmDbgFreeMemory()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(375) xboxkrnl::ULONG NTAPI xboxkrnl::MmDbgFreeMemory
+(
+    IN PVOID    BaseAddress,
+    IN SIZE_T   NumberOfBytes
+)
+{
+    LOG_FUNC_BEGIN
+        LOG_FUNC_ARG(BaseAddress)
+        LOG_FUNC_ARG(NumberOfBytes)
+        LOG_FUNC_END;
+
+    LOG_UNIMPLEMENTED();
+
+    RETURN(S_OK);
+}
+
+// ******************************************************************
+// * 0x0178 - MmDbgQueryAvailablePages()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(376) xboxkrnl::PFN_COUNT NTAPI xboxkrnl::MmDbgQueryAvailablePages
+(
+)
+{
+    LOG_FUNC();
+
+    xboxkrnl::PFN_COUNT result = 0;
+
+    LOG_UNIMPLEMENTED();
+
+    RETURN(result);
+}
+
+// ******************************************************************
+// * 0x179 - MmDbgReleaseAddress()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(377) xboxkrnl::VOID NTAPI xboxkrnl::MmDbgReleaseAddress
+(
+    IN PVOID            VirtualAddress,
+    IN PHARDWARE_PTE    Opaque
+)
+{
+    LOG_FUNC_BEGIN
+        LOG_FUNC_ARG(VirtualAddress)
+        LOG_FUNC_ARG(Opaque)
+        LOG_FUNC_END;
+
+    LOG_UNIMPLEMENTED();
+}
+
+// ******************************************************************
+// * 0x017A - MmDbgWriteCheck()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(378) xboxkrnl::PVOID NTAPI xboxkrnl::MmDbgWriteCheck
+(
+    IN PVOID            VirtualAddress,
+    IN PHARDWARE_PTE    Opaque
+)
+{
+    LOG_FUNC_BEGIN
+        LOG_FUNC_ARG(VirtualAddress)
+        LOG_FUNC_ARG(Opaque)
+        LOG_FUNC_END;
+
+    xboxkrnl::PVOID result = nullptr;
+
+    LOG_UNIMPLEMENTED();
+
+    RETURN(result);
+}

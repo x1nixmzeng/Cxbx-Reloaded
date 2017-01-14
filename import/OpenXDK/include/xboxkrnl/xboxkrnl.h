@@ -1874,6 +1874,25 @@ typedef struct _TIME_FIELDS
 }
 TIME_FIELDS, *PTIME_FIELDS;
 
+// ******************************************************************
+// * PAGE TABLE
+// ******************************************************************
+typedef struct _HARDWARE_PTE {
+    ULONG Valid                     : 1;
+    ULONG Write                     : 1;
+    ULONG Owner                     : 1;
+    ULONG WriteThrough              : 1;
+    ULONG CacheDisable              : 1;
+    ULONG Accessed                  : 1;
+    ULONG Dirty                     : 1;
+    ULONG LargePage                 : 1;
+    ULONG Global                    : 1;
+    ULONG GuardOrEndOfAllocation    : 1;
+    ULONG PersistAllocation         : 1;
+    ULONG reserved                  : 1;
+    ULONG PageFrameNumber           : 20;
+} HARDWARE_PTE, *PHARDWARE_PTE;
+
 /*
 typedef enum _KINTERRUPT_POLARITY
 {
