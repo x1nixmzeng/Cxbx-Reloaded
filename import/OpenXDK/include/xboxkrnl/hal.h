@@ -21,58 +21,77 @@ XBSYSAPI EXPORTNUM(9) NTSTATUS NTAPI HalReadSMCTrayState
     OUT PULONG TrayStateChangeCount OPTIONAL
 );
 
+// ******************************************************************
+// * 0x0026 - HalClearSoftwareInterrupt()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(38) VOID FASTCALL HalClearSoftwareInterrupt
 (
-	KIRQL Request
-);
-
-XBSYSAPI EXPORTNUM(39) VOID NTAPI HalDisableSystemInterrupt
-(
-	ULONG Vector,
-	KIRQL Irql
-);
-
-XBSYSAPI EXPORTNUM(40) ULONG HalDiskCachePartitionCount;
-XBSYSAPI EXPORTNUM(41) PANSI_STRING HalDiskModelNumber;
-XBSYSAPI EXPORTNUM(42) PANSI_STRING HalDiskSerialNumber;
-XBSYSAPI EXPORTNUM(43) BOOLEAN NTAPI HalEnableSystemInterrupt
-(
-	ULONG Vector,
-	KIRQL Irql,
-	KINTERRUPT_MODE InterruptMode
+    IN KIRQL RequestIrql
 );
 
 // ******************************************************************
-// * HalGetInterruptVector
+// * 0x0027 - HalDisableSystemInterrupt()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(39) VOID NTAPI HalDisableSystemInterrupt
+(
+    IN ULONG BusInterruptLevel
+);
+
+// ******************************************************************
+// * 0x0028 - HalDiskCachePartitionCount
+// ******************************************************************
+XBSYSAPI EXPORTNUM(40) ULONG HalDiskCachePartitionCount;
+
+// ******************************************************************
+// * 0x0029 - HalDiskModelNumber
+// ******************************************************************
+XBSYSAPI EXPORTNUM(41) PANSI_STRING HalDiskModelNumber;
+
+// ******************************************************************
+// * 0x002A - HalDiskSerialNumber
+// ******************************************************************
+XBSYSAPI EXPORTNUM(42) PANSI_STRING HalDiskSerialNumber;
+
+// ******************************************************************
+// * 0x002B - HalEnableSystemInterrupt()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(43) VOID NTAPI HalEnableSystemInterrupt
+(
+    IN ULONG BusInterruptLevel,
+    IN KINTERRUPT_MODE InterruptMode
+);
+
+// ******************************************************************
+// * 0x002C - HalGetInterruptVector()
 // ******************************************************************
 XBSYSAPI EXPORTNUM(44) ULONG  NTAPI HalGetInterruptVector
 (
-    IN ULONG   InterruptLevel,
+    IN ULONG BusInterruptLevel,
     OUT PKIRQL Irql
 );
 
 // ******************************************************************
-// * HalReadSMBusValue
+// * 0x002D - HalReadSMBusValue()
 // ******************************************************************
 XBSYSAPI EXPORTNUM(45) NTSTATUS NTAPI HalReadSMBusValue
 (
-    IN UCHAR   Address,
-    IN UCHAR   Command,
-    IN BOOLEAN WriteWord,
-    OUT PULONG DataValue
+    IN  UCHAR   SlaveAddress,
+    IN  UCHAR   CommandCode,
+    IN  BOOLEAN ReadWordValue,
+    OUT PULONG  DataValue
 );
 
 // ******************************************************************
-// * HalReadWritePCISpace
+// * 0x002E - HalReadWritePCISpace()
 // ******************************************************************
 XBSYSAPI EXPORTNUM(46) VOID NTAPI HalReadWritePCISpace
 (
-  IN ULONG   BusNumber,
-  IN ULONG   SlotNumber,
-  IN ULONG   RegisterNumber,
-  IN PVOID   Buffer,
-  IN ULONG   Length,
-  IN BOOLEAN WritePCISpace
+    IN ULONG    BusNumber,
+    IN ULONG    SlotNumber,
+    IN ULONG    RegisterNumber,
+    IN PVOID    Buffer,
+    IN ULONG    Length,
+    IN BOOLEAN  WritePCISpace
 );
 
 typedef VOID (*PHAL_SHUTDOWN_NOTIFICATION)(
@@ -80,43 +99,45 @@ typedef VOID (*PHAL_SHUTDOWN_NOTIFICATION)(
 );
 
 typedef struct {
-    PHAL_SHUTDOWN_NOTIFICATION NotificationRoutine;
-    LONG Priority;
-    LIST_ENTRY ListEntry;
+    PHAL_SHUTDOWN_NOTIFICATION  NotificationRoutine;
+    LONG                        Priority;
+    LIST_ENTRY                  ListEntry;
 } HAL_SHUTDOWN_REGISTRATION, *PHAL_SHUTDOWN_REGISTRATION;
 
-// TODO : NTAPI or FASTCALL ?
-XBSYSAPI EXPORTNUM(47) VOID HalRegisterShutdownNotification(
+// ******************************************************************
+// * 0x002F - HalRegisterShutdownNotification()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(47) VOID NTAPI HalRegisterShutdownNotification
+(
     IN PHAL_SHUTDOWN_REGISTRATION ShutdownRegistration,
     IN BOOLEAN Register
 );
 
+// ******************************************************************
+// * 0x0030 - HalRequestSoftwareInterrupt()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(46) VOID FASTCALL HalRequestSoftwareInterrupt
 (
 	IN KIRQL Request
 );
 
 // ******************************************************************
-// * HalReturnToFirmware
-// ******************************************************************
-// *
-// * Reboot / Shutdown / Etc
-// *
+// * 0x0031 - HalReturnToFirmware()
 // ******************************************************************
 XBSYSAPI EXPORTNUM(49) VOID DECLSPEC_NORETURN HalReturnToFirmware
 (
-    RETURN_FIRMWARE Routine
+    IN RETURN_FIRMWARE Routine
 );
 
 // ******************************************************************
-// * HalWriteSMBusValue
+// * 0x0032 - HalWriteSMBusValue()
 // ******************************************************************
 XBSYSAPI EXPORTNUM(50) NTSTATUS NTAPI HalWriteSMBusValue
 (
-    UCHAR   Address,
-    UCHAR   Command,
-    BOOLEAN WriteWord,
-    ULONG   DataValue
+    IN UCHAR    SlaveAddress,
+    IN UCHAR    CommandCode,
+    IN BOOLEAN  WriteWordValue,
+    IN ULONG    DataValue
 );
 
 // ******************************************************************

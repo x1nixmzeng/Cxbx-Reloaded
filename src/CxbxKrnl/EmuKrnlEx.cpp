@@ -453,7 +453,6 @@ XBSYSAPI EXPORTNUM(25) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExReadWriteRefurbInfo
 // ******************************************************************
 // * 0x001A - ExRaiseException()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(26) xboxkrnl::VOID NTAPI xboxkrnl::ExRaiseException
 (
 	IN PEXCEPTION_RECORD ExceptionRecord
@@ -468,7 +467,6 @@ XBSYSAPI EXPORTNUM(26) xboxkrnl::VOID NTAPI xboxkrnl::ExRaiseException
 // ******************************************************************
 // * 0x001B - ExRaiseStatus()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(27) xboxkrnl::VOID NTAPI xboxkrnl::ExRaiseStatus
 (
 	IN NTSTATUS Status
@@ -482,8 +480,7 @@ XBSYSAPI EXPORTNUM(27) xboxkrnl::VOID NTAPI xboxkrnl::ExRaiseStatus
 // ******************************************************************
 // * 0x001C - ExReleaseReadWriteLock()
 // ******************************************************************
-// Source:APILogger - Uncertain
-XBSYSAPI EXPORTNUM(28) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExReleaseReadWriteLock
+XBSYSAPI EXPORTNUM(28) xboxkrnl::VOID NTAPI xboxkrnl::ExReleaseReadWriteLock
 (
 	IN PERWLOCK ReadWriteLock
 )
@@ -491,8 +488,6 @@ XBSYSAPI EXPORTNUM(28) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExReleaseReadWriteLock
 	LOG_FUNC_ONE_ARG(ReadWriteLock);
 
 	LOG_UNIMPLEMENTED();
-
-	RETURN(S_OK);
 }
 
 // ******************************************************************
@@ -500,10 +495,10 @@ XBSYSAPI EXPORTNUM(28) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExReleaseReadWriteLock
 // ******************************************************************
 XBSYSAPI EXPORTNUM(29) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExSaveNonVolatileSetting
 (
-	IN  DWORD               ValueIndex,
-	OUT DWORD              *Type,
-	IN  PVOID               Value,
-	IN  SIZE_T              ValueLength
+    IN ULONG ValueIndex,
+    IN ULONG Type,
+    IN PVOID Value,
+    IN ULONG ValueLength
 )
 {
 	LOG_FUNC_BEGIN
@@ -528,10 +523,6 @@ XBSYSAPI EXPORTNUM(29) xboxkrnl::NTSTATUS NTAPI xboxkrnl::ExSaveNonVolatileSetti
 				ret = STATUS_INVALID_PARAMETER;
 			else
 			{
-				// Set the output value type :
-				if (Type != nullptr)
-					*Type = info->value_type; // REG_DWORD;
-
 				// Clear the output value buffer :
 				memset(info->value_addr, 0, result_length);
 				// Copy the input value buffer into the emulated EEPROM value :
@@ -583,18 +574,15 @@ XBSYSAPI EXPORTNUM(31) xboxkrnl::OBJECT_TYPE xboxkrnl::ExTimerObjectType =
 // ******************************************************************
 // * 0x0020 - ExfInterlockedInsertHeadList()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(32) xboxkrnl::PLIST_ENTRY FASTCALL xboxkrnl::ExfInterlockedInsertHeadList
 (
 	IN PLIST_ENTRY ListHead,
-	IN PLIST_ENTRY ListEntry,
-	IN PKSPIN_LOCK Lock
+	IN PLIST_ENTRY ListEntry
 )
 {
 	LOG_FUNC_BEGIN
 		LOG_FUNC_ARG(ListHead)
 		LOG_FUNC_ARG(ListEntry)
-		LOG_FUNC_ARG(Lock)
 		LOG_FUNC_END;
 
 	LOG_UNIMPLEMENTED();
@@ -605,18 +593,15 @@ XBSYSAPI EXPORTNUM(32) xboxkrnl::PLIST_ENTRY FASTCALL xboxkrnl::ExfInterlockedIn
 // ******************************************************************
 // * 0x0021 - ExfInterlockedInsertTailList()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(33) xboxkrnl::PLIST_ENTRY FASTCALL xboxkrnl::ExfInterlockedInsertTailList
 (
 	IN PLIST_ENTRY ListHead,	
-	IN PLIST_ENTRY ListEntry,
-	IN PKSPIN_LOCK Lock
+	IN PLIST_ENTRY ListEntry
 )
 {
 	LOG_FUNC_BEGIN
 		LOG_FUNC_ARG(ListHead)
 		LOG_FUNC_ARG(ListEntry)
-		LOG_FUNC_ARG(Lock)
 		LOG_FUNC_END;
 
 	LOG_UNIMPLEMENTED();

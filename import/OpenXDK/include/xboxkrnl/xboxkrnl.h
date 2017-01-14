@@ -646,6 +646,8 @@ typedef enum _FSINFOCLASS
 }
 FS_INFORMATION_CLASS, *PFS_INFORMATION_CLASS;
 
+typedef ULONG PFN_COUNT;
+
 // ******************************************************************
 // * FILE_DIRECTORY_INFORMATION
 // ******************************************************************

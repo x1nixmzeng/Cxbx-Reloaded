@@ -129,17 +129,26 @@ XBSYSAPI EXPORTNUM(25) NTSTATUS NTAPI ExReadWriteRefurbInfo
     IN  BOOLEAN             DoWrite
 );
 
+// ******************************************************************
+// * 0x001A - ExRaiseException()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(26) VOID NTAPI ExRaiseException
 (
 	IN PEXCEPTION_RECORD ExceptionRecord
 );
 
+// ******************************************************************
+// * 0x001B - ExRaiseStatus()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(27) VOID NTAPI ExRaiseStatus
 (
 	IN NTSTATUS Status
 );
 
-XBSYSAPI EXPORTNUM(28) NTSTATUS NTAPI ExReleaseReadWriteLock
+// ******************************************************************
+// * 0x001C - ExReleaseReadWriteLock()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(28) VOID NTAPI ExReleaseReadWriteLock
 (
 	IN PERWLOCK ReadWriteLock
 );
@@ -149,28 +158,38 @@ XBSYSAPI EXPORTNUM(28) NTSTATUS NTAPI ExReleaseReadWriteLock
 // ******************************************************************
 XBSYSAPI EXPORTNUM(29) NTSTATUS NTAPI ExSaveNonVolatileSetting
 (
-	IN  DWORD               ValueIndex,
-	OUT DWORD              *Type,
-	IN  PVOID               Value,
-	IN  SIZE_T              ValueLength
+    IN ULONG ValueIndex,
+    IN ULONG Type,
+    IN PVOID Value,
+    IN ULONG ValueLength
 );
 
+// ******************************************************************
+// * 0x001E - ExSemaphoreObjectType
+// ******************************************************************
 XBSYSAPI EXPORTNUM(30) OBJECT_TYPE ExSemaphoreObjectType;
 
+// ******************************************************************
+// * 0x001F - ExTimerObjectType
+// ******************************************************************
 XBSYSAPI EXPORTNUM(31) OBJECT_TYPE ExTimerObjectType;
 
+// ******************************************************************
+// * 0x0020 - ExfInterlockedInsertHeadList()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(32) PLIST_ENTRY FASTCALL ExfInterlockedInsertHeadList
 (
 	IN PLIST_ENTRY ListHead,
-	IN PLIST_ENTRY ListEntry,
-	IN PKSPIN_LOCK Lock
+	IN PLIST_ENTRY ListEntry
 );
 
+// ******************************************************************
+// * 0x0021 - ExfInterlockedInsertTailList()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(33) PLIST_ENTRY FASTCALL ExfInterlockedInsertTailList
 (
 	IN PLIST_ENTRY ListHead,
-	IN PLIST_ENTRY ListEntry,
-	IN PKSPIN_LOCK Lock
+	IN PLIST_ENTRY ListEntry
 );
 
 XBSYSAPI EXPORTNUM(34) PLIST_ENTRY FASTCALL ExfInterlockedRemoveHeadList

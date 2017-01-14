@@ -70,7 +70,7 @@ XBSYSAPI EXPORTNUM(4) VOID NTAPI AvSetSavedDataAddress
 // ******************************************************************
 // * 0x0023 - FscGetCacheSize()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(35) ULONG NTAPI FscGetCacheSize();
+XBSYSAPI EXPORTNUM(35) PFN_COUNT NTAPI FscGetCacheSize();
 
 // ******************************************************************
 // * 0x0024 - FscInvalidateIdleBlocks()
@@ -82,7 +82,7 @@ XBSYSAPI EXPORTNUM(36) VOID NTAPI FscInvalidateIdleBlocks();
 // ******************************************************************
 XBSYSAPI EXPORTNUM(37) NTSTATUS NTAPI FscSetCacheSize
 (
-		ULONG NumberOfCachePages
+    IN PFN_COUNT NumberOfCachePages
 );
 
 // ******************************************************************

@@ -57,12 +57,12 @@ namespace NtDll
 #define FSCACHE_MAXIMUM_NUMBER_OF_CACHE_PAGES 2048
 
 // global variables
-xboxkrnl::LONG g_FscNumberOfCachePages = 16; // 16 = default number of file system cache pages
+xboxkrnl::PFN_COUNT g_FscNumberOfCachePages = 16; // 16 = default number of file system cache pages
 
 // ******************************************************************
 // * 0x0023 - FscGetCacheSize()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(35) xboxkrnl::ULONG NTAPI xboxkrnl::FscGetCacheSize()
+XBSYSAPI EXPORTNUM(35) xboxkrnl::PFN_COUNT NTAPI xboxkrnl::FscGetCacheSize()
 {
 	LOG_FUNC();
 
@@ -84,7 +84,7 @@ XBSYSAPI EXPORTNUM(36) xboxkrnl::VOID NTAPI xboxkrnl::FscInvalidateIdleBlocks()
 // ******************************************************************
 XBSYSAPI EXPORTNUM(37) xboxkrnl::NTSTATUS NTAPI xboxkrnl::FscSetCacheSize
 (
-	ULONG NumberOfCachePages
+    IN PFN_COUNT NumberOfCachePages
 )
 {
 	LOG_FUNC_ONE_ARG(NumberOfCachePages);
@@ -103,4 +103,3 @@ XBSYSAPI EXPORTNUM(37) xboxkrnl::NTSTATUS NTAPI xboxkrnl::FscSetCacheSize
 
 	RETURN(ret);
 }
-

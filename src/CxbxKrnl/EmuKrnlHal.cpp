@@ -90,13 +90,12 @@ XBSYSAPI EXPORTNUM(9) xboxkrnl::NTSTATUS NTAPI xboxkrnl::HalReadSMCTrayState
 // ******************************************************************
 // * 0x0026 - HalClearSoftwareInterrupt()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(38) xboxkrnl::VOID FASTCALL xboxkrnl::HalClearSoftwareInterrupt
 (
-	KIRQL Request
+	IN KIRQL RequestIrql
 )
 {
-	LOG_FUNC_ONE_ARG(Request);
+	LOG_FUNC_ONE_ARG(RequestIrql);
 
 	LOG_UNIMPLEMENTED();
 }
@@ -104,17 +103,12 @@ XBSYSAPI EXPORTNUM(38) xboxkrnl::VOID FASTCALL xboxkrnl::HalClearSoftwareInterru
 // ******************************************************************
 // * 0x0027 - HalDisableSystemInterrupt()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(39) xboxkrnl::VOID NTAPI xboxkrnl::HalDisableSystemInterrupt
 (
-	ULONG Vector,
-	KIRQL Irql
+    IN ULONG BusInterruptLevel
 )
 {
-	LOG_FUNC_BEGIN
-		LOG_FUNC_ARG(Vector)
-		LOG_FUNC_ARG(Irql)
-		LOG_FUNC_END;
+    LOG_FUNC_ONE_ARG(BusInterruptLevel);
 
 	LOG_UNIMPLEMENTED();
 }
@@ -129,34 +123,29 @@ XBSYSAPI EXPORTNUM(40) xboxkrnl::ULONG xboxkrnl::HalDiskCachePartitionCount = 4;
 // * 0x0029 - HalDiskModelNumber
 // ******************************************************************
 // Source:OpenXDK  TODO : Fill this with something sensible
-XBSYSAPI EXPORTNUM(41) xboxkrnl::PANSI_STRING xboxkrnl::HalDiskModelNumber = 0;
+XBSYSAPI EXPORTNUM(41) xboxkrnl::PANSI_STRING xboxkrnl::HalDiskModelNumber = nullptr;
 
 // ******************************************************************
 // * 0x002A - HalDiskSerialNumber
 // ******************************************************************
 // Source:OpenXDK  TODO : Fill this with something sensible
-XBSYSAPI EXPORTNUM(42) xboxkrnl::PANSI_STRING xboxkrnl::HalDiskSerialNumber = 0;	
+XBSYSAPI EXPORTNUM(42) xboxkrnl::PANSI_STRING xboxkrnl::HalDiskSerialNumber = nullptr;
 
 // ******************************************************************
 // * 0x002B - HalEnableSystemInterrupt()
 // ******************************************************************
-// Source:ReactOS
-XBSYSAPI EXPORTNUM(43) xboxkrnl::BOOLEAN NTAPI xboxkrnl::HalEnableSystemInterrupt
+XBSYSAPI EXPORTNUM(43) xboxkrnl::VOID NTAPI xboxkrnl::HalEnableSystemInterrupt
 (
-	ULONG Vector,
-	KIRQL Irql,
-	KINTERRUPT_MODE InterruptMode
+    IN ULONG BusInterruptLevel,
+    IN KINTERRUPT_MODE InterruptMode
 )
 {
 	LOG_FUNC_BEGIN
-		LOG_FUNC_ARG(Vector)
-		LOG_FUNC_ARG(Irql)
+		LOG_FUNC_ARG(BusInterruptLevel)
 		LOG_FUNC_ARG(InterruptMode)
 		LOG_FUNC_END;
 
 	LOG_UNIMPLEMENTED();
-
-	RETURN(FALSE);
 }
 
 #ifdef _DEBUG_TRACE
@@ -198,12 +187,12 @@ char *IRQNames[MAX_BUS_INTERRUPT_LEVEL + 1] =
 // ******************************************************************
 XBSYSAPI EXPORTNUM(44) xboxkrnl::ULONG  NTAPI xboxkrnl::HalGetInterruptVector
 (
-	IN ULONG   InterruptLevel,
-	OUT PKIRQL  Irql
+    IN ULONG BusInterruptLevel,
+    OUT PKIRQL Irql
 )
 {
 	LOG_FUNC_BEGIN
-		LOG_FUNC_ARG(InterruptLevel)
+		LOG_FUNC_ARG(BusInterruptLevel)
 		LOG_FUNC_ARG_OUT(Irql)
 		LOG_FUNC_END;
 
@@ -212,17 +201,17 @@ XBSYSAPI EXPORTNUM(44) xboxkrnl::ULONG  NTAPI xboxkrnl::HalGetInterruptVector
 
 	ULONG dwVector = 0;
 
-	if((InterruptLevel >=0) && (InterruptLevel <= MAX_BUS_INTERRUPT_LEVEL))
+	if((BusInterruptLevel >=0) && (BusInterruptLevel <= MAX_BUS_INTERRUPT_LEVEL))
 	{
 		// Why 0x30? On Win2k the vector is 0x30+IRQ, so it like that
-		dwVector = 0x30 + InterruptLevel;
+		dwVector = 0x30 + BusInterruptLevel;
 
 		if(Irql)
-			*Irql = (KIRQL)(MAX_BUS_INTERRUPT_LEVEL - InterruptLevel);
+			*Irql = (KIRQL)(MAX_BUS_INTERRUPT_LEVEL - BusInterruptLevel);
 
 #ifdef _DEBUG_TRACE
 		DbgPrintf("HalGetInterruptVector(): Interrupt vector requested for %d (%s)!\n", 
-			InterruptLevel, IRQNames[InterruptLevel]);
+            BusInterruptLevel, IRQNames[BusInterruptLevel]);
 #endif
 	}
 
@@ -234,22 +223,22 @@ XBSYSAPI EXPORTNUM(44) xboxkrnl::ULONG  NTAPI xboxkrnl::HalGetInterruptVector
 // ******************************************************************
 XBSYSAPI EXPORTNUM(45) xboxkrnl::NTSTATUS NTAPI xboxkrnl::HalReadSMBusValue
 (
-	IN  UCHAR               Address,
-	IN  UCHAR               Command,
-	IN  BOOLEAN             ReadWord,
-	OUT PULONG              DataValue
+    IN  UCHAR   SlaveAddress,
+    IN  UCHAR   CommandCode,
+    IN  BOOLEAN ReadWordValue,
+    OUT PULONG  DataValue
 )
 {
 	LOG_FUNC_BEGIN
-		LOG_FUNC_ARG(Address)
-		LOG_FUNC_ARG(Command)
-		LOG_FUNC_ARG(ReadWord)
+		LOG_FUNC_ARG(SlaveAddress)
+		LOG_FUNC_ARG(CommandCode)
+		LOG_FUNC_ARG(ReadWordValue)
 		LOG_FUNC_ARG_OUT(DataValue)
 		LOG_FUNC_END;
 
 	LOG_UNIMPLEMENTED();
 
-	if (ReadWord) {
+	if (ReadWordValue) {
 		// Write UCHAR
 	}
 	else {
@@ -267,12 +256,12 @@ XBSYSAPI EXPORTNUM(45) xboxkrnl::NTSTATUS NTAPI xboxkrnl::HalReadSMBusValue
 // Source:OpenXDK
 XBSYSAPI EXPORTNUM(46) xboxkrnl::VOID NTAPI xboxkrnl::HalReadWritePCISpace
 (
-	IN ULONG   BusNumber,
-	IN ULONG   SlotNumber,
-	IN ULONG   RegisterNumber,
-	IN PVOID   Buffer,
-	IN ULONG   Length,
-	IN BOOLEAN WritePCISpace
+    IN ULONG    BusNumber,
+    IN ULONG    SlotNumber,
+    IN ULONG    RegisterNumber,
+    IN PVOID    Buffer,
+    IN ULONG    Length,
+    IN BOOLEAN  WritePCISpace
 )
 {
 	LOG_FUNC_BEGIN
@@ -354,7 +343,7 @@ XBSYSAPI EXPORTNUM(46) xboxkrnl::VOID NTAPI xboxkrnl::HalReadWritePCISpace
 // ******************************************************************
 // * 0x002F - HalRegisterShutdownNotification()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(47) xboxkrnl::VOID xboxkrnl::HalRegisterShutdownNotification
+XBSYSAPI EXPORTNUM(47) xboxkrnl::VOID NTAPI xboxkrnl::HalRegisterShutdownNotification
 (
 	IN PHAL_SHUTDOWN_REGISTRATION ShutdownRegistration,
 	IN BOOLEAN Register
@@ -371,7 +360,6 @@ XBSYSAPI EXPORTNUM(47) xboxkrnl::VOID xboxkrnl::HalRegisterShutdownNotification
 // ******************************************************************
 // * 0x0030 - HalRequestSoftwareInterrupt()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(48) xboxkrnl::VOID FASTCALL xboxkrnl::HalRequestSoftwareInterrupt
 (
 	IN KIRQL Request
@@ -387,7 +375,7 @@ XBSYSAPI EXPORTNUM(48) xboxkrnl::VOID FASTCALL xboxkrnl::HalRequestSoftwareInter
 // ******************************************************************
 XBSYSAPI EXPORTNUM(49) xboxkrnl::VOID DECLSPEC_NORETURN xboxkrnl::HalReturnToFirmware
 (
-	RETURN_FIRMWARE Routine
+	IN RETURN_FIRMWARE Routine
 )
 {
 	LOG_FUNC_ONE_ARG(Routine);
@@ -399,20 +387,19 @@ XBSYSAPI EXPORTNUM(49) xboxkrnl::VOID DECLSPEC_NORETURN xboxkrnl::HalReturnToFir
 // ******************************************************************
 XBSYSAPI EXPORTNUM(50) xboxkrnl::NTSTATUS NTAPI xboxkrnl::HalWriteSMBusValue
 (
-	IN  UCHAR               Address,
-	IN  UCHAR               Command,
-	IN  BOOLEAN             WriteWord,
-	IN  ULONG               DataValue
+    IN UCHAR    SlaveAddress,
+    IN UCHAR    CommandCode,
+    IN BOOLEAN  WriteWordValue,
+    IN ULONG    DataValue
 )
 {
 	LOG_FUNC_BEGIN
-		LOG_FUNC_ARG(Address)
-		LOG_FUNC_ARG(Command)
-		LOG_FUNC_ARG(WriteWord)
+		LOG_FUNC_ARG(SlaveAddress)
+		LOG_FUNC_ARG(CommandCode)
+		LOG_FUNC_ARG(WriteWordValue)
 		LOG_FUNC_ARG(DataValue)
 		LOG_FUNC_END;
 
-	// TODO: Later.
 	LOG_UNIMPLEMENTED();
 
 	RETURN(STATUS_SUCCESS);
