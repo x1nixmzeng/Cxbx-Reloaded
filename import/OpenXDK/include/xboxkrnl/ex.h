@@ -192,58 +192,82 @@ XBSYSAPI EXPORTNUM(33) PLIST_ENTRY FASTCALL ExfInterlockedInsertTailList
 	IN PLIST_ENTRY ListEntry
 );
 
+// ******************************************************************
+// * 0x0022 - ExfInterlockedRemoveHeadList()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(34) PLIST_ENTRY FASTCALL ExfInterlockedRemoveHeadList
 (
 	IN PLIST_ENTRY ListHead,
 	IN PKSPIN_LOCK Lock
 );
 
+// ******************************************************************
+// * 0x0033 - InterlockedCompareExchange()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(51) LONG FASTCALL KRNL(InterlockedCompareExchange)
 (
-	IN OUT volatile PLONG Destination,
-	IN LONG  Exchange,
-	IN LONG  Comparand
+	IN OUT PLONG    Destination,
+    IN LONG         ExChange,
+    IN LONG         Comperand
 );
 
+// ******************************************************************
+// * 0x0034 - InterlockedDecrement()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(52) LONG FASTCALL KRNL(InterlockedDecrement)
 (
-	IN OUT PLONG Addend
+	IN PLONG Addend
 );
 
+// ******************************************************************
+// * 0x0035 - InterlockedIncrement()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(53) LONG FASTCALL KRNL(InterlockedIncrement)
 (
 	IN OUT PLONG Addend
 );
 
+// ******************************************************************
+// * 0x0036 - InterlockedExchange()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(54) LONG FASTCALL KRNL(InterlockedExchange)
 (
-	IN volatile PLONG Destination,
-	IN LONG Value
+    IN OUT  PLONG   Target,
+    IN      LONG    Value
 );
 
+// ******************************************************************
+// * 0x0037 - InterlockedExchangeAdd()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(55) LONG FASTCALL KRNL(InterlockedExchangeAdd)
 (
-	IN volatile PLONG Addend,
-	IN LONG	Value
+    IN OUT  PLONG   Addend,
+    IN      LONG    Increment
 );
 
-// Dxbx Note : The Xbox1 SINGLE_LIST strucures are the same as in WinNT
-XBSYSAPI EXPORTNUM(56) SINGLE_LIST_ENTRY * FASTCALL KRNL(InterlockedFlushSList)
+// ******************************************************************
+// * 0x0038 - InterlockedFlushSList()
+// ******************************************************************
+XBSYSAPI EXPORTNUM(56) PSINGLE_LIST_ENTRY FASTCALL KRNL(InterlockedFlushSList)
 (
 	IN PSLIST_HEADER ListHead
 );
 
+// ******************************************************************
+// * 0x0039 - InterlockedPopEntrySList()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(57) SLIST_ENTRY * FASTCALL KRNL(InterlockedPopEntrySList)
 (
 	IN PSLIST_HEADER ListHead
 );
 
+// ******************************************************************
+// * 0x003A - InterlockedPushEntrySList()
+// ******************************************************************
 XBSYSAPI EXPORTNUM(58) SLIST_ENTRY * FASTCALL KRNL(InterlockedPushEntrySList)
 (
-	IN PSLIST_HEADER ListHead,
-	IN PSLIST_ENTRY ListEntry
+	IN PSLIST_HEADER    ListHead,
+	IN PSLIST_ENTRY     ListEntry
 );
 
 #endif
-
-

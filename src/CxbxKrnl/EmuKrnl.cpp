@@ -66,21 +66,20 @@ xboxkrnl::KPCR* KeGetPcr();
 // ******************************************************************
 // * 0x0033 - InterlockedCompareExchange()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(51) xboxkrnl::LONG FASTCALL xboxkrnl::KRNL(InterlockedCompareExchange)
 (
-	IN OUT PLONG VOLATILE Destination,
-	IN LONG  Exchange,
-	IN LONG  Comparand
+    IN OUT PLONG    Destination,
+    IN LONG         ExChange,
+    IN LONG         Comperand
 )
 {
 	LOG_FUNC_BEGIN
 		LOG_FUNC_ARG(Destination)
-		LOG_FUNC_ARG(Exchange)
-		LOG_FUNC_ARG(Comparand)
+		LOG_FUNC_ARG(ExChange)
+		LOG_FUNC_ARG(Comperand)
 		LOG_FUNC_END;
 
-	RETURN(InterlockedCompareExchange((NtDll::PLONG)Destination, (NtDll::LONG)Exchange, (NtDll::LONG)Comparand));
+	RETURN(InterlockedCompareExchange((NtDll::PLONG)Destination, (NtDll::LONG)ExChange, (NtDll::LONG)Comperand));
 }
 
 // ******************************************************************
@@ -100,7 +99,6 @@ XBSYSAPI EXPORTNUM(52) xboxkrnl::LONG FASTCALL xboxkrnl::KRNL(InterlockedDecreme
 // ******************************************************************
 // * 0x0035 - InterlockedIncrement()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(53) xboxkrnl::LONG FASTCALL xboxkrnl::KRNL(InterlockedIncrement)
 (
 	IN OUT PLONG Addend
@@ -114,44 +112,40 @@ XBSYSAPI EXPORTNUM(53) xboxkrnl::LONG FASTCALL xboxkrnl::KRNL(InterlockedIncreme
 // ******************************************************************
 // * 0x0036 - InterlockedExchange()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(54) xboxkrnl::LONG FASTCALL xboxkrnl::KRNL(InterlockedExchange)
 (
-	IN PLONG VOLATILE Destination,
-	IN LONG Value
+    IN OUT  PLONG   Target,
+    IN      LONG    Value
 )
 {
 	LOG_FUNC_BEGIN
-		LOG_FUNC_ARG(Destination)
+		LOG_FUNC_ARG(Target)
 		LOG_FUNC_ARG(Value)
 		LOG_FUNC_END;
 
-	RETURN(InterlockedExchange((NtDll::PLONG)Destination, (NtDll::LONG)Value));
+	RETURN(InterlockedExchange((NtDll::PLONG)Target, (NtDll::LONG)Value));
 }
 
 // ******************************************************************
 // * 0x0037 - InterlockedExchangeAdd()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(55) xboxkrnl::LONG FASTCALL xboxkrnl::KRNL(InterlockedExchangeAdd)
 (
-	IN PLONG VOLATILE Addend,
-	IN LONG	Value
+    IN OUT  PLONG   Addend,
+    IN      LONG    Increment
 )
 {
 	LOG_FUNC_BEGIN
 		LOG_FUNC_ARG(Addend)
-		LOG_FUNC_ARG(Value)
+		LOG_FUNC_ARG(Increment)
 		LOG_FUNC_END;
 
-	RETURN(InterlockedExchangeAdd((NtDll::PLONG)Addend, (NtDll::LONG)Value));
+	RETURN(InterlockedExchangeAdd((NtDll::PLONG)Addend, (NtDll::LONG)Increment));
 }
 
 // ******************************************************************
 // * 0x0038 - InterlockedFlushSList()
 // ******************************************************************
-// Source:ReactOS
-// Dxbx Note : The Xbox1 SINGLE_LIST strucures are the same as in WinNT
 XBSYSAPI EXPORTNUM(56) xboxkrnl::PSINGLE_LIST_ENTRY FASTCALL xboxkrnl::KRNL(InterlockedFlushSList)
 (
 	IN xboxkrnl::PSLIST_HEADER ListHead
@@ -165,7 +159,6 @@ XBSYSAPI EXPORTNUM(56) xboxkrnl::PSINGLE_LIST_ENTRY FASTCALL xboxkrnl::KRNL(Inte
 // ******************************************************************
 // * 0x0039 - InterlockedPopEntrySList()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(57) xboxkrnl::PSLIST_ENTRY FASTCALL xboxkrnl::KRNL(InterlockedPopEntrySList)
 (
 	IN PSLIST_HEADER ListHead
@@ -179,11 +172,10 @@ XBSYSAPI EXPORTNUM(57) xboxkrnl::PSLIST_ENTRY FASTCALL xboxkrnl::KRNL(Interlocke
 // ******************************************************************
 // * 0x003A - InterlockedPushEntrySList()
 // ******************************************************************
-// Source:ReactOS
 XBSYSAPI EXPORTNUM(58) xboxkrnl::PSLIST_ENTRY FASTCALL xboxkrnl::KRNL(InterlockedPushEntrySList)
 (
-	IN PSLIST_HEADER ListHead,
-	IN PSLIST_ENTRY ListEntry
+    IN PSLIST_HEADER    ListHead,
+    IN PSLIST_ENTRY     ListEntry
 )
 {
 	LOG_FUNC_BEGIN

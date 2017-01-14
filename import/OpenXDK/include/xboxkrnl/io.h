@@ -15,7 +15,7 @@
 // ******************************************************************
 // * 0x003B - IoAllocateIrp()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(59) PVOID NTAPI IoAllocateIrp
+XBSYSAPI EXPORTNUM(59) PIRP NTAPI IoAllocateIrp
 (
 	IN CCHAR StackSize
 );
@@ -23,44 +23,44 @@ XBSYSAPI EXPORTNUM(59) PVOID NTAPI IoAllocateIrp
 // ******************************************************************
 // * 0x003C - IoBuildAsynchronousFsdRequest()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(60) PVOID NTAPI IoBuildAsynchronousFsdRequest
+XBSYSAPI EXPORTNUM(60) PIRP NTAPI IoBuildAsynchronousFsdRequest
 (
-	IN ULONG MajorFunction,
-	IN PDEVICE_OBJECT DeviceObject,
-	OUT PVOID Buffer OPTIONAL,
-	IN ULONG Length,
-	OUT PLARGE_INTEGER StartingOffset OPTIONAL,
-	OUT PIO_STATUS_BLOCK IoStatusBlock OPTIONAL
+    IN      ULONG               MajorFunction,
+    IN      PDEVICE_OBJECT      DeviceObject,
+    IN OUT  PVOID               Buffer OPTIONAL,
+    IN      ULONG               Length OPTIONAL,
+    IN      PLARGE_INTEGER      StartingOffset OPTIONAL,
+    IN      PIO_STATUS_BLOCK    IoStatusBlock OPTIONAL
 );
 
 // ******************************************************************
 // * 0x003D - IoBuildDeviceIoControlRequest()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(61) PVOID NTAPI IoBuildDeviceIoControlRequest
+XBSYSAPI EXPORTNUM(61) PIRP NTAPI IoBuildDeviceIoControlRequest
 (
-	IN ULONG IoControlCode,
-	IN PDEVICE_OBJECT DeviceObject,
-	IN PVOID InputBuffer OPTIONAL,
-	IN ULONG InputBufferLength,
-	OUT PVOID OutputBuffer OPTIONAL,
-	IN ULONG OutputBufferLength OPTIONAL,
-	IN BOOLEAN InternalDeviceIoControl,
-	IN PKEVENT Event,
-	OUT PIO_STATUS_BLOCK IoStatusBlock OPTIONAL
+	IN  ULONG               IoControlCode,
+	IN  PDEVICE_OBJECT      DeviceObject,
+	IN  PVOID               InputBuffer OPTIONAL,
+	IN  ULONG               InputBufferLength,
+	OUT PVOID               OutputBuffer OPTIONAL,
+	IN  ULONG               OutputBufferLength OPTIONAL,
+	IN  BOOLEAN             InternalDeviceIoControl,
+	IN  PKEVENT             Event,
+	OUT PIO_STATUS_BLOCK    IoStatusBlock OPTIONAL
 );
 
 // ******************************************************************
 // * 0x003E - IoBuildSynchronousFsdRequest()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(62) PVOID NTAPI IoBuildSynchronousFsdRequest
+XBSYSAPI EXPORTNUM(62) PIRP NTAPI IoBuildSynchronousFsdRequest
 (
-	IN ULONG MajorFunction,
-	IN PDEVICE_OBJECT DeviceObject,
-	OUT PVOID Buffer OPTIONAL,
-	IN ULONG Length,
-	OUT PLARGE_INTEGER StartingOffset OPTIONAL,
-	IN PKEVENT Event,
-	OUT PIO_STATUS_BLOCK IoStatusBlock
+    IN      ULONG               MajorFunction,
+    IN      PDEVICE_OBJECT      DeviceObject,
+    IN OUT  PVOID               Buffer OPTIONAL,
+    IN      ULONG               Length,
+    OUT     PLARGE_INTEGER      StartingOffset OPTIONAL,
+    IN      PKEVENT             Event,
+    OUT     PIO_STATUS_BLOCK    IoStatusBlock
 );
 
 // ******************************************************************
@@ -124,7 +124,7 @@ XBSYSAPI EXPORTNUM(67) NTSTATUS NTAPI IoCreateSymbolicLink
 // ******************************************************************
 XBSYSAPI EXPORTNUM(68) VOID NTAPI IoDeleteDevice
 (
-	IN PDEVICE_OBJECT irql
+	IN PDEVICE_OBJECT DeviceObject
 );
 
 // ******************************************************************
@@ -177,11 +177,11 @@ XBSYSAPI EXPORTNUM(74) NTSTATUS NTAPI IoInvalidDeviceRequest
 // ******************************************************************
 XBSYSAPI EXPORTNUM(75) NTSTATUS NTAPI IoQueryFileInformation
 (
-	IN PFILE_OBJECT FileObject,
-	IN FILE_INFORMATION_CLASS FileInformationClass,
-	IN ULONG Length,
-	OUT PVOID FileInformation,
-	OUT PULONG ReturnedLength
+	IN  PFILE_OBJECT            FileObject,
+	IN  FILE_INFORMATION_CLASS  FileInformationClass,
+	IN  ULONG                   Length,
+	OUT PVOID                   FileInformation,
+	OUT PULONG                  ReturnedLength
 );
 
 // ******************************************************************
