@@ -619,7 +619,7 @@ constexpr int FakeRegNr_Prod = 3;
 constexpr int FakeRegNr_Xmm1 = 4;
 constexpr int FakeRegNr_Xmm2 = 5;
 
-constexpr int XFC_COMBINERSTAGENR = XTL::X_PSH_COMBINECOUNT; // Always call XFC 'stage 9', 1 after the 8th combiner
+constexpr int XFC_COMBINERSTAGENR = X_PSH_COMBINECOUNT; // Always call XFC 'stage 9', 1 after the 8th combiner
 
 constexpr int PSH_XBOX_MAX_C_REGISTER_COUNT = 16;
 constexpr int PSH_XBOX_MAX_R_REGISTER_COUNT = 2;
@@ -845,7 +845,7 @@ typedef struct _PSH_INTERMEDIATE_FORMAT {
 
 typedef struct _PSH_RECOMPILED_SHADER {
 	struct _PSH_RECOMPILED_SHADER *Next;
-	XTL::X_D3DPIXELSHADERDEF PSDef;
+	X_D3DPIXELSHADERDEF PSDef;
 	std::string NewShaderStr;
 	DWORD ConvertedHandle;
 	bool ConstInUse[PSH_XBOX_CONSTANT_MAX];
@@ -855,19 +855,19 @@ typedef struct _PSH_RECOMPILED_SHADER {
 
 struct PSH_XBOX_SHADER {
 	// Reserve enough slots for all shaders, so we need space for 2 constants, 4 texture addressing codes and 5 lines per opcode : :
-	PSH_INTERMEDIATE_FORMAT Intermediate[2 + XTL::X_D3DTS_STAGECOUNT + (XTL::X_PSH_COMBINECOUNT * 5) + 1];
+	PSH_INTERMEDIATE_FORMAT Intermediate[2 + X_D3DTS_STAGECOUNT + (X_PSH_COMBINECOUNT * 5) + 1];
 	int IntermediateCount;
 
-	PS_TEXTUREMODES PSTextureModes[XTL::X_D3DTS_STAGECOUNT];
-	PS_DOTMAPPING PSDotMapping[XTL::X_D3DTS_STAGECOUNT];
-	DWORD PSCompareMode[XTL::X_D3DTS_STAGECOUNT];
-	int PSInputTexture[XTL::X_D3DTS_STAGECOUNT];
+	PS_TEXTUREMODES PSTextureModes[X_D3DTS_STAGECOUNT];
+	PS_DOTMAPPING PSDotMapping[X_D3DTS_STAGECOUNT];
+	DWORD PSCompareMode[X_D3DTS_STAGECOUNT];
+	int PSInputTexture[X_D3DTS_STAGECOUNT];
 
 	PS_FINALCOMBINERSETTING FinalCombinerFlags;
 	// Note : The following constants are only needed for PSH_XBOX_SHADER::DecodedToString,
 	// they are not involved in the actual pixel shader recompilation anymore :
 	RPSFinalCombiner FinalCombiner;
-	RPSCombinerStage Combiners[XTL::X_PSH_COMBINECOUNT];
+	RPSCombinerStage Combiners[X_PSH_COMBINECOUNT];
 	int NumberOfCombiners;
 	DWORD CombinerCountFlags; // For PS_COMBINERCOUNTFLAGS
 	// Read from CombinerCountFlags :
@@ -881,17 +881,17 @@ struct PSH_XBOX_SHADER {
 	void InsertIntermediate(PPSH_INTERMEDIATE_FORMAT pIntermediate, int Index);
 	void DeleteIntermediate(int Index);
 	void DeleteLastIntermediate();
-	std::string static OriginalToString(XTL::X_D3DPIXELSHADERDEF *pPSDef);
-	PSH_RECOMPILED_SHADER Decode(XTL::X_D3DPIXELSHADERDEF *pPSDef);
-	std::string DecodedToString(XTL::X_D3DPIXELSHADERDEF *pPSDef);
+	std::string static OriginalToString(X_D3DPIXELSHADERDEF *pPSDef);
+	PSH_RECOMPILED_SHADER Decode(X_D3DPIXELSHADERDEF *pPSDef);
+	std::string DecodedToString(X_D3DPIXELSHADERDEF *pPSDef);
 	bool _NextIs2D(int Stage);
-	bool DecodeTextureModes(XTL::X_D3DPIXELSHADERDEF *pPSDef);
+	bool DecodeTextureModes(X_D3DPIXELSHADERDEF *pPSDef);
 	bool MoveRemovableParametersRight();
-	void ConvertXboxOpcodesToNative(XTL::X_D3DPIXELSHADERDEF *pPSDef);
-	void _SetColor(/*var OUT*/PSH_INTERMEDIATE_FORMAT &NewIns, XTL::D3DCOLOR ConstColor);
+	void ConvertXboxOpcodesToNative(X_D3DPIXELSHADERDEF *pPSDef);
+	void _SetColor(/*var OUT*/PSH_INTERMEDIATE_FORMAT &NewIns, D3DCOLOR ConstColor);
 	int _MapConstant(int ConstNr, bool *NativeConstInUse);
 	int _HandleConst(int XboxConst, /*var OUT*/PSH_RECOMPILED_SHADER *Recompiled, bool *NativeConstInUse, bool *EmittedNewConstant);
-	bool ConvertConstantsToNative(XTL::X_D3DPIXELSHADERDEF *pPSDef, /*var OUT*/PSH_RECOMPILED_SHADER *Recompiled);
+	bool ConvertConstantsToNative(X_D3DPIXELSHADERDEF *pPSDef, /*var OUT*/PSH_RECOMPILED_SHADER *Recompiled);
 	bool RemoveUselessWrites();
 	bool IsRegisterFreeFromIndexOnwards(int aIndex, PSH_ARGUMENT_TYPE aRegType, int16 aAddress);
 	void ReplaceRegisterFromIndexOnwards(int aIndex,
@@ -1936,7 +1936,7 @@ void PSH_XBOX_SHADER::DeleteLastIntermediate()
     DeleteIntermediate(IntermediateCount - 1);
 }
 
-std::string PSH_XBOX_SHADER::OriginalToString(XTL::X_D3DPIXELSHADERDEF *pPSDef) // static
+std::string PSH_XBOX_SHADER::OriginalToString(X_D3DPIXELSHADERDEF *pPSDef) // static
 {
   char buffer[4096];
   return std::string(buffer, sprintf(buffer, "PSAphaInputs[8]              = 0x%.08X 0x%.08X 0x%.08X 0x%.08X 0x%.08X 0x%.08X 0x%.08X 0x%.08X\n"
@@ -1983,7 +1983,7 @@ std::string PSH_XBOX_SHADER::OriginalToString(XTL::X_D3DPIXELSHADERDEF *pPSDef) 
                   pPSDef->PSFinalCombinerConstants));
 }
 
-PSH_RECOMPILED_SHADER PSH_XBOX_SHADER::Decode(XTL::X_D3DPIXELSHADERDEF *pPSDef)
+PSH_RECOMPILED_SHADER PSH_XBOX_SHADER::Decode(X_D3DPIXELSHADERDEF *pPSDef)
 {
   int i;
   PSH_RECOMPILED_SHADER Result = {};
@@ -1996,7 +1996,7 @@ PSH_RECOMPILED_SHADER PSH_XBOX_SHADER::Decode(XTL::X_D3DPIXELSHADERDEF *pPSDef)
 
   ZeroMemory(this, sizeof(PSH_XBOX_SHADER)); // TODO : Use constructor (to prevent memory leaks)
 
-  for (i = 0; i < XTL::X_D3DTS_STAGECOUNT; i++)
+  for (i = 0; i < X_D3DTS_STAGECOUNT; i++)
   {
     PSTextureModes[i] = (PS_TEXTUREMODES)((pPSDef->PSTextureModes >> (i*5)) & 0x1F);
     PSCompareMode[i] = (pPSDef->PSCompareMode >> (i*4)) & 0xF;
@@ -2021,7 +2021,7 @@ PSH_RECOMPILED_SHADER PSH_XBOX_SHADER::Decode(XTL::X_D3DPIXELSHADERDEF *pPSDef)
 
   // Backwards compatible decoding (purely for logging) :
   {
-    for (i = 0; i < XTL::X_PSH_COMBINECOUNT; i++)
+    for (i = 0; i < X_PSH_COMBINECOUNT; i++)
     {
       Combiners[i].RGB.Decode(pPSDef->PSRGBInputs[i], pPSDef->PSRGBOutputs[i]);
       Combiners[i].Alpha.Decode(pPSDef->PSAlphaInputs[i], pPSDef->PSAlphaOutputs[i], /*IsAlpha=*/true);
@@ -2123,7 +2123,7 @@ PSH_RECOMPILED_SHADER PSH_XBOX_SHADER::Decode(XTL::X_D3DPIXELSHADERDEF *pPSDef)
   return Result;
 }
 
-std::string PSH_XBOX_SHADER::DecodedToString(XTL::X_D3DPIXELSHADERDEF *pPSDef)
+std::string PSH_XBOX_SHADER::DecodedToString(X_D3DPIXELSHADERDEF *pPSDef)
 // print relevant contents to the debug console
 
   #define _AddStr(aStr) \
@@ -2251,13 +2251,13 @@ std::string PSH_XBOX_SHADER::DecodedToString(XTL::X_D3DPIXELSHADERDEF *pPSDef)
 
   bool PSH_XBOX_SHADER::_NextIs2D(int Stage)
   {
-    if (Stage < XTL::X_D3DTS_STAGECOUNT-1)
+    if (Stage < X_D3DTS_STAGECOUNT-1)
       return (PSTextureModes[Stage + 1] & (PS_TEXTUREMODES_DOT_ST | PS_TEXTUREMODES_DOT_ZW)) > 0;
     else
       return false;
   }
 
-bool PSH_XBOX_SHADER::DecodeTextureModes(XTL::X_D3DPIXELSHADERDEF *pPSDef)
+bool PSH_XBOX_SHADER::DecodeTextureModes(X_D3DPIXELSHADERDEF *pPSDef)
 {
   int InsertPos;
   PSH_INTERMEDIATE_FORMAT Ins;
@@ -2272,7 +2272,7 @@ bool PSH_XBOX_SHADER::DecodeTextureModes(XTL::X_D3DPIXELSHADERDEF *pPSDef)
 
 #ifdef CXBX_USE_PS_2_0
   Ins.Initialize(PO_DCL);
-  for (Stage = 0; Stage < XTL::X_D3DTS_STAGECOUNT; Stage++)
+  for (Stage = 0; Stage < X_D3DTS_STAGECOUNT; Stage++)
   {
     if (PSTextureModes[Stage] != PS_TEXTUREMODES_NONE)
     {
@@ -2285,7 +2285,7 @@ bool PSH_XBOX_SHADER::DecodeTextureModes(XTL::X_D3DPIXELSHADERDEF *pPSDef)
 #endif
 
   Ins.Initialize(PO_TEX);
-  for (Stage = 0; Stage < XTL::X_D3DTS_STAGECOUNT; Stage++)
+  for (Stage = 0; Stage < X_D3DTS_STAGECOUNT; Stage++)
   {
     // TODO : Apply conversions when PS_GLOBALFLAGS_TEXMODE_ADJUST is set (but ... how to check the texture type? read D3DRS_PSTEXTUREMODES?)
 
@@ -2404,11 +2404,11 @@ bool PSH_XBOX_SHADER::MoveRemovableParametersRight()
   return Result;
 } // MoveRemovableParametersRight
 
-//bool PSH_XBOX_SHADER::ConvertConstantsToNative(XTL::X_D3DPIXELSHADERDEF *pPSDef, /*var OUT*/PSH_RECOMPILED_SHADER *Recompiled)
+//bool PSH_XBOX_SHADER::ConvertConstantsToNative(X_D3DPIXELSHADERDEF *pPSDef, /*var OUT*/PSH_RECOMPILED_SHADER *Recompiled)
 
-  void PSH_XBOX_SHADER::_SetColor(/*var OUT*/PSH_INTERMEDIATE_FORMAT &NewIns, XTL::D3DCOLOR ConstColor)
+  void PSH_XBOX_SHADER::_SetColor(/*var OUT*/PSH_INTERMEDIATE_FORMAT &NewIns, D3DCOLOR ConstColor)
   {
-    XTL::D3DXCOLOR XColor;
+    D3DXCOLOR XColor;
 
     // Colors are defined in RGBA format, and range 0.0 - 1.0 (negative values
     // can be obtained by supplying PS_INPUTMAPPING_SIGNED_NEGATE to the combiner
@@ -2467,7 +2467,7 @@ bool PSH_XBOX_SHADER::MoveRemovableParametersRight()
     return Recompiled->ConstMapping[XboxConst];
   }
 
-bool PSH_XBOX_SHADER::ConvertConstantsToNative(XTL::X_D3DPIXELSHADERDEF *pPSDef, /*var OUT*/PSH_RECOMPILED_SHADER *Recompiled)
+bool PSH_XBOX_SHADER::ConvertConstantsToNative(X_D3DPIXELSHADERDEF *pPSDef, /*var OUT*/PSH_RECOMPILED_SHADER *Recompiled)
 {
   int i, j;
   PPSH_INTERMEDIATE_FORMAT Cur;
@@ -2646,7 +2646,7 @@ bool PSH_XBOX_SHADER::RemoveUselessWrites()
   return Result;
 } // RemoveUselessWrites
 
-void PSH_XBOX_SHADER::ConvertXboxOpcodesToNative(XTL::X_D3DPIXELSHADERDEF *pPSDef)
+void PSH_XBOX_SHADER::ConvertXboxOpcodesToNative(X_D3DPIXELSHADERDEF *pPSDef)
 {
   int i;
   PPSH_INTERMEDIATE_FORMAT Cur;
@@ -3918,7 +3918,7 @@ void RPSFinalCombiner::Decode(const DWORD PSFinalCombinerInputsABCD, const DWORD
   dwPS_GLOBALFLAGS = (PSFinalCombinerConstants >> 8) & 0x1;
 }
 
-void XTL_DumpPixelShaderToFile(XTL::X_D3DPIXELSHADERDEF *pPSDef)
+void XTL_DumpPixelShaderToFile(X_D3DPIXELSHADERDEF *pPSDef)
 {
   static int PshNumber = 0; // Keep track of how many pixel shaders we've attempted to convert.
   // Don't dump more than 100 shaders, to prevent cluttering the filesystem :
@@ -3936,7 +3936,7 @@ void XTL_DumpPixelShaderToFile(XTL::X_D3DPIXELSHADERDEF *pPSDef)
   }
 }
 
-PSH_RECOMPILED_SHADER XTL_EmuRecompilePshDef(XTL::X_D3DPIXELSHADERDEF *pPSDef)
+PSH_RECOMPILED_SHADER XTL_EmuRecompilePshDef(X_D3DPIXELSHADERDEF *pPSDef)
 {
 	PSH_XBOX_SHADER PSH;
 	return PSH.Decode(pPSDef);
@@ -3944,7 +3944,7 @@ PSH_RECOMPILED_SHADER XTL_EmuRecompilePshDef(XTL::X_D3DPIXELSHADERDEF *pPSDef)
 
 // From Dxbx uState.pas :
 
-PSH_RECOMPILED_SHADER DxbxRecompilePixelShader(XTL::X_D3DPIXELSHADERDEF *pPSDef)
+PSH_RECOMPILED_SHADER DxbxRecompilePixelShader(X_D3DPIXELSHADERDEF *pPSDef)
 {
 static const
   char *szDiffusePixelShader =
@@ -3953,8 +3953,8 @@ static const
 	"mov r0, t0\n";
   std::string ConvertedPixelShaderStr;
   DWORD hRet;
-  XTL::LPD3DXBUFFER pShader;
-  XTL::LPD3DXBUFFER pErrors;
+  LPD3DXBUFFER pShader;
+  LPD3DXBUFFER pErrors;
   DWORD *pFunction;
 
   // Attempt to recompile PixelShader
@@ -3998,7 +3998,7 @@ static const
     /*ppCompilationErrors*/&pErrors);
 
     if (pShader == nullptr)
-      XTL::CxbxKrnlCleanup("Cannot fall back to the most simple pixel shader!");
+      CxbxKrnlCleanup("Cannot fall back to the most simple pixel shader!");
 
     EmuWarning("We're lying about the creation of a pixel shader!");
   }
@@ -4034,20 +4034,20 @@ static const
 } // DxbxRecompilePixelShader
 
 // TODO : Initialize this :
-DWORD *XTL::EmuMappedD3DRenderState[X_D3DRS_UNSUPPORTED]; // 1 extra for the unsupported value
+DWORD *EmuMappedD3DRenderState[X_D3DRS_UNSUPPORTED]; // 1 extra for the unsupported value
 
 PPSH_RECOMPILED_SHADER RecompiledShaders_Head = nullptr;
 
-HRESULT XTL::DxbxUpdateActivePixelShader(XTL::X_D3DPIXELSHADERDEF *pPSDef, DWORD *pHandle) // NOPATCH
+HRESULT DxbxUpdateActivePixelShader(X_D3DPIXELSHADERDEF *pPSDef, DWORD *pHandle) // NOPATCH
 {
-// REENABLE TODO  XTL::X_D3DPIXELSHADERDEF *pPSDef;
+// REENABLE TODO  X_D3DPIXELSHADERDEF *pPSDef;
   PPSH_RECOMPILED_SHADER RecompiledPixelShader;
   DWORD ConvertedPixelShaderHandle;
   DWORD CurrentPixelShader;
   int i;
   DWORD Register_;
-  XTL::D3DCOLOR dwColor;
-  XTL::D3DXCOLOR fColor;
+  D3DCOLOR dwColor;
+  D3DXCOLOR fColor;
 
   HRESULT Result = D3D_OK;
 // TODO : Do Dxbx post-translation on these two declarations :
@@ -4057,13 +4057,13 @@ bool g_EmuD3DActivePixelShader = (pPSDef != NULL);
   if (g_EmuD3DActivePixelShader)
   {
 /* TODO : Do Dxbx post-translation on this code :
-	DWORD *XTL_D3D__RenderState = XTL::EmuMappedD3DRenderState[0];
+	DWORD *XTL_D3D__RenderState = EmuMappedD3DRenderState[0];
 
     // We could read g_EmuD3DActivePixelShader.PshDef, but since this is copied into
     // D3D__RenderState (which contents might have been changed after the call to
     // SetPixelShader), we use the address of XTL_D3D__RenderState as the real pixel
     // shader definition :
-    pPSDef = (XTL::X_D3DPIXELSHADERDEF*)(XTL_D3D__RenderState); 
+    pPSDef = (X_D3DPIXELSHADERDEF*)(XTL_D3D__RenderState); 
     if (pPSDef == NULL)
       // If we haven't found the symbol, then we can fall back to the given definition :
       pPSDef = g_EmuD3DActivePixelShader.PshDef;
@@ -4130,18 +4130,18 @@ bool g_EmuD3DActivePixelShader = (pPSDef != NULL);
         // Read the color from the corresponding render state slot :
         switch (i) {
           case PSH_XBOX_CONSTANT_FOG:
-            dwColor = *XTL::EmuMappedD3DRenderState[XTL::X_D3DRS_FOGCOLOR] | 0xFF000000;
+            dwColor = *EmuMappedD3DRenderState[X_D3DRS_FOGCOLOR] | 0xFF000000;
             // Note : FOG.RGB is correct like this, but FOG.a should be coming
             // from the vertex shader (oFog) - however, D3D8 does not forward this...
 			break;
 		  case PSH_XBOX_CONSTANT_FC0:
-            dwColor = *XTL::EmuMappedD3DRenderState[XTL::X_D3DRS_PSFINALCOMBINERCONSTANT0];
+            dwColor = *EmuMappedD3DRenderState[X_D3DRS_PSFINALCOMBINERCONSTANT0];
 			break;
 		  case PSH_XBOX_CONSTANT_FC1:
-            dwColor = *XTL::EmuMappedD3DRenderState[XTL::X_D3DRS_PSFINALCOMBINERCONSTANT1];
+            dwColor = *EmuMappedD3DRenderState[X_D3DRS_PSFINALCOMBINERCONSTANT1];
 			break;
 	    default:
-            dwColor = *XTL::EmuMappedD3DRenderState[XTL::X_D3DRS_PSCONSTANT0_0 + i];
+            dwColor = *EmuMappedD3DRenderState[X_D3DRS_PSCONSTANT0_0 + i];
         }
 
         // Convert it back to 4 floats  :
@@ -4170,7 +4170,7 @@ bool g_EmuD3DActivePixelShader = (pPSDef != NULL);
 
   if (g_bFakePixelShaderLoaded)
   {
-    g_pD3DDevice8->SetRenderState(XTL::D3DRS_FOGENABLE, FALSE);
+    g_pD3DDevice8->SetRenderState(D3DRS_FOGENABLE, FALSE);
 
     // programmable pipeline
     /* Dxbx note : If the following is enabled, Sokoban loses it's textures, so disable it for now :
@@ -4325,7 +4325,7 @@ BOOL bLastOpRGB = FALSE;
 BOOL bEFProduct = FALSE;
 BOOL bV1R0Reg = FALSE;
 
-HRESULT XTL::CreatePixelShaderFunction(X_D3DPIXELSHADERDEF *pPSD, LPD3DXBUFFER* ppRecompiled)
+HRESULT CreatePixelShaderFunction(X_D3DPIXELSHADERDEF *pPSD, LPD3DXBUFFER* ppRecompiled)
 {
 	char szCode[9000] = {0};
 
@@ -4899,7 +4899,7 @@ HRESULT XTL::CreatePixelShaderFunction(X_D3DPIXELSHADERDEF *pPSD, LPD3DXBUFFER* 
 	//if(bR1WAccess || bR1AWAccess || bR1RGBWAccess)
 	//	Sleep(3000);
 
-	XTL::LPD3DXBUFFER pCompilationErrors = NULL;
+	LPD3DXBUFFER pCompilationErrors = NULL;
 
 	HRESULT hRet = D3D_OK;
 
@@ -6767,14 +6767,14 @@ CorrectConstToReg_done:;
 }
 
 // check
-bool XTL::IsValidPixelShader(void)
+bool IsValidPixelShader(void)
 {
 	if(g_CurrentPixelShader && (g_CurrentPixelShader->dwStatus != 0))
 		return false;
 	return true;
 }
 
-void XTL::DumpPixelShaderDefToFile( X_D3DPIXELSHADERDEF* pPSDef, const char* pszCode /*= NULL*/ )
+void DumpPixelShaderDefToFile( X_D3DPIXELSHADERDEF* pPSDef, const char* pszCode /*= NULL*/ )
 {
 	static int PshNumber = 0;	// Keep track of how many pixel shaders we've attemted to convert.
 	char szPSDef[512];			
@@ -6836,7 +6836,7 @@ void XTL::DumpPixelShaderDefToFile( X_D3DPIXELSHADERDEF* pPSDef, const char* psz
 }
 
 // print relevant contents to the debug console
-void XTL::PrintPixelShaderDefContents( X_D3DPIXELSHADERDEF* pPSDef )
+void PrintPixelShaderDefContents( X_D3DPIXELSHADERDEF* pPSDef )
 {
 	// Show the contents to the user
 	if( pPSDef )
@@ -6914,7 +6914,7 @@ void XTL::PrintPixelShaderDefContents( X_D3DPIXELSHADERDEF* pPSDef )
 	}
 }
 
-HRESULT XTL::EmuRecompilePshDef( X_D3DPIXELSHADERDEF* pPSDef, LPD3DXBUFFER* ppRecompiled )
+HRESULT EmuRecompilePshDef( X_D3DPIXELSHADERDEF* pPSDef, LPD3DXBUFFER* ppRecompiled )
 {
 	char szPshString[2048];		// I'm sure that's big enough...
 	

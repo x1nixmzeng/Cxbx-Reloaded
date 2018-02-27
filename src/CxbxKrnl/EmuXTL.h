@@ -34,27 +34,24 @@
 #ifndef EMUXTL_H
 #define EMUXTL_H
 
-namespace XTL
-{
-    #include "EmuXapi.h"
-    #include "EmuD3D8.h"
-    #include "EmuD3D8\Convert.h"
-    #include "EmuD3D8\VertexBuffer.h"
-    #include "EmuD3D8\PushBuffer.h"
-    #include "EmuD3D8\VertexShader.h"
-	#include "EmuD3D8\PixelShader.h"
-    #include "EmuD3D8\State.h"
-    #include "EmuDInput.h"
-    #include "EmuDSound.h"
-    #include "EmuXOnline.h"
-    #include "EmuXG.h"
-	#include "EmuXactEng.h"
-	#include "EmuXInput.h"
-}
+#include "EmuXapi.h"
+#include "EmuD3D8.h"
+#include "EmuD3D8\Convert.h"
+#include "EmuD3D8\VertexBuffer.h"
+#include "EmuD3D8\PushBuffer.h"
+#include "EmuD3D8\VertexShader.h"
+#include "EmuD3D8\PixelShader.h"
+#include "EmuD3D8\State.h"
+#include "EmuDInput.h"
+#include "EmuDSound.h"
+#include "EmuXOnline.h"
+#include "EmuXG.h"
+#include "EmuXactEng.h"
+#include "EmuXInput.h"
 
-extern XTL::LPDIRECT3DDEVICE8   g_pD3DDevice8;
+extern LPDIRECT3DDEVICE8   g_pD3DDevice8;
 extern DWORD                    g_CurrentVertexShader;
-extern XTL::PIXEL_SHADER *		g_CurrentPixelShader;
+extern PIXEL_SHADER *		g_CurrentPixelShader;
 extern BOOL                     g_bFakePixelShaderLoaded;
 extern BOOL                     g_bIsFauxFullscreen;
 

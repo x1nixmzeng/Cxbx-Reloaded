@@ -64,7 +64,7 @@ bool g_SaveOnExit = true;
 
 void ClearHLECache()
 {
-	std::string cacheDir = std::string(XTL::szFolder_CxbxReloadedData) + "\\HLECache\\";
+	std::string cacheDir = std::string(szFolder_CxbxReloadedData) + "\\HLECache\\";
 	std::string fullpath = cacheDir + "*.ini";
 
 	WIN32_FIND_DATA data;
@@ -1100,7 +1100,7 @@ LRESULT CALLBACK WndMain::WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lP
 
 			case ID_CACHE_CLEARHLECACHE_CURRENT:
 			{
-				std::string cacheDir = std::string(XTL::szFolder_CxbxReloadedData) + "\\HLECache\\";
+				std::string cacheDir = std::string(szFolder_CxbxReloadedData) + "\\HLECache\\";
 
 				// Hash the loaded XBE's header, use it as a filename
 				uint32_t uiHash = XXHash32::hash((void*)&m_Xbe->m_Header, sizeof(Xbe::Header), 0);
@@ -1489,25 +1489,25 @@ void WndMain::LoadGameLogo()
 	gameLogoHeight = 0;	
 
 	uint8 *ImageData = NULL;
-	XTL::X_D3DPixelContainer XboxPixelContainer = {};
-	XTL::X_D3DPixelContainer *pXboxPixelContainer = &XboxPixelContainer;
+	X_D3DPixelContainer XboxPixelContainer = {};
+	X_D3DPixelContainer *pXboxPixelContainer = &XboxPixelContainer;
 
 	switch (*(DWORD*)pSection) {
 	case MAKEFOURCC('D', 'D', 'S', ' '): {
 		DDS_HEADER *pDDSHeader = (DDS_HEADER *)(pSection + sizeof(DWORD));
-		XTL::D3DFORMAT Format = XTL::D3DFMT_UNKNOWN;
+		D3DFORMAT Format = D3DFMT_UNKNOWN;
 		if (pDDSHeader->ddspf.dwFlags & DDPF_FOURCC) {
 			switch (pDDSHeader->ddspf.dwFourCC) {
-			case MAKEFOURCC('D', 'X', 'T', '1'): Format = XTL::D3DFMT_DXT1; break;
-			case MAKEFOURCC('D', 'X', 'T', '3'): Format = XTL::D3DFMT_DXT3; break;
-			case MAKEFOURCC('D', 'X', 'T', '5'): Format = XTL::D3DFMT_DXT5; break;
+			case MAKEFOURCC('D', 'X', 'T', '1'): Format = D3DFMT_DXT1; break;
+			case MAKEFOURCC('D', 'X', 'T', '3'): Format = D3DFMT_DXT3; break;
+			case MAKEFOURCC('D', 'X', 'T', '5'): Format = D3DFMT_DXT5; break;
 			}
 		}
 		else {
 			// TODO : Determine D3D format based on pDDSHeader->ddspf.dwABitMask, .dwRBitMask, .dwGBitMask and .dwBBitMask
 		}
 
-		if (Format == XTL::D3DFMT_UNKNOWN)
+		if (Format == D3DFMT_UNKNOWN)
 			return;
 
 		ImageData = (uint8 *)(pSection + sizeof(DWORD) + pDDSHeader->dwSize);
@@ -1515,14 +1515,14 @@ void WndMain::LoadGameLogo()
 		//gameLogoWidth = pDDSHeader->dwWidth;
 		
 		// TODO : Use PixelCopy code here to decode. For now, fake it :
-		XTL::CxbxSetPixelContainerHeader(&XboxPixelContainer,
+		CxbxSetPixelContainerHeader(&XboxPixelContainer,
 			0, // Common - could be X_D3DCOMMON_TYPE_TEXTURE
-			(XTL::UINT)pDDSHeader->dwWidth,
-			(XTL::UINT)pDDSHeader->dwHeight,
+			(UINT)pDDSHeader->dwWidth,
+			(UINT)pDDSHeader->dwHeight,
 			1,
-			XTL::EmuPC2XB_D3DFormat(Format),
+			EmuPC2XB_D3DFormat(Format),
 			2,
-			(XTL::UINT)pDDSHeader->dwPitchOrLinearSize);
+			(UINT)pDDSHeader->dwPitchOrLinearSize);
 		break;
 	}
 	case MAKEFOURCC('X', 'P', 'R', '0'):
@@ -1535,7 +1535,7 @@ void WndMain::LoadGameLogo()
 		uint8 *ResourceHeaders = pSection + sizeof(Xbe::XprHeader);
 		uint8 *ResourceData = ResourceHeaders + SizeOfResourceHeaders;
 
-		pXboxPixelContainer = (XTL::X_D3DPixelContainer*)ResourceHeaders;
+		pXboxPixelContainer = (X_D3DPixelContainer*)ResourceHeaders;
 		ImageData = ResourceData;
 
 		break;
@@ -1545,7 +1545,7 @@ void WndMain::LoadGameLogo()
 	}
 	}
 
-	void *bitmapData = XTL::ConvertD3DTextureToARGB(pXboxPixelContainer, ImageData, &gameLogoWidth, &gameLogoHeight);
+	void *bitmapData = ConvertD3DTextureToARGB(pXboxPixelContainer, ImageData, &gameLogoWidth, &gameLogoHeight);
 	if (!bitmapData)
 		return;
 

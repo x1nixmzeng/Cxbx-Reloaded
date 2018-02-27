@@ -408,8 +408,8 @@ inline void DSound3DBufferCreate(LPDIRECTSOUNDBUFFER8 pDSBuffer, LPDIRECTSOUND3D
     pThis->EmuFlags = dwEmuFlags; \
     pThis->EmuPlayFlags = dwEmuPlayFlags;
 
-inline void DSoundBufferRegionSetDefault(XTL::X_CDirectSoundBuffer *pThis) {
-    pThis->EmuBufferToggle = XTL::X_DSB_TOGGLE_DEFAULT;
+inline void DSoundBufferRegionSetDefault(X_CDirectSoundBuffer *pThis) {
+    pThis->EmuBufferToggle = X_DSB_TOGGLE_DEFAULT;
     pThis->EmuRegionLoopStartOffset = 0;
     pThis->EmuRegionLoopLength = 0;
     pThis->EmuRegionPlayStartOffset = 0;
@@ -419,7 +419,7 @@ inline void DSoundBufferRegionSetDefault(XTL::X_CDirectSoundBuffer *pThis) {
 
 }
 
-inline void DSoundBufferRegionRelease(XTL::X_CDirectSoundBuffer *pThis)
+inline void DSoundBufferRegionRelease(X_CDirectSoundBuffer *pThis)
 {
     // NOTE: DSB Buffer8Region and 3DBuffer8Region are set
     // to nullptr inside DSoundBufferRegionSetDefault function.
@@ -872,7 +872,7 @@ inline HRESULT HybridDirectSoundBuffer_Restore(
 //IDirectSoundBuffer
 inline HRESULT HybridDirectSound3DBuffer_SetAllParameters(
     LPDIRECTSOUND3DBUFFER8  pDS3DBuffer,
-    XTL::X_DS3DBUFFER*      pDS3DBufferParams,
+    X_DS3DBUFFER*      pDS3DBufferParams,
     DWORD                   dwApply)
 {
     enterCriticalSection;
@@ -1054,7 +1054,7 @@ inline HRESULT HybridDirectSoundBuffer_SetEG(
 //IDirectSoundBuffer
 inline HRESULT HybridDirectSoundBuffer_SetFilter(
     LPDIRECTSOUNDBUFFER8     pDSBuffer,
-    XTL::X_DSFILTERDESC*    pFilterDesc)
+    X_DSFILTERDESC*    pFilterDesc)
 {
 
     return DS_OK;

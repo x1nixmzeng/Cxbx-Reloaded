@@ -49,7 +49,7 @@
 // ******************************************************************
 // * patch: XGIsSwizzledFormat
 // ******************************************************************
-PVOID WINAPI XTL::EMUPATCH(XGIsSwizzledFormat)
+PVOID WINAPI EMUPATCH(XGIsSwizzledFormat)
 (
     X_D3DFORMAT Format
 )
@@ -64,7 +64,7 @@ PVOID WINAPI XTL::EMUPATCH(XGIsSwizzledFormat)
 // ******************************************************************
 // * patch: XGSwizzleRect
 // ******************************************************************
-VOID WINAPI XTL::EMUPATCH(XGSwizzleRect)
+VOID WINAPI EMUPATCH(XGSwizzleRect)
 (
     LPCVOID       pSource,
     DWORD         Pitch,
@@ -125,7 +125,7 @@ VOID WINAPI XTL::EMUPATCH(XGSwizzleRect)
 // ******************************************************************
 // * patch: XGSwizzleBox
 // ******************************************************************
-VOID WINAPI XTL::EMUPATCH(XGSwizzleBox)
+VOID WINAPI EMUPATCH(XGSwizzleBox)
 (
     LPCVOID          pSource,
     DWORD            RowPitch,
@@ -194,7 +194,7 @@ VOID WINAPI XTL::EMUPATCH(XGSwizzleBox)
 // ******************************************************************
 // * patch: XGWriteSurfaceOrTextureToXPR
 // ******************************************************************
-HRESULT WINAPI XTL::EMUPATCH(XGWriteSurfaceOrTextureToXPR)
+HRESULT WINAPI EMUPATCH(XGWriteSurfaceOrTextureToXPR)
 ( 
 	LPVOID			pResource,
 	const char*		cPath,
@@ -221,7 +221,7 @@ HRESULT WINAPI XTL::EMUPATCH(XGWriteSurfaceOrTextureToXPR)
 // ******************************************************************
 // * patch: XGSetTextureHeader
 // ******************************************************************
-VOID WINAPI XTL::EMUPATCH(XGSetTextureHeader)
+VOID WINAPI EMUPATCH(XGSetTextureHeader)
 (
 	UINT			Width,
 	UINT			Height,
@@ -290,7 +290,7 @@ VOID WINAPI XTL::EMUPATCH(XGSetTextureHeader)
 // ******************************************************************
 // * patch: XFONT_OpenBitmapFontFromMemory 
 // ******************************************************************
-//HRESULT WINAPI XTL::EMUPATCH(XFONT_OpenBitmapFontFromMemory) 
+//HRESULT WINAPI EMUPATCH(XFONT_OpenBitmapFontFromMemory) 
 //(
 //	CONST void		*pFontData,
 //	unsigned		uFontDataSize,

@@ -56,8 +56,8 @@ VertexPatchDesc;
 
 typedef struct _PATCHEDSTREAM
 {
-    XTL::X_D3DVertexBuffer *pOriginalStream;
-    XTL::IDirect3DVertexBuffer8 *pPatchedStream;
+    X_D3DVertexBuffer *pOriginalStream;
+    IDirect3DVertexBuffer8 *pPatchedStream;
     UINT                    uiOrigStride;
     UINT                    uiNewStride;
     bool                    bUsedCached;
@@ -141,16 +141,16 @@ extern DWORD                   g_IVBFVF;
 
 struct _D3DIVB
 {
-    XTL::D3DXVECTOR3 Position;   // Position
+    D3DXVECTOR3 Position;   // Position
     FLOAT            Rhw;        // Rhw
 	FLOAT			 Blend1;	 // Blend1		
-    XTL::DWORD       dwSpecular; // Specular
-    XTL::DWORD       dwDiffuse;  // Diffuse
-    XTL::D3DXVECTOR3 Normal;     // Normal
-    XTL::D3DXVECTOR2 TexCoord1;  // TexCoord1
-    XTL::D3DXVECTOR2 TexCoord2;  // TexCoord2
-    XTL::D3DXVECTOR2 TexCoord3;  // TexCoord3
-    XTL::D3DXVECTOR2 TexCoord4;  // TexCoord4
+    DWORD       dwSpecular; // Specular
+    DWORD       dwDiffuse;  // Diffuse
+    D3DXVECTOR3 Normal;     // Normal
+    D3DXVECTOR2 TexCoord1;  // TexCoord1
+    D3DXVECTOR2 TexCoord2;  // TexCoord2
+    D3DXVECTOR2 TexCoord3;  // TexCoord3
+    D3DXVECTOR2 TexCoord4;  // TexCoord4
 };
 
 extern _D3DIVB g_IVBTable[IVB_TABLE_SIZE];

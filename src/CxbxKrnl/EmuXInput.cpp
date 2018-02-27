@@ -56,7 +56,7 @@ static BOOL				g_bXInputInitialized = FALSE;
 // ******************************************************************
 // * patch: XInputPCPoll
 // ******************************************************************
-void XTL::EmuXInputPCPoll( XTL::PXINPUT_STATE Controller )
+void EmuXInputPCPoll( PXINPUT_STATE Controller )
 {
 	//
 	// Get the PC's XInput values

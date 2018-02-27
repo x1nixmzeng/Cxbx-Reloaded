@@ -149,7 +149,7 @@ static unsigned int WINAPI PCSTProxy
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			XTL::XTHREAD_NOTIFY_PROC pfnNotificationRoutine = (XTL::XTHREAD_NOTIFY_PROC)g_pfnThreadNotification[i];
+			XTHREAD_NOTIFY_PROC pfnNotificationRoutine = (XTHREAD_NOTIFY_PROC)g_pfnThreadNotification[i];
 
 			// If the routine doesn't exist, don't execute it!
 			if (pfnNotificationRoutine == NULL)
@@ -399,7 +399,7 @@ XBSYSAPI EXPORTNUM(257) xboxkrnl::NTSTATUS NTAPI xboxkrnl::PsSetCreateThreadNoti
 
 	NTSTATUS ret = STATUS_INSUFFICIENT_RESOURCES;
 
-	// Taken from XTL::EmuXRegisterThreadNotifyRoutine (perhaps that can be removed now) :
+	// Taken from EmuXRegisterThreadNotifyRoutine (perhaps that can be removed now) :
 
 	// I honestly don't expect this to happen, but if it does...
 	if (g_iThreadNotificationCount >= PSP_MAX_CREATE_THREAD_NOTIFY)
@@ -440,7 +440,7 @@ XBSYSAPI EXPORTNUM(258) xboxkrnl::VOID NTAPI xboxkrnl::PsTerminateSystemThread
 	{
 		for (int i = 0; i < 16; i++)
 		{
-			XTL::XTHREAD_NOTIFY_PROC pfnNotificationRoutine = (XTL::XTHREAD_NOTIFY_PROC)g_pfnThreadNotification[i];
+			XTHREAD_NOTIFY_PROC pfnNotificationRoutine = (XTHREAD_NOTIFY_PROC)g_pfnThreadNotification[i];
 
 			// If the routine doesn't exist, don't execute it!
 			if (pfnNotificationRoutine == NULL)

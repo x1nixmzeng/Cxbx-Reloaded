@@ -40,8 +40,6 @@
 //#include "EmuXTL.h"
 #include "Logging.h"
 
-namespace XTL
-{
 #include "EmuD3D8Types.h"
 
 // Additional types, exclusively for logging (not really enums) :
@@ -103,7 +101,5 @@ LOGRENDER_HEADER(D3DVIEWPORT8)
 LOGRENDER_HEADER(X_D3DDISPLAYMODE)
 LOGRENDER_HEADER(X_D3DResource)
 LOGRENDER_HEADER(X_D3DPixelContainer)
-
-}; // end of namespace XTL
 
 #endif _EMU_D3D8_LOGGING_H

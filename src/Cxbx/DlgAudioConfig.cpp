@@ -108,7 +108,7 @@ INT_PTR CALLBACK DlgAudioConfigProc(HWND hWndDlg, UINT uMsg, WPARAM wParam, LPAR
 
                 SendMessage(g_hAudioAdapter, CB_RESETCONTENT, 0, 0);
 
-                XTL::DirectSoundEnumerate(&DSEnumProc, NULL);
+                DirectSoundEnumerate(&DSEnumProc, NULL);
             }
 
             /*! refresh UI based on currently selected audio adapter */

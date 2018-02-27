@@ -324,7 +324,7 @@ VSH_FIELDMAPPING;
 
 typedef struct _VSH_XBOX_SHADER
 {
-    XTL::VSH_SHADER_HEADER       ShaderHeader;
+    VSH_SHADER_HEADER       ShaderHeader;
     uint16                  IntermediateCount;
     VSH_INTERMEDIATE_FORMAT Intermediate[VSH_MAX_INTERMEDIATE_COUNT];
 }
@@ -474,7 +474,7 @@ static const char* OReg_Name[] =
 // between vertex shader's being passed around, and the actual handle value used on PC.
 DWORD VshHandleGetRealHandle(DWORD aHandle)
 {
-	using namespace XTL;
+	
 
 	if (VshHandleIsVertexShader(aHandle))
 	{
@@ -1583,7 +1583,7 @@ VSH_TYPE_PATCH_DATA;
 typedef struct _VSH_STREAM_PATCH_DATA
 {
     DWORD                     NbrStreams;
-    XTL::STREAM_DYNAMIC_PATCH pStreamPatches[256];
+    STREAM_DYNAMIC_PATCH pStreamPatches[256];
 }
 VSH_STREAM_PATCH_DATA;
 
@@ -1621,7 +1621,7 @@ D3DDECLUSAGE Xb2PCRegisterType
 	boolean IsFixedFunction
 )
 {
-	using namespace XTL;
+	
 
 	D3DDECLUSAGE PCRegisterType;
 	// For fixed function vertex shaders, print D3DVSDE_*, for custom shaders print numbered registers.
@@ -1745,14 +1745,14 @@ static DWORD VshConvertToken_CONSTMEM(DWORD *pToken)
 static void VshConverToken_TESSELATOR(DWORD   *pToken,
                                       boolean IsFixedFunction)
 {
-    using namespace XTL;
+    
 
     // TODO: Investigate why Xb2PCRegisterType is only used for fixed function vertex shaders
     // D3DVSD_TESSUV
     if(*pToken & 0x10000000)
     {
-        XTL::DWORD VertexRegister    = VshGetVertexRegister(*pToken);
-        XTL::DWORD NewVertexRegister = VertexRegister;
+        DWORD VertexRegister    = VshGetVertexRegister(*pToken);
+        DWORD NewVertexRegister = VertexRegister;
 
         DbgVshPrintf("\tD3DVSD_TESSUV(");
 		NewVertexRegister = Xb2PCRegisterType(VertexRegister, IsFixedFunction);
@@ -1763,11 +1763,11 @@ static void VshConverToken_TESSELATOR(DWORD   *pToken,
     // D3DVSD_TESSNORMAL
     else
     {
-        XTL::DWORD VertexRegisterIn  = VshGetVertexRegisterIn(*pToken);
-        XTL::DWORD VertexRegisterOut = VshGetVertexRegister(*pToken);
+        DWORD VertexRegisterIn  = VshGetVertexRegisterIn(*pToken);
+        DWORD VertexRegisterOut = VshGetVertexRegister(*pToken);
 
-        XTL::DWORD NewVertexRegisterIn  = VertexRegisterIn;
-        XTL::DWORD NewVertexRegisterOut = VertexRegisterOut;
+        DWORD NewVertexRegisterIn  = VertexRegisterIn;
+        DWORD NewVertexRegisterOut = VertexRegisterOut;
 
         DbgVshPrintf("\tD3DVSD_TESSNORMAL(");
         NewVertexRegisterIn = Xb2PCRegisterType(VertexRegisterIn, IsFixedFunction);
@@ -1786,7 +1786,7 @@ static boolean VshAddStreamPatch(VSH_PATCH_DATA *pPatchData)
     {
         DbgVshPrintf("NeedPatching: %d\n", pPatchData->NeedPatching);
 
-        XTL::STREAM_DYNAMIC_PATCH* pStreamPatch = &pPatchData->StreamPatchData.pStreamPatches[CurrentStream];
+        STREAM_DYNAMIC_PATCH* pStreamPatch = &pPatchData->StreamPatchData.pStreamPatches[CurrentStream];
 
         pStreamPatch->ConvertedStride = pPatchData->ConvertedStride;
         pStreamPatch->NbrTypes = pPatchData->TypePatchData.NbrTypes;
@@ -1814,7 +1814,7 @@ static void VshConvertToken_STREAM(DWORD          *pToken,
     // D3DVSD_STREAM
     else
     {
-        XTL::DWORD StreamNumber = VshGetVertexStream(*pToken);
+        DWORD StreamNumber = VshGetVertexStream(*pToken);
         DbgVshPrintf("\tD3DVSD_STREAM(%d),\n", StreamNumber);
 		pPatchData->CurrentStreamNumber = (WORD)StreamNumber;
 
@@ -1838,41 +1838,41 @@ static void VshConvertToken_STREAM(DWORD          *pToken,
 
 static void VshConvertToken_STREAMDATA_SKIP(DWORD *pToken)
 {
-    using namespace XTL;
+    
 
-    XTL::DWORD SkipCount = (*pToken & X_D3DVSD_SKIPCOUNTMASK) >> X_D3DVSD_SKIPCOUNTSHIFT;
+    DWORD SkipCount = (*pToken & X_D3DVSD_SKIPCOUNTMASK) >> X_D3DVSD_SKIPCOUNTSHIFT;
     DbgVshPrintf("\tD3DVSD_SKIP(%d),\n", SkipCount);
 }
 
 static void VshConvertToken_STREAMDATA_SKIPBYTES(DWORD *pToken)
 {
-    using namespace XTL;
+    
 
-    XTL::DWORD SkipBytesCount = (*pToken & X_D3DVSD_SKIPCOUNTMASK) >> X_D3DVSD_SKIPCOUNTSHIFT;
+    DWORD SkipBytesCount = (*pToken & X_D3DVSD_SKIPCOUNTMASK) >> X_D3DVSD_SKIPCOUNTSHIFT;
     DbgVshPrintf("\tD3DVSD_SKIPBYTES(%d), /* xbox ext. */\n", SkipBytesCount);
-    if(SkipBytesCount % sizeof(XTL::DWORD))
+    if(SkipBytesCount % sizeof(DWORD))
     {
         EmuWarning("D3DVSD_SKIPBYTES can't be converted to D3DVSD_SKIP, not divisble by 4.");
     }
-    *pToken = D3DVSD_SKIP(SkipBytesCount / sizeof(XTL::DWORD));
+    *pToken = D3DVSD_SKIP(SkipBytesCount / sizeof(DWORD));
 }
 
 static void VshConvertToken_STREAMDATA_REG(DWORD          *pToken,
                                            boolean         IsFixedFunction,
                                            VSH_PATCH_DATA *pPatchData)
 {
-    using namespace XTL;
+    
 
-    XTL::DWORD VertexRegister = VshGetVertexRegister(*pToken);
-    XTL::DWORD NewVertexRegister;
+    DWORD VertexRegister = VshGetVertexRegister(*pToken);
+    DWORD NewVertexRegister;
 
     DbgVshPrintf("\tD3DVSD_REG(");
     NewVertexRegister = Xb2PCRegisterType(VertexRegister, IsFixedFunction);
     DbgVshPrintf(", ");
 
-    XTL::DWORD DataType = (*pToken & X_D3DVSD_DATATYPEMASK) >> X_D3DVSD_DATATYPESHIFT;
-    XTL::DWORD NewDataType = 0;
-	XTL::DWORD NewSize = 0;
+    DWORD DataType = (*pToken & X_D3DVSD_DATATYPEMASK) >> X_D3DVSD_DATATYPESHIFT;
+    DWORD NewDataType = 0;
+	DWORD NewSize = 0;
 
     switch(DataType)
     {
@@ -1904,12 +1904,12 @@ static void VshConvertToken_STREAMDATA_REG(DWORD          *pToken,
 	case X_D3DVSDT_SHORT2: // 0x25:
         DbgVshPrintf("D3DVSDT_SHORT2");
         NewDataType = D3DVSDT_SHORT2;
-		NewSize = 2*sizeof(XTL::SHORT);
+		NewSize = 2*sizeof(SHORT);
         break;
 	case X_D3DVSDT_SHORT4: // 0x45:
         DbgVshPrintf("D3DVSDT_SHORT4");
         NewDataType = D3DVSDT_SHORT4;
-		NewSize = 4*sizeof(XTL::SHORT);
+		NewSize = 4*sizeof(SHORT);
         break;
 	case X_D3DVSDT_NORMSHORT1: // 0x11:
         DbgVshPrintf("D3DVSDT_NORMSHORT1 /* xbox ext. */");
@@ -1944,13 +1944,13 @@ static void VshConvertToken_STREAMDATA_REG(DWORD          *pToken,
 	case X_D3DVSDT_SHORT1: // 0x15:
         DbgVshPrintf("D3DVSDT_SHORT1 /* xbox ext. nsp */");
         NewDataType = D3DVSDT_SHORT2;
-		NewSize = 2*sizeof(XTL::SHORT);
+		NewSize = 2*sizeof(SHORT);
         pPatchData->NeedPatching = TRUE;
         break;
 	case X_D3DVSDT_SHORT3: // 0x35:
         DbgVshPrintf("D3DVSDT_SHORT3 /* xbox ext. nsp */");
         NewDataType = D3DVSDT_SHORT4;
-		NewSize = 4*sizeof(XTL::SHORT);
+		NewSize = 4*sizeof(SHORT);
         pPatchData->NeedPatching = TRUE;
         break;
 	case X_D3DVSDT_PBYTE1: // 0x14:
@@ -2022,7 +2022,7 @@ static void VshConvertToken_STREAMDATA(DWORD          *pToken,
                                        boolean         IsFixedFunction,
                                        VSH_PATCH_DATA *pPatchData)
 {
-    using namespace XTL;
+    
 	if (*pToken & D3DVSD_MASK_SKIP)
 	{
 		// For D3D9, use D3DDECLTYPE_UNUSED ?
@@ -2042,9 +2042,7 @@ static DWORD VshRecompileToken(DWORD          *pToken,
                                boolean         IsFixedFunction,
                                VSH_PATCH_DATA *pPatchData)
 {
-    using namespace XTL;
-
-    XTL::DWORD Step = 1;
+    DWORD Step = 1;
 
     switch(VshGetTokenType(*pToken))
     {
@@ -2079,7 +2077,7 @@ static DWORD VshRecompileToken(DWORD          *pToken,
     return Step;
 }
 
-DWORD XTL::EmuRecompileVshDeclaration
+DWORD EmuRecompileVshDeclaration
 (
     DWORD                *pDeclaration,
     DWORD               **ppRecompiledDeclaration,
@@ -2132,7 +2130,7 @@ DWORD XTL::EmuRecompileVshDeclaration
 }
 
 // recompile xbox vertex shader function
-extern HRESULT XTL::EmuRecompileVshFunction
+extern HRESULT EmuRecompileVshFunction
 (
     DWORD        *pFunction,
     LPD3DXBUFFER *ppRecompiled,
@@ -2261,7 +2259,7 @@ extern HRESULT XTL::EmuRecompileVshFunction
     return hRet;
 }
 
-extern void XTL::FreeVertexDynamicPatch(VERTEX_SHADER *pVertexShader)
+extern void FreeVertexDynamicPatch(VERTEX_SHADER *pVertexShader)
 {
     for (DWORD i = 0; i < pVertexShader->VertexDynamicPatch.NbrStreams; i++)
     {
@@ -2276,7 +2274,7 @@ extern void XTL::FreeVertexDynamicPatch(VERTEX_SHADER *pVertexShader)
     pVertexShader->VertexDynamicPatch.NbrStreams = 0;
 }
 
-extern boolean XTL::IsValidCurrentShader(void)
+extern boolean IsValidCurrentShader(void)
 {
 	// Dxbx addition : There's no need to call
 	// XTL_EmuIDirect3DDevice_GetVertexShader, just check g_CurrentVertexShader :
@@ -2284,7 +2282,7 @@ extern boolean XTL::IsValidCurrentShader(void)
 }
 
 // Checks for failed vertex shaders, and shaders that would need patching
-boolean XTL::VshHandleIsValidShader(DWORD Handle)
+boolean VshHandleIsValidShader(DWORD Handle)
 {
 	//printf( "VS = 0x%.08X\n", Handle );
 
@@ -2311,7 +2309,7 @@ boolean XTL::VshHandleIsValidShader(DWORD Handle)
     return TRUE;
 }
 
-extern XTL::VERTEX_DYNAMIC_PATCH *XTL::VshGetVertexDynamicPatch(DWORD Handle)
+extern VERTEX_DYNAMIC_PATCH *VshGetVertexDynamicPatch(DWORD Handle)
 {
     X_D3DVertexShader *pD3DVertexShader = VshHandleGetVertexShader(Handle);
     VERTEX_SHADER *pVertexShader = (VERTEX_SHADER *)pD3DVertexShader->Handle;

@@ -47,9 +47,9 @@
 static XBController g_XBController;
 
 // ******************************************************************
-// * XTL::EmuDInputInit
+// * EmuDInputInit
 // ******************************************************************
-bool XTL::EmuDInputInit()
+bool EmuDInputInit()
 {
     g_EmuShared->GetXBController(&g_XBController);
 
@@ -62,17 +62,17 @@ bool XTL::EmuDInputInit()
 }
 
 // ******************************************************************
-// * XTL::EmuDInputCleanup
+// * EmuDInputCleanup
 // ******************************************************************
-void XTL::EmuDInputCleanup()
+void EmuDInputCleanup()
 {
     g_XBController.ListenEnd();
 }
 
 // ******************************************************************
-// * XTL::EmuDInputPoll
+// * EmuDInputPoll
 // ******************************************************************
-void XTL::EmuDInputPoll(XTL::PXINPUT_STATE Controller)
+void EmuDInputPoll(PXINPUT_STATE Controller)
 {
     g_XBController.ListenPoll(Controller);
 

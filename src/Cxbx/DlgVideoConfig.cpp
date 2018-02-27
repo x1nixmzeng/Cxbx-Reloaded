@@ -49,7 +49,7 @@ static VOID RefreshDisplayAdapter();
 static VOID RefreshDirect3DDevice();
 
 /*! direct3d instance */
-static XTL::LPDIRECT3D8 g_pD3D8 = 0;
+static LPDIRECT3D8 g_pD3D8 = 0;
 /*! video configuration */
 static XBVideo g_XBVideo;
 /*! changes flag */
@@ -73,7 +73,7 @@ VOID ShowVideoConfig(HWND hwnd)
 
     /*! initialize direct3d */
     {
-        g_pD3D8 = XTL::Direct3DCreate8(D3D_SDK_VERSION);
+        g_pD3D8 = Direct3DCreate8(D3D_SDK_VERSION);
 
         if(g_pD3D8 == 0) { goto cleanup; }
 
@@ -114,7 +114,7 @@ INT_PTR CALLBACK DlgVideoConfigProc(HWND hWndDlg, UINT uMsg, WPARAM wParam, LPAR
 
                 for(uint32 v=0;v<g_dwAdapterCount;v++)
                 {
-                    XTL::D3DADAPTER_IDENTIFIER8 adapterIdentifier;
+                    D3DADAPTER_IDENTIFIER8 adapterIdentifier;
 
                     g_pD3D8->GetAdapterIdentifier(v, D3DENUM_NO_WHQL_LEVEL, &adapterIdentifier);
 					SendMessage(g_hDisplayAdapter, CB_ADDSTRING, 0, (LPARAM)adapterIdentifier.Description);
@@ -253,7 +253,7 @@ VOID RefreshDisplayAdapter()
     /*! generate list of device types */
     {
         /*! device types */
-        static const XTL::D3DDEVTYPE devType[2] = { XTL::D3DDEVTYPE_HAL, XTL::D3DDEVTYPE_REF };
+        static const D3DDEVTYPE devType[2] = { D3DDEVTYPE_HAL, D3DDEVTYPE_REF };
 
         /*! human readable device types */
         static const char *szDevType[2] = { "Direct3D HAL (Hardware Accelerated)", "Direct3D REF (Software)" };
@@ -264,7 +264,7 @@ VOID RefreshDisplayAdapter()
         /*! step through devices types */
         for(uint32 d=0;d<2;d++)
         {
-            XTL::D3DCAPS8 Caps;
+            D3DCAPS8 Caps;
 
             /*! verify device is available */
             if(g_pD3D8->GetDeviceCaps(g_XBVideo.GetDisplayAdapter(), devType[d], &Caps) == D3D_OK)
@@ -318,22 +318,22 @@ VOID RefreshDirect3DDevice()
             {
                 const char *szFormat = "<unknown>";
 
-                XTL::D3DDISPLAYMODE displayMode;
+                D3DDISPLAYMODE displayMode;
 
                 g_pD3D8->EnumAdapterModes(g_XBVideo.GetDisplayAdapter(), v, &displayMode);
 
                 switch(displayMode.Format)
                 {
-                    case XTL::D3DFMT_X1R5G5B5:
+                    case D3DFMT_X1R5G5B5:
                         szFormat = "16bit x1r5g5b5";
                         break;
-                    case XTL::D3DFMT_R5G6B5:
+                    case D3DFMT_R5G6B5:
                         szFormat = "16bit r5g6r5";
                         break;
-                    case XTL::D3DFMT_X8R8G8B8:
+                    case D3DFMT_X8R8G8B8:
                         szFormat = "32bit x8r8g8b8";
                         break;
-                    case XTL::D3DFMT_A8R8G8B8:
+                    case D3DFMT_A8R8G8B8:
                         szFormat = "32bit a8r8g8b8";
                         break;
                     default:

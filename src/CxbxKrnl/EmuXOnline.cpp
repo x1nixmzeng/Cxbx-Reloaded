@@ -46,7 +46,7 @@
 // ******************************************************************
 // * patch: WSAStartup
 // ******************************************************************
-int WINAPI XTL::EMUPATCH(WSAStartup)
+int WINAPI EMUPATCH(WSAStartup)
 (
     WORD        wVersionRequested,
     WSADATA    *lpWSAData
@@ -71,7 +71,7 @@ int WINAPI XTL::EMUPATCH(WSAStartup)
 // ******************************************************************
 // * patch: XNetStartup
 // ******************************************************************
-INT WINAPI XTL::EMUPATCH(XNetStartup)
+INT WINAPI EMUPATCH(XNetStartup)
 (
     const PVOID pDummy
 )
@@ -90,7 +90,7 @@ INT WINAPI XTL::EMUPATCH(XNetStartup)
 // ******************************************************************
 // * patch: This::Emusocket
 // ******************************************************************
-SOCKET WINAPI XTL::EMUPATCH(socket)
+SOCKET WINAPI EMUPATCH(socket)
 (
     int   af,
     int   type,
@@ -113,7 +113,7 @@ SOCKET WINAPI XTL::EMUPATCH(socket)
 // ******************************************************************
 // * patch: This::Emuconnect
 // ******************************************************************
-int WINAPI XTL::EMUPATCH(connect)
+int WINAPI EMUPATCH(connect)
 (
 	SOCKET s,
 	const struct sockaddr FAR *name,
@@ -136,7 +136,7 @@ int WINAPI XTL::EMUPATCH(connect)
 // ******************************************************************
 // * patch: This::Emusend
 // ******************************************************************
-int WINAPI XTL::EMUPATCH(send)
+int WINAPI EMUPATCH(send)
 (
 	SOCKET s,
 	const char FAR *buf,
@@ -161,7 +161,7 @@ int WINAPI XTL::EMUPATCH(send)
 // ******************************************************************
 // * patch: This::Emurecv
 // ******************************************************************
-int WINAPI XTL::EMUPATCH(recv)
+int WINAPI EMUPATCH(recv)
 (
 	SOCKET s,
 	char FAR *buf,
@@ -186,7 +186,7 @@ int WINAPI XTL::EMUPATCH(recv)
 // ******************************************************************
 // * patch: This::Emubind
 // ******************************************************************
-int WINAPI XTL::EMUPATCH(bind)
+int WINAPI EMUPATCH(bind)
 (
 	SOCKET s, 
 	const struct sockaddr FAR *name, 
@@ -211,7 +211,7 @@ int WINAPI XTL::EMUPATCH(bind)
 // ******************************************************************
 // * patch: This::Emulisten
 // ******************************************************************
-int WINAPI XTL::EMUPATCH(listen)
+int WINAPI EMUPATCH(listen)
 (
 	SOCKET s, 
 	int backlog
@@ -234,7 +234,7 @@ int WINAPI XTL::EMUPATCH(listen)
 // ******************************************************************
 // * patch: This::Emuioctlsocket
 // ******************************************************************
-int WINAPI XTL::EMUPATCH(ioctlsocket)
+int WINAPI EMUPATCH(ioctlsocket)
 (
 	SOCKET s, 
 	long cmd, 
@@ -280,7 +280,7 @@ HRESULT WINAPI XOnlineLaunchNewImage
 // ******************************************************************
 // * patch: XOnlineLogon
 // ******************************************************************
-HRESULT WINAPI XTL::EMUPATCH(XOnlineLogon)
+HRESULT WINAPI EMUPATCH(XOnlineLogon)
 (
     VOID*	pUsers,
     DWORD*	pdwServiceIDs,

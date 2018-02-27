@@ -62,7 +62,7 @@ bool IsValidPixelShader(void);
 #define DbgPshPrintf if(g_bPrintfOn) printf
 #else
 inline void null_func_psh(...) { }
-#define DbgPshPrintf XTL::null_func_psh
+#define DbgPshPrintf null_func_psh
 #endif
 
 #endif // PIXELSHADER_H

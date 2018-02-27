@@ -89,7 +89,7 @@ VERTEX_DYNAMIC_PATCH *VshGetVertexDynamicPatch(DWORD Handle);
 #define DbgVshPrintf if(g_bPrintfOn) printf
 #else
 inline void null_func_vsh(...) { }
-#define DbgVshPrintf XTL::null_func_vsh
+#define DbgVshPrintf null_func_vsh
 #endif
 
 #endif

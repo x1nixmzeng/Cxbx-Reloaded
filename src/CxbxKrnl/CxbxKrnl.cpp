@@ -1059,7 +1059,7 @@ __declspec(noreturn) void CxbxKrnlInit
 
 	// initialize graphics
 	DbgPrintf("INIT: Initializing render window.\n");
-	XTL::CxbxInitWindow(true);
+	CxbxInitWindow(true);
 
 	// Now process the boot flags to see if there are any special conditions to handle
 	int BootFlags = 0;
@@ -1077,7 +1077,7 @@ __declspec(noreturn) void CxbxKrnlInit
 	if (BootFlags & BOOT_SKIP_ANIMATION) {} // TODO
 	if (BootFlags & BOOT_RUN_DASHBOARD) {} // TODO
 
-    XTL::CxbxInitAudio();
+    CxbxInitAudio();
 
 	EmuHLEIntercept(pXbeHeader);
 
@@ -1097,7 +1097,7 @@ __declspec(noreturn) void CxbxKrnlInit
 	if (!bLLE_GPU)
 	{
 		DbgPrintf("INIT: Initializing Direct3D.\n");
-		XTL::EmuD3DInit();
+		EmuD3DInit();
 	}
 	
 	if (CxbxDebugger::CanReport())

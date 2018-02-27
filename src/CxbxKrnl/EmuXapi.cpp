@@ -62,13 +62,13 @@ extern HANDLE g_hInputHandle[XINPUT_HANDLE_SLOTS] = {0};
 
 bool g_bXInputOpenCalled = false;
 
-XTL::PXPP_DEVICE_TYPE gDeviceType_Gamepad = nullptr;
+PXPP_DEVICE_TYPE gDeviceType_Gamepad = nullptr;
 
 #include "EmuXTL.h"
 
 
-XTL::POLLING_PARAMETERS_HANDLE g_pph;
-XTL::XINPUT_POLLING_PARAMETERS g_pp;
+POLLING_PARAMETERS_HANDLE g_pph;
+XINPUT_POLLING_PARAMETERS g_pp;
 
 // Fiber function list
 typedef struct _XFIBER
@@ -107,7 +107,7 @@ void SetupXboxDeviceTypes()
 			}
 
 			// Iterate through the table until we find gamepad
-			XTL::PXID_TYPE_INFORMATION* deviceTable = (XTL::PXID_TYPE_INFORMATION*)(deviceTableStartOffset);
+			PXID_TYPE_INFORMATION* deviceTable = (PXID_TYPE_INFORMATION*)(deviceTableStartOffset);
 			for (unsigned int i = 0; i < deviceTableEntryCount; i++) {
 				// Skip empty table entries
 				if (deviceTable[i] == nullptr) {
@@ -135,7 +135,7 @@ void SetupXboxDeviceTypes()
 			void* XInputOpenAddr = (void*)g_SymbolAddresses["XInputOpen"];
 			if (XInputOpenAddr != nullptr) {
 				printf("XAPI: Deriving XDEVICE_TYPE_GAMEPAD from XInputOpen (0x%08X)\n", XInputOpenAddr);
-				gDeviceType_Gamepad = *(XTL::PXPP_DEVICE_TYPE*)((uint32_t)XInputOpenAddr + 0x0B);
+				gDeviceType_Gamepad = *(PXPP_DEVICE_TYPE*)((uint32_t)XInputOpenAddr + 0x0B);
 			}
 		}
 
@@ -170,7 +170,7 @@ void SetupXboxDeviceTypes()
 // ******************************************************************
 // * patch: XInitDevices
 // ******************************************************************
-VOID WINAPI XTL::EMUPATCH(XInitDevices)
+VOID WINAPI EMUPATCH(XInitDevices)
 (
     DWORD					dwPreallocTypeCount,
 	PXDEVICE_PREALLOC_TYPE	PreallocTypes
@@ -203,7 +203,7 @@ VOID WINAPI XTL::EMUPATCH(XInitDevices)
 // * This in turn requires USB LLE to be implemented, or USBD_Init 
 // * patched with a stub, so this patch is still enabled for now
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(XGetDevices)
+DWORD WINAPI EMUPATCH(XGetDevices)
 (
     PXPP_DEVICE_TYPE DeviceType
 )
@@ -230,7 +230,7 @@ DWORD WINAPI XTL::EMUPATCH(XGetDevices)
 // * This in turn requires USB LLE to be implemented, or USBD_Init 
 // * patched with a stub, so this patch is still enabled for now
 // ******************************************************************
-BOOL WINAPI XTL::EMUPATCH(XGetDeviceChanges)
+BOOL WINAPI EMUPATCH(XGetDeviceChanges)
 (
     PXPP_DEVICE_TYPE DeviceType,
     PDWORD           pdwInsertions,
@@ -276,7 +276,7 @@ BOOL WINAPI XTL::EMUPATCH(XGetDeviceChanges)
 // ******************************************************************
 // * patch: XInputOpen
 // ******************************************************************
-HANDLE WINAPI XTL::EMUPATCH(XInputOpen)
+HANDLE WINAPI EMUPATCH(XInputOpen)
 (
     IN PXPP_DEVICE_TYPE             DeviceType,
     IN DWORD                        dwPort,
@@ -349,7 +349,7 @@ HANDLE WINAPI XTL::EMUPATCH(XInputOpen)
 // ******************************************************************
 // * patch: XInputClose
 // ******************************************************************
-VOID WINAPI XTL::EMUPATCH(XInputClose)
+VOID WINAPI EMUPATCH(XInputClose)
 (
     IN HANDLE hDevice
 )
@@ -389,7 +389,7 @@ VOID WINAPI XTL::EMUPATCH(XInputClose)
 // ******************************************************************
 // * patch: XInputPoll
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(XInputPoll)
+DWORD WINAPI EMUPATCH(XInputPoll)
 (
     IN HANDLE hDevice
 )
@@ -414,7 +414,7 @@ DWORD WINAPI XTL::EMUPATCH(XInputPoll)
 
             g_pXInputSetStateStatus[v].dwLatency = 0;
 
-            XTL::PXINPUT_FEEDBACK pFeedback = (XTL::PXINPUT_FEEDBACK)g_pXInputSetStateStatus[v].pFeedback;
+            PXINPUT_FEEDBACK pFeedback = (PXINPUT_FEEDBACK)g_pXInputSetStateStatus[v].pFeedback;
 
             if(pFeedback == 0)
                 continue;
@@ -441,7 +441,7 @@ DWORD WINAPI XTL::EMUPATCH(XInputPoll)
 // ******************************************************************
 // * patch: XInputGetCapabilities
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(XInputGetCapabilities)
+DWORD WINAPI EMUPATCH(XInputGetCapabilities)
 (
     IN  HANDLE               hDevice,
     OUT PXINPUT_CAPABILITIES pCapabilities
@@ -476,7 +476,7 @@ DWORD WINAPI XTL::EMUPATCH(XInputGetCapabilities)
 // ******************************************************************
 // * patch: InputGetState
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(XInputGetState)
+DWORD WINAPI EMUPATCH(XInputGetState)
 (
     IN  HANDLE         hDevice,
     OUT PXINPUT_STATE  pState
@@ -534,7 +534,7 @@ DWORD WINAPI XTL::EMUPATCH(XInputGetState)
 // ******************************************************************
 // * patch: InputSetState
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(XInputSetState)
+DWORD WINAPI EMUPATCH(XInputSetState)
 (
     IN     HANDLE           hDevice,
     IN OUT PXINPUT_FEEDBACK pFeedback
@@ -613,7 +613,7 @@ DWORD WINAPI XTL::EMUPATCH(XInputSetState)
 // ******************************************************************
 // * patch: SetThreadPriorityBoost
 // ******************************************************************
-BOOL WINAPI XTL::EMUPATCH(SetThreadPriorityBoost)
+BOOL WINAPI EMUPATCH(SetThreadPriorityBoost)
 (
     HANDLE  hThread,
     BOOL    DisablePriorityBoost
@@ -637,7 +637,7 @@ BOOL WINAPI XTL::EMUPATCH(SetThreadPriorityBoost)
 // ******************************************************************
 // * patch: SetThreadPriority
 // ******************************************************************
-BOOL WINAPI XTL::EMUPATCH(SetThreadPriority)
+BOOL WINAPI EMUPATCH(SetThreadPriority)
 (
     HANDLE  hThread,
     int     nPriority
@@ -662,7 +662,7 @@ BOOL WINAPI XTL::EMUPATCH(SetThreadPriority)
 // ******************************************************************
 // * patch: GetThreadPriority
 // ******************************************************************
-int WINAPI XTL::EMUPATCH(GetThreadPriority)
+int WINAPI EMUPATCH(GetThreadPriority)
 (
     HANDLE  hThread
 )
@@ -682,7 +682,7 @@ int WINAPI XTL::EMUPATCH(GetThreadPriority)
 // ******************************************************************
 // * patch: GetExitCodeThread
 // ******************************************************************
-BOOL WINAPI XTL::EMUPATCH(GetExitCodeThread)
+BOOL WINAPI EMUPATCH(GetExitCodeThread)
 (
     HANDLE  hThread,
     LPDWORD lpExitCode
@@ -703,7 +703,7 @@ BOOL WINAPI XTL::EMUPATCH(GetExitCodeThread)
 // ******************************************************************
 // * patch: XapiThreadStartup
 // ******************************************************************
-VOID WINAPI XTL::EMUPATCH(XapiThreadStartup)
+VOID WINAPI EMUPATCH(XapiThreadStartup)
 (
     DWORD dwDummy1,
     DWORD dwDummy2
@@ -738,7 +738,7 @@ VOID WINAPI XTL::EMUPATCH(XapiThreadStartup)
 // ******************************************************************
 // * patch: XRegisterThreadNotifyRoutine
 // ******************************************************************
-VOID WINAPI XTL::EMUPATCH(XRegisterThreadNotifyRoutine)
+VOID WINAPI EMUPATCH(XRegisterThreadNotifyRoutine)
 (
     PXTHREAD_NOTIFICATION   pThreadNotification,
     BOOL                    fRegister
@@ -789,7 +789,7 @@ VOID WINAPI XTL::EMUPATCH(XRegisterThreadNotifyRoutine)
 // ******************************************************************
 // * patch: CreateFiber
 // ******************************************************************
-LPVOID WINAPI XTL::EMUPATCH(CreateFiber)
+LPVOID WINAPI EMUPATCH(CreateFiber)
 (
 	DWORD					dwStackSize,
 	LPFIBER_START_ROUTINE	lpStartRoutine,
@@ -826,7 +826,7 @@ LPVOID WINAPI XTL::EMUPATCH(CreateFiber)
 // ******************************************************************
 // * patch: DeleteFiber
 // ******************************************************************
-VOID WINAPI XTL::EMUPATCH(DeleteFiber)
+VOID WINAPI EMUPATCH(DeleteFiber)
 (
 	LPVOID					lpFiber
 )
@@ -848,7 +848,7 @@ VOID WINAPI XTL::EMUPATCH(DeleteFiber)
 // ******************************************************************
 // * patch: SwitchToFiber
 // ******************************************************************
-VOID WINAPI XTL::EMUPATCH(SwitchToFiber)
+VOID WINAPI EMUPATCH(SwitchToFiber)
 (
 	LPVOID lpFiber 
 )
@@ -882,7 +882,7 @@ VOID WINAPI XTL::EMUPATCH(SwitchToFiber)
 // ******************************************************************
 // * patch: ConvertThreadToFiber
 // ******************************************************************
-LPVOID WINAPI XTL::EMUPATCH(ConvertThreadToFiber)
+LPVOID WINAPI EMUPATCH(ConvertThreadToFiber)
 (
 	LPVOID lpParameter
 )
@@ -908,7 +908,7 @@ LPVOID WINAPI XTL::EMUPATCH(ConvertThreadToFiber)
 // ******************************************************************
 // * patch: XapiFiberStartup
 // ******************************************************************
-VOID WINAPI XTL::EMUPATCH(XapiFiberStartup)(DWORD dwDummy)
+VOID WINAPI EMUPATCH(XapiFiberStartup)(DWORD dwDummy)
 {
 	FUNC_EXPORTS
 
@@ -940,7 +940,7 @@ VOID WINAPI XTL::EMUPATCH(XapiFiberStartup)(DWORD dwDummy)
 // ******************************************************************
 // * patch: QueueUserAPC
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(QueueUserAPC)
+DWORD WINAPI EMUPATCH(QueueUserAPC)
 (
 	PAPCFUNC	pfnAPC,
 	HANDLE		hThread,
@@ -975,7 +975,7 @@ DWORD WINAPI XTL::EMUPATCH(QueueUserAPC)
 // ******************************************************************
 // * patch: GetOverlappedResult
 // ******************************************************************
-BOOL WINAPI XTL::EMUPATCH(GetOverlappedResult)
+BOOL WINAPI EMUPATCH(GetOverlappedResult)
 (
 	HANDLE			hFile,
 	LPOVERLAPPED	lpOverlapped,
@@ -1004,7 +1004,7 @@ BOOL WINAPI XTL::EMUPATCH(GetOverlappedResult)
 // ******************************************************************
 // * patch: XLaunchNewImageA
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(XLaunchNewImageA)
+DWORD WINAPI EMUPATCH(XLaunchNewImageA)
 (
 	LPCSTR			lpTitlePath,
 	PLAUNCH_DATA	pLaunchData
@@ -1089,7 +1089,7 @@ DWORD WINAPI XTL::EMUPATCH(XLaunchNewImageA)
 // ******************************************************************
 // * patch: XGetLaunchInfo
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(XGetLaunchInfo)
+DWORD WINAPI EMUPATCH(XGetLaunchInfo)
 (
 	PDWORD			pdwLaunchDataType,
 	PLAUNCH_DATA	pLaunchData
@@ -1139,7 +1139,7 @@ DWORD WINAPI XTL::EMUPATCH(XGetLaunchInfo)
 // ******************************************************************
 // * patch: XSetProcessQuantumLength
 // ******************************************************************
-VOID WINAPI XTL::EMUPATCH(XSetProcessQuantumLength)
+VOID WINAPI EMUPATCH(XSetProcessQuantumLength)
 (
     DWORD dwMilliseconds
 )
@@ -1154,7 +1154,7 @@ VOID WINAPI XTL::EMUPATCH(XSetProcessQuantumLength)
 // ******************************************************************
 // * patch: SignalObjectAndWait
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(SignalObjectAndWait)
+DWORD WINAPI EMUPATCH(SignalObjectAndWait)
 (
 	HANDLE	hObjectToSignal,
 	HANDLE	hObjectToWaitOn,
@@ -1178,7 +1178,7 @@ DWORD WINAPI XTL::EMUPATCH(SignalObjectAndWait)
 // ******************************************************************
 // * patch: timeSetEvent
 // ******************************************************************
-MMRESULT WINAPI XTL::EMUPATCH(timeSetEvent)
+MMRESULT WINAPI EMUPATCH(timeSetEvent)
 (
 	UINT			uDelay,
 	UINT			uResolution,
@@ -1205,7 +1205,7 @@ MMRESULT WINAPI XTL::EMUPATCH(timeSetEvent)
 // ******************************************************************
 // * patch: timeKillEvent
 // ******************************************************************
-MMRESULT WINAPI XTL::EMUPATCH(timeKillEvent)
+MMRESULT WINAPI EMUPATCH(timeKillEvent)
 (
 	UINT uTimerID  
 )
@@ -1222,7 +1222,7 @@ MMRESULT WINAPI XTL::EMUPATCH(timeKillEvent)
 // ******************************************************************
 // * patch: RaiseException
 // ******************************************************************
-VOID WINAPI XTL::EMUPATCH(RaiseException)
+VOID WINAPI EMUPATCH(RaiseException)
 (
 	DWORD			dwExceptionCode,       // exception code
 	DWORD			dwExceptionFlags,      // continuable exception flag
@@ -1248,7 +1248,7 @@ VOID WINAPI XTL::EMUPATCH(RaiseException)
 // ******************************************************************
 // patch: XMountMUA
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(XMountMUA)
+DWORD WINAPI EMUPATCH(XMountMUA)
 (
 	DWORD dwPort,                  
 	DWORD dwSlot,                  
@@ -1272,7 +1272,7 @@ DWORD WINAPI XTL::EMUPATCH(XMountMUA)
 // ******************************************************************
 // * patch: XMountAlternateTitleA
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(XMountAlternateTitleA)
+DWORD WINAPI EMUPATCH(XMountAlternateTitleA)
 (
 	LPCSTR		lpRootPath,               
 	DWORD		dwAltTitleId,               
@@ -1296,7 +1296,7 @@ DWORD WINAPI XTL::EMUPATCH(XMountAlternateTitleA)
 // ******************************************************************
 // * patch: XUnmountAlternateTitleA
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(XUnmountAlternateTitleA)
+DWORD WINAPI EMUPATCH(XUnmountAlternateTitleA)
 (
 	CHAR chDrive
 )
@@ -1313,7 +1313,7 @@ DWORD WINAPI XTL::EMUPATCH(XUnmountAlternateTitleA)
 // ******************************************************************
 // * patch: XGetDeviceEnumerationStatus
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(XGetDeviceEnumerationStatus)()
+DWORD WINAPI EMUPATCH(XGetDeviceEnumerationStatus)()
 {
 	FUNC_EXPORTS
 
@@ -1327,7 +1327,7 @@ DWORD WINAPI XTL::EMUPATCH(XGetDeviceEnumerationStatus)()
 // ******************************************************************
 // * patch: XInputGetDeviceDescription
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(XInputGetDeviceDescription)
+DWORD WINAPI EMUPATCH(XInputGetDeviceDescription)
 (
     HANDLE	hDevice,
     PVOID	pDescription
@@ -1349,7 +1349,7 @@ DWORD WINAPI XTL::EMUPATCH(XInputGetDeviceDescription)
 // ******************************************************************
 // * patch: XMountMURootA
 // ******************************************************************
-DWORD WINAPI XTL::EMUPATCH(XMountMURootA)
+DWORD WINAPI EMUPATCH(XMountMURootA)
 (
 	DWORD dwPort,                  
 	DWORD dwSlot,                  
@@ -1373,7 +1373,7 @@ DWORD WINAPI XTL::EMUPATCH(XMountMURootA)
 // ******************************************************************
 // * patch: OutputDebugStringA
 // ******************************************************************
-VOID WINAPI XTL::EMUPATCH(OutputDebugStringA)
+VOID WINAPI EMUPATCH(OutputDebugStringA)
 (
 	IN LPCSTR lpOutputString
 )

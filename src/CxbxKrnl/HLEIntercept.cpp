@@ -135,7 +135,7 @@ std::string GetDetectedSymbolName(xbaddr address, int *symbolOffset)
 
 void *GetEmuPatchAddr(std::string aFunctionName)
 {
-	std::string patchName = "XTL::EmuPatch_" + aFunctionName;
+	std::string patchName = "EmuPatch_" + aFunctionName;
 	void* addr = GetProcAddress(GetModuleHandle(NULL), patchName.c_str());
 	return addr;
 }
@@ -296,19 +296,19 @@ void EmuHLEIntercept(Xbe::Header *pXbeHeader)
 				EmuWarning("D3DDEVICE was not found!");
 			}
 
-			XTL::EmuD3DDeferredRenderState = (DWORD*)g_SymbolAddresses["D3DDeferredRenderState"];
-			XTL::EmuD3DDeferredTextureState = (DWORD*)g_SymbolAddresses["D3DDeferredTextureState"];
+			EmuD3DDeferredRenderState = (DWORD*)g_SymbolAddresses["D3DDeferredRenderState"];
+			EmuD3DDeferredTextureState = (DWORD*)g_SymbolAddresses["D3DDeferredTextureState"];
 			XRefDataBase[XREF_D3DDEVICE] = g_SymbolAddresses["D3DDEVICE"];
 
 			// TODO: Move this into a function rather than duplicating from HLE scanning code
-			if (XTL::EmuD3DDeferredRenderState != nullptr) {
+			if (EmuD3DDeferredRenderState != nullptr) {
 				for (int v = 0; v<44; v++) {
-					XTL::EmuD3DDeferredRenderState[v] = XTL::X_D3DRS_UNK;
+					EmuD3DDeferredRenderState[v] = X_D3DRS_UNK;
 				}
 
 				for (int s = 0; s<4; s++) {
 					for (int v = 0; v<32; v++)
-						XTL::EmuD3DDeferredTextureState[v + s * 32] = X_D3DTSS_UNK;
+						EmuD3DDeferredTextureState[v + s * 32] = X_D3DTSS_UNK;
 				}
 			}
 		
@@ -507,25 +507,25 @@ void EmuHLEIntercept(Xbe::Header *pXbeHeader)
 							}
 
 							// Derive address of EmuD3DDeferredRenderState from D3DRS_CULLMODE
-							XTL::EmuD3DDeferredRenderState = (DWORD*)(DerivedAddr_D3DRS_CULLMODE - Decrement + Increment);
+							EmuD3DDeferredRenderState = (DWORD*)(DerivedAddr_D3DRS_CULLMODE - Decrement + Increment);
 							patchOffset -= Increment;
 
 							// Derive address of a few other deferred render state slots (to help xref-based function location)
                             XRefDataBase[XREF_D3DRS_MULTISAMPLERENDERTARGETMODE] = (xbaddr)DerivedAddr_D3DRS_CULLMODE + 8*4;
-                            XRefDataBase[XREF_D3DRS_STENCILCULLENABLE]     = (xbaddr)XTL::EmuD3DDeferredRenderState + patchOffset + 0*4;
-                            XRefDataBase[XREF_D3DRS_ROPZCMPALWAYSREAD]     = (xbaddr)XTL::EmuD3DDeferredRenderState + patchOffset + 1*4;
-                            XRefDataBase[XREF_D3DRS_ROPZREAD]              = (xbaddr)XTL::EmuD3DDeferredRenderState + patchOffset + 2*4;
-                            XRefDataBase[XREF_D3DRS_DONOTCULLUNCOMPRESSED] = (xbaddr)XTL::EmuD3DDeferredRenderState + patchOffset + 3*4;
+                            XRefDataBase[XREF_D3DRS_STENCILCULLENABLE]     = (xbaddr)EmuD3DDeferredRenderState + patchOffset + 0*4;
+                            XRefDataBase[XREF_D3DRS_ROPZCMPALWAYSREAD]     = (xbaddr)EmuD3DDeferredRenderState + patchOffset + 1*4;
+                            XRefDataBase[XREF_D3DRS_ROPZREAD]              = (xbaddr)EmuD3DDeferredRenderState + patchOffset + 2*4;
+                            XRefDataBase[XREF_D3DRS_DONOTCULLUNCOMPRESSED] = (xbaddr)EmuD3DDeferredRenderState + patchOffset + 3*4;
 
                             for(int v=0;v<44;v++) {
-                                XTL::EmuD3DDeferredRenderState[v] = XTL::X_D3DRS_UNK;
+                                EmuD3DDeferredRenderState[v] = X_D3DRS_UNK;
                             }
 
-							g_SymbolAddresses["D3DDeferredRenderState"] = (DWORD)XTL::EmuD3DDeferredRenderState;
-							printf("HLE: 0x%.08X -> EmuD3DDeferredRenderState\n", XTL::EmuD3DDeferredRenderState);
+							g_SymbolAddresses["D3DDeferredRenderState"] = (DWORD)EmuD3DDeferredRenderState;
+							printf("HLE: 0x%.08X -> EmuD3DDeferredRenderState\n", EmuD3DDeferredRenderState);
 							//DbgPrintf("HLE: 0x%.08X -> XREF_D3D_RenderState_RopZCmpAlwaysRead\n", XRefDataBase[XREF_D3D_RenderState_RopZCmpAlwaysRead] );
                         } else {
-                            XTL::EmuD3DDeferredRenderState = nullptr;
+                            EmuD3DDeferredRenderState = nullptr;
                             CxbxKrnlCleanup("EmuD3DDeferredRenderState was not found!");
                         }
 
@@ -565,18 +565,18 @@ void EmuHLEIntercept(Xbe::Header *pXbeHeader)
 									}
 								}
 
-								XTL::EmuD3DDeferredTextureState = (DWORD*)(DerivedAddr_D3DTSS_TEXCOORDINDEX - Decrement);
+								EmuD3DDeferredTextureState = (DWORD*)(DerivedAddr_D3DTSS_TEXCOORDINDEX - Decrement);
 
 								for(int s = 0; s < 4; s++) {
                                     for (int v = 0; v < 32; v++) {
-                                        XTL::EmuD3DDeferredTextureState[v + s * 32] = X_D3DTSS_UNK;
+                                        EmuD3DDeferredTextureState[v + s * 32] = X_D3DTSS_UNK;
                                     }
                                 }
 
-								g_SymbolAddresses["D3DDeferredTextureState"] = (DWORD)XTL::EmuD3DDeferredTextureState;
-								printf("HLE: 0x%.08X -> EmuD3DDeferredTextureState\n", XTL::EmuD3DDeferredTextureState);
+								g_SymbolAddresses["D3DDeferredTextureState"] = (DWORD)EmuD3DDeferredTextureState;
+								printf("HLE: 0x%.08X -> EmuD3DDeferredTextureState\n", EmuD3DDeferredTextureState);
                             } else {
-                                XTL::EmuD3DDeferredTextureState = nullptr;
+                                EmuD3DDeferredTextureState = nullptr;
                                 CxbxKrnlCleanup("EmuD3DDeferredTextureState was not found!");
                             }
                         }
@@ -608,7 +608,7 @@ void EmuHLEIntercept(Xbe::Header *pXbeHeader)
 
                                 // Now that both Derived XREF and OOVPA-based function-contents match,
                                 // correct base-address (because "g_Stream" is actually "g_Stream"+8") :
-                                Derived_g_Stream -= offsetof(XTL::X_Stream, pVertexBuffer);
+                                Derived_g_Stream -= offsetof(X_Stream, pVertexBuffer);
                                 g_SymbolAddresses["g_Stream"] = (xbaddr)Derived_g_Stream;
                                 printf("HLE: Derived 0x%.08X -> g_Stream\n", Derived_g_Stream);
                             }

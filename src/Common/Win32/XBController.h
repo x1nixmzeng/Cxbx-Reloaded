@@ -132,7 +132,7 @@ class XBController : public Error
         // * Listening
         // ******************************************************************
         void ListenBegin(HWND hwnd);
-        void ListenPoll(XTL::XINPUT_STATE *Controller);
+        void ListenPoll(XINPUT_STATE *Controller);
         void ListenEnd();
 
         // ******************************************************************
@@ -170,14 +170,14 @@ class XBController : public Error
         // ******************************************************************
         // * Controller and Objects Enumeration
         // ******************************************************************
-        BOOL EnumGameCtrlCallback(XTL::LPCDIDEVICEINSTANCE lpddi);
-        BOOL EnumObjectsCallback(XTL::LPCDIDEVICEOBJECTINSTANCE lpddoi);
+        BOOL EnumGameCtrlCallback(LPCDIDEVICEINSTANCE lpddi);
+        BOOL EnumObjectsCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi);
 
         // ******************************************************************
         // * Wrapper Function for Enumeration
         // ******************************************************************
-        friend BOOL CALLBACK WrapEnumGameCtrlCallback(XTL::LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
-        friend BOOL CALLBACK WrapEnumObjectsCallback(XTL::LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef);
+        friend BOOL CALLBACK WrapEnumGameCtrlCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
+        friend BOOL CALLBACK WrapEnumObjectsCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef);
 
         // ******************************************************************
         // * Device Names
@@ -192,14 +192,14 @@ class XBController : public Error
         // ******************************************************************
         // * DirectInput
         // ******************************************************************
-        XTL::LPDIRECTINPUT8 m_pDirectInput8;
+        LPDIRECTINPUT8 m_pDirectInput8;
 
         // ******************************************************************
         // * DirectInput Devices
         // ******************************************************************
         struct InputDevice
         {
-            XTL::LPDIRECTINPUTDEVICE8 m_Device;
+            LPDIRECTINPUTDEVICE8 m_Device;
             int                       m_Flags;
         }
         m_InputDevice[XBCTRL_MAX_DEVICES];

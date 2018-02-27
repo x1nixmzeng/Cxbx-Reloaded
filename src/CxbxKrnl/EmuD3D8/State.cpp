@@ -39,113 +39,113 @@
 #include "CxbxKrnl/EmuXTL.h"
 
 // deferred state lookup tables
-DWORD *XTL::EmuD3DDeferredRenderState;
-DWORD *XTL::EmuD3DDeferredTextureState;
+DWORD *EmuD3DDeferredRenderState;
+DWORD *EmuD3DDeferredTextureState;
 
 extern uint32 g_BuildVersion;
 
 // ******************************************************************
 // * patch: UpdateDeferredStates
 // ******************************************************************
-void XTL::EmuUpdateDeferredStates()
+void EmuUpdateDeferredStates()
 {
-    using namespace XTL;
+    
 
     // Certain D3DRS values need to be checked on each Draw[Indexed]Vertices
     if(EmuD3DDeferredRenderState != 0)
     {
-        if(XTL::EmuD3DDeferredRenderState[0] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_FOGENABLE, XTL::EmuD3DDeferredRenderState[0]);
+        if(EmuD3DDeferredRenderState[0] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_FOGENABLE, EmuD3DDeferredRenderState[0]);
 
-        if(XTL::EmuD3DDeferredRenderState[1] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_FOGTABLEMODE, XTL::EmuD3DDeferredRenderState[1]);
+        if(EmuD3DDeferredRenderState[1] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_FOGTABLEMODE, EmuD3DDeferredRenderState[1]);
 
-        if(XTL::EmuD3DDeferredRenderState[2] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_FOGSTART, XTL::EmuD3DDeferredRenderState[2]);
+        if(EmuD3DDeferredRenderState[2] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_FOGSTART, EmuD3DDeferredRenderState[2]);
 
-        if(XTL::EmuD3DDeferredRenderState[3] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_FOGEND, XTL::EmuD3DDeferredRenderState[3]);
+        if(EmuD3DDeferredRenderState[3] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_FOGEND, EmuD3DDeferredRenderState[3]);
 
-        if(XTL::EmuD3DDeferredRenderState[4] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_FOGDENSITY, XTL::EmuD3DDeferredRenderState[4]);
+        if(EmuD3DDeferredRenderState[4] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_FOGDENSITY, EmuD3DDeferredRenderState[4]);
 
-        if(XTL::EmuD3DDeferredRenderState[5] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_RANGEFOGENABLE, XTL::EmuD3DDeferredRenderState[5]);
+        if(EmuD3DDeferredRenderState[5] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_RANGEFOGENABLE, EmuD3DDeferredRenderState[5]);
 
-        if(XTL::EmuD3DDeferredRenderState[6] != X_D3DRS_UNK)
+        if(EmuD3DDeferredRenderState[6] != X_D3DRS_UNK)
         {
             ::DWORD dwConv = 0;
 
-            dwConv |= (XTL::EmuD3DDeferredRenderState[6] & 0x00000010) ? D3DWRAP_U : 0;
-            dwConv |= (XTL::EmuD3DDeferredRenderState[6] & 0x00001000) ? D3DWRAP_V : 0;
-            dwConv |= (XTL::EmuD3DDeferredRenderState[6] & 0x00100000) ? D3DWRAP_W : 0;
+            dwConv |= (EmuD3DDeferredRenderState[6] & 0x00000010) ? D3DWRAP_U : 0;
+            dwConv |= (EmuD3DDeferredRenderState[6] & 0x00001000) ? D3DWRAP_V : 0;
+            dwConv |= (EmuD3DDeferredRenderState[6] & 0x00100000) ? D3DWRAP_W : 0;
 
             g_pD3DDevice8->SetRenderState(D3DRS_WRAP0, dwConv);
         }
 
-        if(XTL::EmuD3DDeferredRenderState[7] != X_D3DRS_UNK)
+        if(EmuD3DDeferredRenderState[7] != X_D3DRS_UNK)
         {
             ::DWORD dwConv = 0;
 
-            dwConv |= (XTL::EmuD3DDeferredRenderState[7] & 0x00000010) ? D3DWRAP_U : 0;
-            dwConv |= (XTL::EmuD3DDeferredRenderState[7] & 0x00001000) ? D3DWRAP_V : 0;
-            dwConv |= (XTL::EmuD3DDeferredRenderState[7] & 0x00100000) ? D3DWRAP_W : 0;
+            dwConv |= (EmuD3DDeferredRenderState[7] & 0x00000010) ? D3DWRAP_U : 0;
+            dwConv |= (EmuD3DDeferredRenderState[7] & 0x00001000) ? D3DWRAP_V : 0;
+            dwConv |= (EmuD3DDeferredRenderState[7] & 0x00100000) ? D3DWRAP_W : 0;
 
             g_pD3DDevice8->SetRenderState(D3DRS_WRAP1, dwConv);
         }
 
-        if(XTL::EmuD3DDeferredRenderState[10] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_LIGHTING, XTL::EmuD3DDeferredRenderState[10]);
+        if(EmuD3DDeferredRenderState[10] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_LIGHTING, EmuD3DDeferredRenderState[10]);
 
-        if(XTL::EmuD3DDeferredRenderState[11] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_SPECULARENABLE, XTL::EmuD3DDeferredRenderState[11]);
+        if(EmuD3DDeferredRenderState[11] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_SPECULARENABLE, EmuD3DDeferredRenderState[11]);
 
-        if(XTL::EmuD3DDeferredRenderState[13] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_COLORVERTEX, XTL::EmuD3DDeferredRenderState[13]);
+        if(EmuD3DDeferredRenderState[13] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_COLORVERTEX, EmuD3DDeferredRenderState[13]);
 
-        if(XTL::EmuD3DDeferredRenderState[19] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE, XTL::EmuD3DDeferredRenderState[19]);
+        if(EmuD3DDeferredRenderState[19] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_DIFFUSEMATERIALSOURCE, EmuD3DDeferredRenderState[19]);
 
-        if(XTL::EmuD3DDeferredRenderState[20] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE, XTL::EmuD3DDeferredRenderState[20]);
+        if(EmuD3DDeferredRenderState[20] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_AMBIENTMATERIALSOURCE, EmuD3DDeferredRenderState[20]);
 
-        if(XTL::EmuD3DDeferredRenderState[21] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_EMISSIVEMATERIALSOURCE, XTL::EmuD3DDeferredRenderState[21]);
+        if(EmuD3DDeferredRenderState[21] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_EMISSIVEMATERIALSOURCE, EmuD3DDeferredRenderState[21]);
 
-        if(XTL::EmuD3DDeferredRenderState[23] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_AMBIENT, XTL::EmuD3DDeferredRenderState[23]);
+        if(EmuD3DDeferredRenderState[23] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_AMBIENT, EmuD3DDeferredRenderState[23]);
 
-        if(XTL::EmuD3DDeferredRenderState[24] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_POINTSIZE, XTL::EmuD3DDeferredRenderState[24]);
+        if(EmuD3DDeferredRenderState[24] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_POINTSIZE, EmuD3DDeferredRenderState[24]);
 
-        if(XTL::EmuD3DDeferredRenderState[25] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_POINTSIZE_MIN, XTL::EmuD3DDeferredRenderState[25]);
+        if(EmuD3DDeferredRenderState[25] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_POINTSIZE_MIN, EmuD3DDeferredRenderState[25]);
 
-        if(XTL::EmuD3DDeferredRenderState[26] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_POINTSPRITEENABLE, XTL::EmuD3DDeferredRenderState[26]);
+        if(EmuD3DDeferredRenderState[26] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_POINTSPRITEENABLE, EmuD3DDeferredRenderState[26]);
 
-        if(XTL::EmuD3DDeferredRenderState[27] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_POINTSCALEENABLE, XTL::EmuD3DDeferredRenderState[27]);
+        if(EmuD3DDeferredRenderState[27] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_POINTSCALEENABLE, EmuD3DDeferredRenderState[27]);
 
-        if(XTL::EmuD3DDeferredRenderState[28] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_POINTSCALE_A, XTL::EmuD3DDeferredRenderState[28]);
+        if(EmuD3DDeferredRenderState[28] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_POINTSCALE_A, EmuD3DDeferredRenderState[28]);
 
-        if(XTL::EmuD3DDeferredRenderState[29] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_POINTSCALE_B, XTL::EmuD3DDeferredRenderState[29]);
+        if(EmuD3DDeferredRenderState[29] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_POINTSCALE_B, EmuD3DDeferredRenderState[29]);
 
-        if(XTL::EmuD3DDeferredRenderState[30] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_POINTSCALE_C, XTL::EmuD3DDeferredRenderState[30]);
+        if(EmuD3DDeferredRenderState[30] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_POINTSCALE_C, EmuD3DDeferredRenderState[30]);
 
-        if(XTL::EmuD3DDeferredRenderState[31] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_POINTSIZE_MAX, XTL::EmuD3DDeferredRenderState[31]);
+        if(EmuD3DDeferredRenderState[31] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_POINTSIZE_MAX, EmuD3DDeferredRenderState[31]);
 
-        if(XTL::EmuD3DDeferredRenderState[33] != X_D3DRS_UNK)
-            g_pD3DDevice8->SetRenderState(D3DRS_PATCHSEGMENTS, XTL::EmuD3DDeferredRenderState[33]);
+        if(EmuD3DDeferredRenderState[33] != X_D3DRS_UNK)
+            g_pD3DDevice8->SetRenderState(D3DRS_PATCHSEGMENTS, EmuD3DDeferredRenderState[33]);
 
         /** To check for unhandled RenderStates
         for(int v=0;v<117-82;v++)
         {
-            if(XTL::EmuD3DDeferredRenderState[v] != X_D3DRS_UNK)
+            if(EmuD3DDeferredRenderState[v] != X_D3DRS_UNK)
             {
                 if(v !=  0 && v !=  1 && v !=  2 && v !=  3 && v !=  4 && v !=  5 && v !=  6 && v !=  7
                 && v != 10 && v != 11 && v != 13 && v != 19 && v != 20 && v != 21 && v != 23 && v != 24

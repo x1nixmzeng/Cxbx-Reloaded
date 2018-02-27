@@ -47,18 +47,18 @@ extern VOID CxbxInitWindow(bool bFullInit);
 
 extern VOID CxbxSetPixelContainerHeader
 (
-	XTL::X_D3DPixelContainer* pPixelContainer,
+	X_D3DPixelContainer* pPixelContainer,
 	DWORD           	Common,
 	UINT				Width,
 	UINT				Height,
 	UINT				Levels,
-	XTL::X_D3DFORMAT	Format,
+	X_D3DFORMAT	Format,
 	UINT				Dimensions,
 	UINT				Pitch
 );
 
 extern uint8 *ConvertD3DTextureToARGB(
-	XTL::X_D3DPixelContainer *pXboxPixelContainer,
+	X_D3DPixelContainer *pXboxPixelContainer,
 	uint8 *pSrc,
 	int *pWidth, int *pHeight,
 	int TextureStage = 0
@@ -314,7 +314,7 @@ VOID WINAPI EMUPATCH(D3DDevice_GetViewportOffsetAndScale)
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_SetShaderConstantMode)
 (
-    XTL::X_VERTEXSHADERCONSTANTMODE Mode
+    X_VERTEXSHADERCONSTANTMODE Mode
 );
 
 // ******************************************************************
@@ -1244,7 +1244,7 @@ BYTE* WINAPI EMUPATCH(D3DVertexBuffer_Lock2)
 // ******************************************************************
 // * patch: D3DDevice_GetStreamSource2
 // ******************************************************************
-XTL::X_D3DVertexBuffer* WINAPI EMUPATCH(D3DDevice_GetStreamSource2)
+X_D3DVertexBuffer* WINAPI EMUPATCH(D3DDevice_GetStreamSource2)
 (
     UINT  StreamNumber,
     UINT *pStride

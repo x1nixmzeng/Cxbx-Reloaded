@@ -42,7 +42,7 @@ extern DWORD *EmuMappedD3DRenderState[X_D3DRS_UNSUPPORTED]; // 1 extra for the u
 struct X_Stream {
     DWORD Stride;
     DWORD Offset;
-    XTL::X_D3DVertexBuffer *pVertexBuffer;
+    X_D3DVertexBuffer *pVertexBuffer;
 };
 
 // EmuD3DDeferredRenderState

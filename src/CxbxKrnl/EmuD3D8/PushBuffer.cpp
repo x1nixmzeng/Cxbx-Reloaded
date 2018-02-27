@@ -41,21 +41,21 @@
 #include "CxbxKrnl/ResourceTracker.h"
 #include "devices/video/nv2a_int.h" // For NV** defines
 
-// TODO: Find somewhere to put this that doesn't conflict with XTL::
+// TODO: Find somewhere to put this that doesn't conflict with 
 extern void EmuUpdateActiveTextureStages();
 
-uint32  XTL::g_dwPrimaryPBCount = 0;
-uint32 *XTL::g_pPrimaryPB = 0;
+uint32  g_dwPrimaryPBCount = 0;
+uint32 *g_pPrimaryPB = 0;
 
-bool XTL::g_bStepPush = false;
-bool XTL::g_bSkipPush = false;
-bool XTL::g_bBrkPush  = false;
+bool g_bStepPush = false;
+bool g_bSkipPush = false;
+bool g_bBrkPush  = false;
 
 bool g_bPBSkipPusher = false;
 
 static void DbgDumpMesh(WORD *pIndexData, DWORD dwCount);
 
-void XTL::EmuExecutePushBuffer
+void EmuExecutePushBuffer
 (
     X_D3DPushBuffer       *pPushBuffer,
     X_D3DFixup            *pFixup
@@ -73,7 +73,7 @@ void XTL::EmuExecutePushBuffer
     return;
 }
 
-extern void XTL::EmuExecutePushBufferRaw
+extern void EmuExecutePushBufferRaw
 (
     DWORD                 *pdwPushData
 )
@@ -101,7 +101,7 @@ extern void XTL::EmuExecutePushBufferRaw
     X_D3DPRIMITIVETYPE  XBPrimitiveType = X_D3DPT_INVALID;
 
     // TODO: This technically should be enabled
-    XTL::EmuUpdateDeferredStates();
+    EmuUpdateDeferredStates();
 	EmuUpdateActiveTextureStages();
 
     #ifdef _DEBUG_TRACK_PB
@@ -444,7 +444,7 @@ extern void XTL::EmuExecutePushBufferRaw
 
                 printf("\n");
 
-                XTL::IDirect3DVertexBuffer8 *pActiveVB = NULL;
+                IDirect3DVertexBuffer8 *pActiveVB = NULL;
 
                 D3DVERTEXBUFFER_DESC VBDesc;
 
@@ -604,12 +604,12 @@ extern void XTL::EmuExecutePushBufferRaw
 #ifdef _DEBUG_TRACK_PB
 void DbgDumpMesh(WORD *pIndexData, DWORD dwCount)
 {
-    if(!XTL::IsValidCurrentShader() || (dwCount == 0))
+    if(!IsValidCurrentShader() || (dwCount == 0))
         return;
 
-    XTL::IDirect3DVertexBuffer8 *pActiveVB = NULL;
+    IDirect3DVertexBuffer8 *pActiveVB = NULL;
 
-    XTL::D3DVERTEXBUFFER_DESC VBDesc;
+    D3DVERTEXBUFFER_DESC VBDesc;
 
     BYTE *pVBData = 0;
     UINT  uiStride;
@@ -726,7 +726,7 @@ void DbgDumpMesh(WORD *pIndexData, DWORD dwCount)
     pActiveVB->Unlock();
 }
 
-void XTL::DbgDumpPushBuffer( DWORD* PBData, DWORD dwSize )
+void DbgDumpPushBuffer( DWORD* PBData, DWORD dwSize )
 {
 	static int PbNumber = 0;	// Keep track of how many push buffers we've attemted to convert.
 	DWORD dwVertexShader;
