@@ -92,8 +92,8 @@ class EmuShared : public Mutex
 		// ******************************************************************
 		// * Xbox Controller Accessors
 		// ******************************************************************
-		void GetXBController(      XBController *ctrl) { Lock(); *ctrl = XBController(m_XBController); Unlock(); }
-		void SetXBController(const XBController *ctrl) { Lock(); m_XBController = XBController(*ctrl); Unlock(); }
+		void GetXBController(      Xbox::XBController *ctrl) { Lock(); *ctrl = Xbox::XBController(m_XBController); Unlock(); }
+		void SetXBController(const Xbox::XBController *ctrl) { Lock(); m_XBController = Xbox::XBController(*ctrl); Unlock(); }
 
 		// ******************************************************************
 		// * Xbe Path Accessors
@@ -188,7 +188,7 @@ class EmuShared : public Mutex
 		// ******************************************************************
 		// * Shared configuration
 		// ******************************************************************
-		XBController m_XBController;
+		Xbox::XBController m_XBController;
 		XBVideo      m_XBVideo;
 		XBAudio      m_XBAudio;
 		char         m_XbePath[MAX_PATH];

@@ -42,21 +42,27 @@
 #include "EmuShared.h"
 #include "EmuXInput.h"
 
+namespace Native
+{
 #include <xinput.h>
+}
 
+namespace Xbox
+{
+namespace EmuXInput
+{
 
 // ******************************************************************
 // * Static Variable(s)
 // ******************************************************************
-static XINPUT_STATE		g_Controller;
-static XINPUT_VIBRATION g_Vibration;
+static Native::XINPUT_STATE		g_Controller;
+static Native::XINPUT_VIBRATION g_Vibration;
 static BOOL				g_bXInputInitialized = FALSE;
-
 
 // ******************************************************************
 // * patch: XInputPCPoll
 // ******************************************************************
-void EmuXInputPCPoll( PXINPUT_STATE Controller )
+void PCPoll( PXINPUT_STATE Controller )
 {
 	//
 	// Get the PC's XInput values
@@ -133,3 +139,6 @@ void EmuXInputPCPoll( PXINPUT_STATE Controller )
 		Controller->Gamepad.wButtons &= ~XB_XINPUT_GAMEPAD_DPAD_RIGHT;
 	}
 }
+
+} // EmuXInput
+} // Xbox

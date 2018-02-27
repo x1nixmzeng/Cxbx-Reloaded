@@ -34,10 +34,13 @@
 #ifndef STATE_H
 #define STATE_H
 
+namespace Xbox
+{
+
 #define X_D3DRS_UNSUPPORTED (X_D3DRS_LAST + 1)
 
 // XDK version independent renderstate table, containing pointers to the original locations.
-extern DWORD *EmuMappedD3DRenderState[X_D3DRS_UNSUPPORTED]; // 1 extra for the unsupported value
+DWORD *EmuMappedD3DRenderState[X_D3DRS_UNSUPPORTED]; // 1 extra for the unsupported value
 
 struct X_Stream {
     DWORD Stride;
@@ -45,12 +48,11 @@ struct X_Stream {
     X_D3DVertexBuffer *pVertexBuffer;
 };
 
-// EmuD3DDeferredRenderState
-extern DWORD *EmuD3DDeferredRenderState;
+DWORD *EmuD3DDeferredRenderState;
+DWORD *EmuD3DDeferredTextureState;
 
-// EmuD3DDeferredTextureState
-extern DWORD *EmuD3DDeferredTextureState;
+void EmuUpdateDeferredStates();
 
-extern void EmuUpdateDeferredStates();
+} // ~XBL
 
 #endif

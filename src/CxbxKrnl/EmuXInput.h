@@ -34,9 +34,18 @@
 #ifndef EMUXINPUT_H
 #define EMUXINPUT_H
 
-// ******************************************************************
-// * patch: XInputPCPoll
-// ******************************************************************
-void EmuXInputPCPoll( PXINPUT_STATE Controller );
+namespace Xbox
+{
+	namespace EmuXInput
+	{
+
+		// ******************************************************************
+		// * patch: XInputPCPoll
+		// ******************************************************************
+		void PCPoll(PXINPUT_STATE Controller);
+
+	} // EmuXInput
+
+} // Xbox
 
 #endif

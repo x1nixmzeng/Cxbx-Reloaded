@@ -34,30 +34,42 @@
 #ifndef PUSHBUFFER_H
 #define PUSHBUFFER_H
 
-extern void EmuExecutePushBuffer
-(
-    X_D3DPushBuffer       *pPushBuffer,
-    X_D3DFixup            *pFixup
-);
+namespace Xbox
+{
+	namespace EmuExecute
+	{
+		void PushBuffer
+		(
+			X_D3DPushBuffer       *pPushBuffer,
+			X_D3DFixup            *pFixup
+		);
 
-extern void EmuExecutePushBufferRaw
-(
-    DWORD                 *pdwPushData
-);
+		void PushBufferRaw
+		(
+			DWORD                 *pdwPushData
+		);
 
-extern void DbgDumpPushBuffer
-( 
-	DWORD*				  PBData, 
-	DWORD				  dwSize 
-);
+	} // EmuExecute
 
-// primary push buffer
-extern uint32  g_dwPrimaryPBCount;
-extern uint32 *g_pPrimaryPB;
+	namespace DbgDump
+	{
+		extern void PushBuffer
+		(
+			DWORD*				  PBData,
+			DWORD				  dwSize
+		);
 
-// push buffer debugging
-extern bool g_bStepPush;
-extern bool g_bSkipPush;
-extern bool g_bBrkPush;
+	} // DbgDump
+
+	// primary push buffer
+	extern uint32  g_dwPrimaryPBCount;
+	extern uint32 *g_pPrimaryPB;
+
+	// push buffer debugging
+	extern bool g_bStepPush;
+	extern bool g_bSkipPush;
+	extern bool g_bBrkPush;
+
+} // Xbox
 
 #endif

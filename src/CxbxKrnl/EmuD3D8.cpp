@@ -66,13 +66,16 @@ namespace xboxkrnl
 // Allow use of time duration literals (making 16ms, etc possible)
 using namespace std::literals::chrono_literals;
 
+namespace Xbox
+{
+
 // This doesn't work : #include <dxerr8.h> // See DXGetErrorString8A below
 
 // Global(s)
 HWND                                g_hEmuWindow   = NULL; // rendering window
 LPDIRECT3DDEVICE8              g_pD3DDevice8  = NULL; // Direct3D8 Device
-LPDIRECTDRAWSURFACE7           g_pDDSPrimary  = NULL; // DirectDraw7 Primary Surface
-LPDIRECTDRAWCLIPPER            g_pDDClipper   = nullptr; // DirectDraw7 Clipper
+Native::LPDIRECTDRAWSURFACE7           g_pDDSPrimary  = NULL; // DirectDraw7 Primary Surface
+Native::LPDIRECTDRAWCLIPPER            g_pDDClipper   = nullptr; // DirectDraw7 Clipper
 DWORD                               g_CurrentVertexShader = 0;
 DWORD								g_dwCurrentPixelShader = 0;
 PIXEL_SHADER                  *g_CurrentPixelShader = NULL;
@@ -94,8 +97,8 @@ static void							UpdateCurrentMSpFAndFPS(); // Used for benchmarking/fps count
 // Static Variable(s)
 static HMONITOR                     g_hMonitor      = NULL; // Handle to DirectDraw monitor
 static bool                         g_bSupportsTextureFormat[X_D3DFMT_LIN_R8G8B8A8 + 1] = { false };// Does device support texture format?
-static LPDIRECTDRAW7           g_pDD7          = NULL; // DirectDraw7
-static DDCAPS                  g_DriverCaps          = { 0 };
+static Native::LPDIRECTDRAW7           g_pDD7          = NULL; // DirectDraw7
+static Native::DDCAPS                  g_DriverCaps          = { 0 };
 static DWORD                        g_dwOverlayW    = 640;  // Cached Overlay Width
 static DWORD                        g_dwOverlayH    = 480;  // Cached Overlay Height
 static DWORD                        g_dwOverlayP    = 640;  // Cached Overlay Pitch
@@ -1194,7 +1197,7 @@ VOID CxbxGetPixelContainerMeasures
 	{
 		DWORD l2w = (pPixelContainer->Format & X_D3DFORMAT_USIZE_MASK) >> X_D3DFORMAT_USIZE_SHIFT;
 		DWORD l2h = (pPixelContainer->Format & X_D3DFORMAT_VSIZE_MASK) >> X_D3DFORMAT_VSIZE_SHIFT;
-		DWORD dwBPP = EmuXBFormatBitsPerPixel(X_Format);
+		DWORD dwBPP = EmuXBFormat::BitsPerPixel(X_Format);
 
 		*pHeight = 1 << l2h;
 		*pWidth = 1 << l2w;
@@ -1203,7 +1206,7 @@ VOID CxbxGetPixelContainerMeasures
 
 	*pSize = *pHeight * *pPitch;
 
-	if (EmuXBFormatIsCompressed(X_Format)) {
+	if (EmuXBFormat::IsCompressed(X_Format)) {
 		*pPitch *= 4;
 	}
 }
@@ -1217,17 +1220,17 @@ bool ConvertD3DTextureToARGBBuffer(
 	int TextureStage = 0
 )
 {
-	const FormatToARGBRow ConvertRowToARGB = EmuXBFormatComponentConverter(X_Format);
+	const Xbox::EmuXBFormat::FormatToARGBRow ConvertRowToARGB = EmuXBFormat::ComponentConverter(X_Format);
 	if (ConvertRowToARGB == nullptr)
 		return false; // Unhandled conversion
 
 	uint8 *unswizleBuffer = nullptr;
-	if (EmuXBFormatIsSwizzled(X_Format)) {
+	if (EmuXBFormat::IsSwizzled(X_Format)) {
 		unswizleBuffer = (uint8*)malloc(SrcPitch * SrcHeight); // TODO : Reuse buffer when performance is important
 		// First we need to unswizzle the texture data
 		EmuUnswizzleRect(
 			pSrc, SrcWidth, SrcHeight, 1, unswizleBuffer,
-			SrcPitch, {}, {}, EmuXBFormatBytesPerPixel(X_Format)
+			SrcPitch, {}, {}, EmuXBFormat::BytesPerPixel(X_Format)
 		);
 		// Convert colors from the unswizzled buffer
 		pSrc = unswizleBuffer;
@@ -1241,7 +1244,7 @@ bool ConvertD3DTextureToARGBBuffer(
 
 	DWORD SrcRowOff = 0;
 	uint8 *pDestRow = pDest;
-	if (EmuXBFormatIsCompressed(X_Format)) {
+	if (EmuXBFormat::IsCompressed(X_Format)) {
 		// All compressed formats (DXT1, DXT3 and DXT5) encode blocks of 4 pixels on 4 lines
 		SrcHeight = (SrcHeight + 3) / 4;
 		DestPitch *= 4;
@@ -1269,7 +1272,7 @@ uint8 *ConvertD3DTextureToARGB(
 {
 	// Avoid allocating pDest when ConvertD3DTextureToARGBBuffer will fail anyway
 	X_D3DFORMAT X_Format = GetXboxPixelContainerFormat(pXboxPixelContainer);
-	const FormatToARGBRow ConvertRowToARGB = EmuXBFormatComponentConverter(X_Format);
+	const FormatToARGBRow ConvertRowToARGB = EmuXBFormat::ComponentConverter(X_Format);
 	if (ConvertRowToARGB == nullptr)
 		return nullptr; // Unhandled conversion
 
@@ -2001,7 +2004,7 @@ static DWORD WINAPI EmuCreateDeviceProxy(LPVOID)
 				// Which texture formats does this device support?
 				for (int X_Format = X_D3DFMT_L8; X_Format <= X_D3DFMT_LIN_R8G8B8A8; X_Format++) {
 					// Only process Xbox formats that are directly mappable to host
-					if (!EmuXBFormatRequiresConversionToARGB((X_D3DFORMAT)X_Format)) {
+					if (!EmuXBFormat::RequiresConversionToARGB((X_D3DFORMAT)X_Format)) {
 						// Convert the Xbox format into host format (without warning, thanks to the above restriction)
 						D3DFORMAT PCFormat = EmuXB2PC_D3DFormat((X_D3DFORMAT)X_Format);
 						// Index g_bSupportsTextureFormat with Xbox D3DFormat, because host FourCC codes are too big to be used as indices
@@ -2020,16 +2023,16 @@ static DWORD WINAPI EmuCreateDeviceProxy(LPVOID)
 				HRESULT hRet;
 
                 // enumerate device guid for this monitor, for directdraw
-				hRet = DirectDrawEnumerateExA(EmuEnumDisplayDevices, NULL, DDENUM_ATTACHEDSECONDARYDEVICES);
+				hRet = Native::DirectDrawEnumerateExA(EmuEnumDisplayDevices, NULL, DDENUM_ATTACHEDSECONDARYDEVICES);
 				DEBUG_D3DRESULT(hRet, "DirectDrawEnumerateExA");
 
                 // create DirectDraw7
                 {
                     if(FAILED(hRet)) {
-                        hRet = DirectDrawCreateEx(NULL, (void**)&g_pDD7, IID_IDirectDraw7, NULL);
+                        hRet = Native::DirectDrawCreateEx(NULL, (void**)&g_pDD7, Native::IID_IDirectDraw7, NULL);
 						DEBUG_D3DRESULT(hRet, "DirectDrawCreateEx(NULL)");
 					} else {
-						hRet = DirectDrawCreateEx(&g_ddguid, (void**)&g_pDD7, IID_IDirectDraw7, NULL);
+						hRet = Native::DirectDrawCreateEx(&g_ddguid, (void**)&g_pDD7, Native::IID_IDirectDraw7, NULL);
 						DEBUG_D3DRESULT(hRet, "DirectDrawCreateEx(&g_ddguid)");
 					}
 
@@ -2276,10 +2279,10 @@ static void EmuUnswizzleTextureStages()
 			continue;
 
 		X_D3DFORMAT XBFormat = GetXboxPixelContainerFormat(pBaseTexture);
-		if(!EmuXBFormatIsSwizzled(XBFormat))
+		if(!EmuXBFormat::IsSwizzled(XBFormat))
 			continue;
 
-		DWORD dwBPP = EmuXBFormatBytesPerPixel(XBFormat);
+		DWORD dwBPP = EmuXBFormat::BytesPerPixel(XBFormat);
 		pBaseTexture->Common &= ~X_D3DCOMMON_ISLOCKED;
 
 		// TODO: potentially XXHash32::hash() to see if this surface was actually modified..
@@ -2720,7 +2723,7 @@ VOID WINAPI EMUPATCH(D3DDevice_EndPush)(DWORD *pPush)
 	{
 		EmuUnswizzleTextureStages();
 
-		EmuExecutePushBufferRaw(g_pPrimaryPB);
+		EmuExecutePush::BufferRaw(g_pPrimaryPB);
 
 		delete[] g_pPrimaryPB;
 		g_pPrimaryPB = nullptr;
@@ -4487,7 +4490,7 @@ VOID WINAPI EMUPATCH(D3DDevice_RunPushBuffer)
 
 	EmuUnswizzleTextureStages();
 
-	EmuExecutePushBuffer(pPushBuffer, pFixup);    
+	EmuExecute::PushBuffer(pPushBuffer, pFixup);    
 }
 
 // ******************************************************************
@@ -4858,16 +4861,16 @@ VOID WINAPI CreateHostResource
 			}
 
 			// Detect formats that must be converted to ARGB
-			if (EmuXBFormatRequiresConversionToARGB(X_Format)) {
+			if (EmuXBFormat::RequiresConversionToARGB(X_Format)) {
 				CacheFormat = PCFormat;       // Save this for later
 				PCFormat = D3DFMT_A8R8G8B8;   // ARGB
 #endif // !OLD_COLOR_CONVERSION
 			}
 
             DWORD dwWidth, dwHeight, dwBPP, dwDepth = 1, dwPitch = 0, dwMipMapLevels = 1;
-            BOOL  bSwizzled = EmuXBFormatIsSwizzled(X_Format), bCompressed = FALSE, dwCompressedSize = 0;
+            BOOL  bSwizzled = EmuXBFormat::IsSwizzled(X_Format), bCompressed = FALSE, dwCompressedSize = 0;
             BOOL  bCubemap = pPixelContainer->Format & X_D3DFORMAT_CUBEMAP;
-			dwBPP = EmuXBFormatBytesPerPixel(X_Format);
+			dwBPP = EmuXBFormat::BytesPerPixel(X_Format);
 
             // Interpret Width/Height/BPP
             if(X_Format == X_D3DFMT_X8R8G8B8 || X_Format == X_D3DFMT_A8R8G8B8
@@ -5022,7 +5025,7 @@ VOID WINAPI CreateHostResource
                     // Since most modern graphics cards does not support
                     // palette based textures we need to expand it to
                     // ARGB texture format
-					if ((PCFormat == D3DFMT_P8 && !g_bSupportsTextureFormat[X_D3DFMT_P8]) || EmuXBFormatRequiresConversionToARGB(X_Format))
+					if ((PCFormat == D3DFMT_P8 && !g_bSupportsTextureFormat[X_D3DFMT_P8]) || EmuXBFormat::RequiresConversionToARGB(X_Format))
                     {
 						if (PCFormat == D3DFMT_P8) //Palette
 							EmuWarning("D3DFMT_P8 -> D3DFMT_A8R8G8B8");
@@ -5212,7 +5215,7 @@ VOID WINAPI CreateHostResource
 								else
 								{
 									/* TODO : // Let DirectX convert the surface (including palette formats) :
-									if(!EmuXBFormatRequiresConversionToARGB) {
+									if(!EmuXBFormat::RequiresConversionToARGB) {
 										D3DXLoadSurfaceFromMemory(
 											GetHostSurface(pResource),
 											nullptr, // no destination palette
@@ -5285,7 +5288,7 @@ VOID WINAPI CreateHostResource
 									}
 									else
 									{
-										const ComponentEncodingInfo *encoding = EmuXBFormatComponentEncodingInfo(X_Format);
+										const ComponentEncodingInfo *encoding = EmuXBFormat::ComponentEncodingInfo(X_Format);
 
 										for (unsigned int y = 0; y < dwDataSize; y++)
 										{
@@ -8577,3 +8580,5 @@ static void UpdateCurrentMSpFAndFPS() {
 		g_EmuShared->SetCurrentFPS(&currentFPSVal);
 	}
 }
+
+} // Xbox

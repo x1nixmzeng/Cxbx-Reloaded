@@ -35,7 +35,9 @@
 #define VERTEXBUFFER_H
 
 #include "Cxbx.h"
-//#include <ctime> // Conflict with io.h
+
+namespace Xbox
+{
 
 #define MAX_NBR_STREAMS 16
 
@@ -163,4 +165,6 @@ extern VOID EmuUpdateActiveTexture();
 
 extern DWORD g_dwPrimPerFrame;
  
+} // ~XBL
+
 #endif

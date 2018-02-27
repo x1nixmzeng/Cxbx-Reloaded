@@ -36,6 +36,9 @@
 
 #include <dxerr8.h>
 
+namespace Xbox
+{
+
 // ******************************************************************
 // * calling conventions
 // ******************************************************************
@@ -844,4 +847,6 @@ DWORD WINAPI EMUPATCH(XCalculateSignatureEnd)
 //*/
 // +s
 
+
+} // ~XBL
 #endif

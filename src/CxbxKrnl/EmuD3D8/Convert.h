@@ -36,6 +36,8 @@
 
 #include "CxbxKrnl.h"
 
+namespace Xbox
+{
 
 // It's a real shame but the new conversion code needs to be disable for now
 // it causes crashes and other issues in titles using palletted textures
@@ -54,39 +56,44 @@ typedef struct _ComponentEncodingInfo
 	int8_t AShift, RShift, GShift, BShift;
 } ComponentEncodingInfo;
 
-extern const ComponentEncodingInfo *EmuXBFormatComponentEncodingInfo(X_D3DFORMAT Format);
+namespace EmuXBFormat
+{
 
-extern D3DCOLOR DecodeUInt32ToColor(const ComponentEncodingInfo * encoding, const uint32 value);
+const ComponentEncodingInfo *GetComponentEncodingInfo(X_D3DFORMAT Format);
+
+D3DCOLOR DecodeUInt32ToColor(const ComponentEncodingInfo * encoding, const uint32 value);
 #endif // OLD_COLOR_CONVERSION
 
 typedef void(*FormatToARGBRow)(const uint8* src, uint8* dst_argb, int width);
 
-extern const FormatToARGBRow EmuXBFormatComponentConverter(X_D3DFORMAT Format);
+const FormatToARGBRow ComponentConverter(X_D3DFORMAT Format);
 
-bool EmuXBFormatCanBeConvertedToARGB(X_D3DFORMAT Format);
+bool CanBeConvertedToARGB(X_D3DFORMAT Format);
 
-bool EmuXBFormatRequiresConversionToARGB(X_D3DFORMAT Format);
+bool RequiresConversionToARGB(X_D3DFORMAT Format);
 
 // how many bits does this format use per pixel?
-extern DWORD EmuXBFormatBitsPerPixel(X_D3DFORMAT Format);
+DWORD BitsPerPixel(X_D3DFORMAT Format);
 
 // how many bytes does this format use per pixel?
-extern DWORD EmuXBFormatBytesPerPixel(X_D3DFORMAT Format);
+DWORD BytesPerPixel(X_D3DFORMAT Format);
 
 // is this format compressed?
-extern BOOL EmuXBFormatIsCompressed(X_D3DFORMAT Format);
+BOOL IsCompressed(X_D3DFORMAT Format);
 
 // is this format linear?
-extern BOOL EmuXBFormatIsLinear(X_D3DFORMAT Format);
+BOOL IsLinear(X_D3DFORMAT Format);
 
 // is this format swizzled?
-extern BOOL EmuXBFormatIsSwizzled(X_D3DFORMAT Format);
+BOOL IsSwizzled(X_D3DFORMAT Format);
 
 // is this format a valid render target?
-extern BOOL EmuXBFormatIsRenderTarget(X_D3DFORMAT Format);
+BOOL IsRenderTarget(X_D3DFORMAT Format);
 
 // is this format a valid depth buffer?
-extern BOOL EmuXBFormatIsDepthBuffer(X_D3DFORMAT Format);
+BOOL IsDepthBuffer(X_D3DFORMAT Format);
+
+} // EmuXBFormat
 
 // convert from xbox to pc color formats
 extern D3DFORMAT EmuXB2PC_D3DFormat(X_D3DFORMAT Format);
@@ -1789,5 +1796,7 @@ RenderStateInfo;
 #define D3DRS_NONE ((D3DRENDERSTATETYPE)0)
 
 extern const RenderStateInfo DxbxRenderStateInfo[];
+
+} // Xbox
 
 #endif

@@ -40,6 +40,10 @@
 #include "CxbxKrnl/EmuD3D8Types.h" // For X_D3DFORMAT
 #include "CxbxKrnl/ResourceTracker.h"
 #include "devices/video/nv2a_int.h" // For NV** defines
+#include "State.h"
+
+namespace Xbox
+{
 
 // TODO: Find somewhere to put this that doesn't conflict with 
 extern void EmuUpdateActiveTextureStages();
@@ -55,7 +59,9 @@ bool g_bPBSkipPusher = false;
 
 static void DbgDumpMesh(WORD *pIndexData, DWORD dwCount);
 
-void EmuExecutePushBuffer
+namespace EmuExecute
+{
+void PushBuffer
 (
     X_D3DPushBuffer       *pPushBuffer,
     X_D3DFixup            *pFixup
@@ -65,15 +71,15 @@ void EmuExecutePushBuffer
         CxbxKrnlCleanup("PushBuffer has fixups\n");
 
 #ifdef _DEBUG_TRACK_PB
-	DbgDumpPushBuffer((DWORD*)pPushBuffer->Data, pPushBuffer->Size);
+	DbgDump::PushBuffer((DWORD*)pPushBuffer->Data, pPushBuffer->Size);
 #endif
 
-    EmuExecutePushBufferRaw((DWORD*)pPushBuffer->Data);
+    PushBufferRaw((DWORD*)pPushBuffer->Data);
 
     return;
 }
 
-extern void EmuExecutePushBufferRaw
+void PushBufferRaw
 (
     DWORD                 *pdwPushData
 )
@@ -600,6 +606,7 @@ extern void EmuExecutePushBufferRaw
 		Sleep(500);
     }
 }
+}
 
 #ifdef _DEBUG_TRACK_PB
 void DbgDumpMesh(WORD *pIndexData, DWORD dwCount)
@@ -726,7 +733,10 @@ void DbgDumpMesh(WORD *pIndexData, DWORD dwCount)
     pActiveVB->Unlock();
 }
 
-void DbgDumpPushBuffer( DWORD* PBData, DWORD dwSize )
+namespace DbgDump
+{
+
+void PushBuffer( DWORD* PBData, DWORD dwSize )
 {
 	static int PbNumber = 0;	// Keep track of how many push buffers we've attemted to convert.
 	DWORD dwVertexShader;
@@ -770,5 +780,9 @@ void DbgDumpPushBuffer( DWORD* PBData, DWORD dwSize )
 	// Close handle
 	CloseHandle( hFile );
 }
+
+} // DbgDump
+
+} // Xbox
 
 #endif

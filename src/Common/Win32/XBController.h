@@ -44,6 +44,9 @@
 
 #include "CxbxKrnl/EmuXTL.h"
 
+namespace Xbox
+{
+
 // ******************************************************************
 // * Xbox Controller Object IDs
 // ******************************************************************
@@ -255,5 +258,7 @@ enum XBCtrlState
     XBCTRL_STATE_CONFIG,
     XBCTRL_STATE_LISTEN
 };
+
+} // Xbox
 
 #endif

@@ -39,8 +39,14 @@
 #include "Common/Xbe.h"
 #include "Emu.h"
 
+namespace Native
+{
 #define DIRECTDRAW_VERSION 0x0700
 #include <ddraw.h>
+}
+
+namespace Xbox
+{
 
 // initialize render window
 extern VOID CxbxInitWindow(bool bFullInit);
@@ -1975,5 +1981,7 @@ void WINAPI EMUPATCH(D3D_LazySetPointParams)( void* Device );
 // * patch: D3DDevice_GetMaterial
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_GetMaterial)(D3DMATERIAL8* pMaterial);
+
+} // Xbox
 
 #endif

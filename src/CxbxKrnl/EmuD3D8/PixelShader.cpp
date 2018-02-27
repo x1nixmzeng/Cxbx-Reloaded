@@ -35,6 +35,9 @@
 // ******************************************************************
 #define _XBOXKRNL_LOCAL_
 
+namespace Xbox
+{
+
 /*
 
   This is a parser for the Xbox Pixel Shader Format.
@@ -60,19 +63,9 @@
 	  if necessary as mov_sat x, y
 */
 
-// ******************************************************************
-// * prevent name collisions
-// ******************************************************************
-//namespace xboxkrnl
-//{
-//    #include <xboxkrnl/xboxkrnl.h>
-//};
-
 #include "CxbxKrnl/Emu.h"
 #include "CxbxKrnl/EmuFS.h"
 #include "CxbxKrnl/EmuXTL.h"
-
-//#include <CxbxKrnl/EmuD3D8Types.h> // X_PSH_COMBINECOUNT
 
 #include "CxbxKrnl/CxbxKrnl.h" // For CxbxKrnlCleanup()
 
@@ -6938,3 +6931,5 @@ HRESULT EmuRecompilePshDef( X_D3DPIXELSHADERDEF* pPSDef, LPD3DXBUFFER* ppRecompi
 	return S_OK;
 }
 
+
+} // Xbox

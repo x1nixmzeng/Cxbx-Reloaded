@@ -38,6 +38,9 @@
 #include "CxbxKrnl/Emu.h"
 #include "CxbxKrnl/EmuXTL.h"
 
+namespace Xbox
+{
+
 // deferred state lookup tables
 DWORD *EmuD3DDeferredRenderState;
 DWORD *EmuD3DDeferredTextureState;
@@ -449,3 +452,5 @@ void EmuUpdateDeferredStates()
 
 
 }
+
+} // Xbox

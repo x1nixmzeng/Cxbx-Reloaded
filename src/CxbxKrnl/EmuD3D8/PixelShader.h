@@ -38,6 +38,9 @@
 
 #include "Cxbx.h"
 
+namespace Xbox
+{
+
 // dump pixel shader definition to file
 void DumpPixelShaderDefToFile( X_D3DPIXELSHADERDEF* pPSDef, const char* pszCode );
 // print relevant contents to the debug console
@@ -64,5 +67,7 @@ bool IsValidPixelShader(void);
 inline void null_func_psh(...) { }
 #define DbgPshPrintf null_func_psh
 #endif
+
+} // Xbox
 
 #endif // PIXELSHADER_H

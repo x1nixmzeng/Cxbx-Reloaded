@@ -40,6 +40,9 @@
 #include "CxbxKrnl/EmuXTL.h"
 #include "Convert.h"
 
+namespace Xbox
+{
+
 // About format color components:
 // A = alpha, byte : 0 = fully opaque, 255 = fully transparent
 // X = ignore these component bits
@@ -777,7 +780,7 @@ static const FormatInfo FormatInfos[] = {
 	// could lead to out-of-bounds access violations.
 	// * Each format for which the host D3D8 doesn't have an identical native format,
 	// and does specify color components (other than NoCmpnts), MUST specify this fact
-	// in the warning field, so EmuXBFormatRequiresConversionToARGB can return a conversion
+	// in the warning field, so EmuXBFormat::RequiresConversionToARGB can return a conversion
 	// to ARGB is needed (which is implemented in EMUPATCH(D3DResource_Register).
 
 	/* 0x00 X_D3DFMT_L8           */ {  8, Swzzld, ______L8, D3DFMT_L8        },
@@ -864,7 +867,9 @@ D3DCOLOR DecodeUInt32ToColor(const ComponentEncodingInfo * encoding, const uint3
 	);
 };
 
-const ComponentEncodingInfo *EmuXBFormatComponentEncodingInfo(X_D3DFORMAT Format)
+namespace EmuXBFormat
+{
+const ComponentEncodingInfo *GetComponentEncodingInfo(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8)
 		if (FormatInfos[Format].components > NoCmpnts && FormatInfos[Format].components < ____DXT1)
@@ -874,7 +879,7 @@ const ComponentEncodingInfo *EmuXBFormatComponentEncodingInfo(X_D3DFORMAT Format
 }
 #endif // !OLD_COLOR_CONVERSION
 
-const FormatToARGBRow EmuXBFormatComponentConverter(X_D3DFORMAT Format)
+const FormatToARGBRow ComponentConverter(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8)
 		if (FormatInfos[Format].components != NoCmpnts)
@@ -884,32 +889,32 @@ const FormatToARGBRow EmuXBFormatComponentConverter(X_D3DFORMAT Format)
 }
 
 // Is there a converter available from the supplied format to ARGB?
-bool EmuXBFormatCanBeConvertedToARGB(X_D3DFORMAT Format)
+bool CanBeConvertedToARGB(X_D3DFORMAT Format)
 {
-	const FormatToARGBRow info = EmuXBFormatComponentConverter(Format);
+	const FormatToARGBRow info = EmuXBFormat::ComponentConverter(Format);
 	return (info != nullptr);
 }
 
 // Returns if convertion to ARGB is required. This is the case when
 // the format has a warning message and there's a converter present.
-bool EmuXBFormatRequiresConversionToARGB(X_D3DFORMAT Format)
+bool RequiresConversionToARGB(X_D3DFORMAT Format)
 {
 #ifdef OLD_COLOR_CONVERSION
-	const ComponentEncodingInfo *info = EmuXBFormatComponentEncodingInfo(Format);
+	const ComponentEncodingInfo *info = GetComponentEncodingInfo(Format);
 	// Conversion is required if there's ARGB conversion info present, and the format has a warning message
 	if (info != nullptr)
 		if (FormatInfos[Format].warning != nullptr)
 			return true;
 #else // !OLD_COLOR_CONVERSION
 	if (FormatInfos[Format].warning != nullptr)
-		if (EmuXBFormatCanBeConvertedToARGB(Format))
+		if (EmuXBFormat::CanBeConvertedToARGB(Format))
 			return true;
 #endif // !OLD_COLOR_CONVERSION
 
 	return false;
 }
 
-DWORD EmuXBFormatBitsPerPixel(X_D3DFORMAT Format)
+DWORD BitsPerPixel(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8)
 		if (FormatInfos[Format].bits_per_pixel > 0) // TODO : Remove this
@@ -918,12 +923,12 @@ DWORD EmuXBFormatBitsPerPixel(X_D3DFORMAT Format)
 	return 16; // TODO : 8
 }
 
-DWORD EmuXBFormatBytesPerPixel(X_D3DFORMAT Format)
+DWORD BytesPerPixel(X_D3DFORMAT Format)
 {
-	return ((EmuXBFormatBitsPerPixel(Format) + 4) / 8);
+	return ((EmuXBFormat::BitsPerPixel(Format) + 4) / 8);
 }
 
-BOOL EmuXBFormatIsCompressed(X_D3DFORMAT Format)
+BOOL IsCompressed(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8)
 		return (FormatInfos[Format].stored == Cmprsd);
@@ -931,7 +936,7 @@ BOOL EmuXBFormatIsCompressed(X_D3DFORMAT Format)
 	return false;
 }
 
-BOOL EmuXBFormatIsLinear(X_D3DFORMAT Format)
+BOOL IsLinear(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8)
 		return (FormatInfos[Format].stored == Linear);
@@ -939,7 +944,7 @@ BOOL EmuXBFormatIsLinear(X_D3DFORMAT Format)
 	return (Format == X_D3DFMT_VERTEXDATA); // TODO : false;
 }
 
-BOOL EmuXBFormatIsSwizzled(X_D3DFORMAT Format)
+BOOL IsSwizzled(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8)
 		return (FormatInfos[Format].stored == Swzzld);
@@ -947,7 +952,7 @@ BOOL EmuXBFormatIsSwizzled(X_D3DFORMAT Format)
 	return false;
 }
 
-BOOL EmuXBFormatIsRenderTarget(X_D3DFORMAT Format)
+BOOL IsRenderTarget(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8)
 		return (FormatInfos[Format].usage == RenderTarget);
@@ -955,13 +960,15 @@ BOOL EmuXBFormatIsRenderTarget(X_D3DFORMAT Format)
 	return false;
 }
 
-BOOL EmuXBFormatIsDepthBuffer(X_D3DFORMAT Format)
+BOOL IsDepthBuffer(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8)
 		return (FormatInfos[Format].usage == DepthBuffer);
 
 	return false;
 }
+
+} // EmuXBFormat
 
 D3DFORMAT EmuXB2PC_D3DFormat(X_D3DFORMAT Format)
 {
@@ -1801,3 +1808,5 @@ bool WndMain::ReadSwizzled16bitFormatIntoBitmap(uint32 format, unsigned char *da
 	return true;
 }
 #endif
+
+} //XBL

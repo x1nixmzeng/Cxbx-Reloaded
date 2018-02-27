@@ -36,6 +36,8 @@
 
 #include "Cxbx.h"
 
+namespace Xbox
+{
 // nv2a microcode header
 typedef struct
 {
@@ -91,5 +93,7 @@ VERTEX_DYNAMIC_PATCH *VshGetVertexDynamicPatch(DWORD Handle);
 inline void null_func_vsh(...) { }
 #define DbgVshPrintf null_func_vsh
 #endif
+
+} // ~XBL
 
 #endif

@@ -1515,12 +1515,12 @@ void WndMain::LoadGameLogo()
 		//gameLogoWidth = pDDSHeader->dwWidth;
 		
 		// TODO : Use PixelCopy code here to decode. For now, fake it :
-		CxbxSetPixelContainerHeader(&XboxPixelContainer,
+		Xbox::CxbxSetPixelContainerHeader(&XboxPixelContainer,
 			0, // Common - could be X_D3DCOMMON_TYPE_TEXTURE
 			(UINT)pDDSHeader->dwWidth,
 			(UINT)pDDSHeader->dwHeight,
 			1,
-			EmuPC2XB_D3DFormat(Format),
+			Xbox::EmuPC2XB_D3DFormat(Format),
 			2,
 			(UINT)pDDSHeader->dwPitchOrLinearSize);
 		break;
@@ -1545,7 +1545,7 @@ void WndMain::LoadGameLogo()
 	}
 	}
 
-	void *bitmapData = ConvertD3DTextureToARGB(pXboxPixelContainer, ImageData, &gameLogoWidth, &gameLogoHeight);
+	void *bitmapData = Xbox::ConvertD3DTextureToARGB(pXboxPixelContainer, ImageData, &gameLogoWidth, &gameLogoHeight);
 	if (!bitmapData)
 		return;
 
