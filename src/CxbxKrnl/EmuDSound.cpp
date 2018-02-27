@@ -42,7 +42,11 @@ namespace xboxkrnl {
     #include <xboxkrnl/xboxkrnl.h>
 };
 
+namespace Native
+{
 #include <dsound.h>
+}
+
 #include "CxbxKrnl.h"
 #include "Emu.h"
 #include "EmuFS.h"

@@ -35,8 +35,8 @@
 #define EMUD3D8_H
 
 #include "EmuD3D8Types.h"
+#include "Cxbx.h"
 #include "CxbxKrnl.h"
-#include "Common/Xbe.h"
 #include "Emu.h"
 
 namespace Native
@@ -88,11 +88,11 @@ extern X_D3DBaseTexture *EmuD3DActiveTexture[TEXTURE_STAGES];
 HRESULT WINAPI EMUPATCH(Direct3D_CreateDevice)
 (
     UINT                        Adapter,
-    D3DDEVTYPE                  DeviceType,
+    Native::D3DDEVTYPE                  DeviceType,
     HWND                        hFocusWindow,
     DWORD                       BehaviorFlags,
     X_D3DPRESENT_PARAMETERS    *pPresentationParameters,
-    IDirect3DDevice8          **ppReturnedDeviceInterface
+	Native::IDirect3DDevice8          **ppReturnedDeviceInterface
 );
 
 // ******************************************************************
@@ -105,7 +105,7 @@ BOOL WINAPI EMUPATCH(D3DDevice_IsBusy)();
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_GetCreationParameters)
 (
-	D3DDEVICE_CREATION_PARAMETERS *pParameters
+	Native::D3DDEVICE_CREATION_PARAMETERS *pParameters
 );
 
 #if 0 // patch disabled
@@ -286,7 +286,7 @@ X_D3DSurface* WINAPI EMUPATCH(D3DDevice_GetBackBuffer2)
 VOID WINAPI EMUPATCH(D3DDevice_GetBackBuffer)
 (
     INT                 BackBuffer,
-    D3DBACKBUFFER_TYPE  Type,
+    Native::D3DBACKBUFFER_TYPE  Type,
     X_D3DSurface      **ppBackBuffer
 );
 
@@ -295,7 +295,7 @@ VOID WINAPI EMUPATCH(D3DDevice_GetBackBuffer)
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_SetViewport)
 (
-    CONST D3DVIEWPORT8 *pViewport
+    CONST Native::D3DVIEWPORT8 *pViewport
 );
 
 // ******************************************************************
@@ -303,7 +303,7 @@ VOID WINAPI EMUPATCH(D3DDevice_SetViewport)
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_GetViewport)
 (
-    D3DVIEWPORT8 *pViewport
+	Native::D3DVIEWPORT8 *pViewport
 );
 
 // ******************************************************************
@@ -311,8 +311,8 @@ VOID WINAPI EMUPATCH(D3DDevice_GetViewport)
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_GetViewportOffsetAndScale)
 (
-    D3DXVECTOR4 *pOffset,
-    D3DXVECTOR4 *pScale
+    Native::D3DXVECTOR4 *pOffset,
+    Native::D3DXVECTOR4 *pScale
 );
 
 // ******************************************************************
@@ -502,7 +502,7 @@ HRESULT WINAPI EMUPATCH(D3DDevice_CreateTexture)
     UINT                Levels,
     DWORD               Usage,
     X_D3DFORMAT         Format,
-    D3DPOOL             Pool,
+	Native::D3DPOOL             Pool,
     X_D3DTexture      **ppTexture
 );
 
@@ -517,7 +517,7 @@ HRESULT WINAPI EMUPATCH(D3DDevice_CreateVolumeTexture)
     UINT                 Levels,
     DWORD                Usage,
     X_D3DFORMAT          Format,
-    D3DPOOL              Pool,
+	Native::D3DPOOL              Pool,
     X_D3DVolumeTexture **ppVolumeTexture
 );
 
@@ -530,7 +530,7 @@ HRESULT WINAPI EMUPATCH(D3DDevice_CreateCubeTexture)
     UINT                 Levels,
     DWORD                Usage,
     X_D3DFORMAT          Format,
-    D3DPOOL              Pool,
+	Native::D3DPOOL              Pool,
     X_D3DCubeTexture  **ppCubeTexture
 );
 
@@ -542,7 +542,7 @@ HRESULT WINAPI EMUPATCH(D3DDevice_CreateIndexBuffer)
     UINT                 Length,
     DWORD                Usage,
     X_D3DFORMAT          Format,
-    D3DPOOL              Pool,
+	Native::D3DPOOL              Pool,
     X_D3DIndexBuffer   **ppIndexBuffer
 );
 
@@ -657,7 +657,7 @@ VOID WINAPI EMUPATCH(D3DDevice_SetVertexData4s)
 VOID WINAPI EMUPATCH(D3DDevice_SetVertexDataColor)
 (
     int         Register,
-    D3DCOLOR    Color
+	Native::D3DCOLOR    Color
 );
 
 // ******************************************************************
@@ -680,9 +680,9 @@ VOID WINAPI EMUPATCH(D3DDevice_RunPushBuffer)
 VOID WINAPI EMUPATCH(D3DDevice_Clear)
 (
     DWORD                  Count,
-    CONST D3DRECT         *pRects,
+    CONST Native::D3DRECT         *pRects,
     DWORD                  Flags,
-    D3DCOLOR               Color,
+	Native::D3DCOLOR               Color,
     float                  Z,
     DWORD                  Stencil
 );
@@ -755,9 +755,9 @@ BOOL WINAPI EMUPATCH(D3DResource_IsBusy)
 VOID WINAPI EMUPATCH(Lock2DSurface)
 (
     X_D3DPixelContainer *pPixelContainer,
-    D3DCUBEMAP_FACES     FaceType,
+	Native::D3DCUBEMAP_FACES     FaceType,
     UINT                 Level,
-    D3DLOCKED_RECT      *pLockedRect,
+	Native::D3DLOCKED_RECT      *pLockedRect,
     RECT                *pRect,
     DWORD                Flags
 );
@@ -769,8 +769,8 @@ VOID WINAPI EMUPATCH(Lock3DSurface)
 (
     X_D3DPixelContainer *pPixelContainer,
     UINT				Level,
-	D3DLOCKED_BOX		*pLockedVolume,
-	D3DBOX				*pBox,
+	Native::D3DLOCKED_BOX		*pLockedVolume,
+	Native::D3DBOX				*pBox,
 	DWORD				Flags
 );
 
@@ -799,7 +799,7 @@ VOID WINAPI EMUPATCH(D3DSurface_GetDesc)
 VOID WINAPI EMUPATCH(D3DSurface_LockRect)
 (
     X_D3DResource  *pThis,
-    D3DLOCKED_RECT *pLockedRect,
+	Native::D3DLOCKED_RECT *pLockedRect,
     CONST RECT     *pRect,
     DWORD           Flags
 );
@@ -828,7 +828,7 @@ VOID WINAPI EMUPATCH(D3DTexture_LockRect)
 (
     X_D3DTexture   *pThis,
     UINT            Level,
-    D3DLOCKED_RECT *pLockedRect,
+	Native::D3DLOCKED_RECT *pLockedRect,
     CONST RECT     *pRect,
     DWORD           Flags
 );
@@ -850,8 +850,8 @@ VOID WINAPI EMUPATCH(D3DVolumeTexture_LockBox)
 (
     X_D3DVolumeTexture *pThis,
     UINT                Level,
-    D3DLOCKED_BOX      *pLockedVolume,
-    CONST D3DBOX       *pBox,
+	Native::D3DLOCKED_BOX      *pLockedVolume,
+    CONST Native::D3DBOX       *pBox,
     DWORD               Flags
 );
 
@@ -861,9 +861,9 @@ VOID WINAPI EMUPATCH(D3DVolumeTexture_LockBox)
 VOID WINAPI EMUPATCH(D3DCubeTexture_LockRect)
 (
     X_D3DCubeTexture   *pThis,
-    D3DCUBEMAP_FACES    FaceType,
+	Native::D3DCUBEMAP_FACES    FaceType,
     UINT                Level,
-    D3DLOCKED_RECT     *pLockedBox,
+	Native::D3DLOCKED_RECT     *pLockedBox,
     CONST RECT         *pRect,
     DWORD               Flags
 );
@@ -877,7 +877,7 @@ HRESULT WINAPI EMUPATCH(D3DDevice_CreateVertexBuffer)
     UINT                Length,
     DWORD               Usage,
     DWORD               FVF,
-    D3DPOOL             Pool,
+	Native::D3DPOOL             Pool,
     X_D3DVertexBuffer **ppVertexBuffer
 );
 #endif
@@ -909,7 +909,7 @@ VOID WINAPI EMUPATCH(D3DDevice_UpdateOverlay)
     CONST RECT   *SrcRect,
     CONST RECT   *DstRect,
     BOOL          EnableColorKey,
-    D3DCOLOR      ColorKey
+	Native::D3DCOLOR      ColorKey
 );
 
 // ******************************************************************
@@ -1213,8 +1213,8 @@ VOID WINAPI EMUPATCH(D3DDevice_SetRenderState_YuvEnable)
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_SetTransform)
 (
-    D3DTRANSFORMSTATETYPE State,
-    CONST D3DMATRIX      *pMatrix
+	Native::D3DTRANSFORMSTATETYPE State,
+    CONST Native::D3DMATRIX      *pMatrix
 );
 
 // ******************************************************************
@@ -1222,8 +1222,8 @@ VOID WINAPI EMUPATCH(D3DDevice_SetTransform)
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_GetTransform)
 (
-    D3DTRANSFORMSTATETYPE State,
-    D3DMATRIX            *pMatrix
+	Native::D3DTRANSFORMSTATETYPE State,
+	Native::D3DMATRIX            *pMatrix
 );
 
 // ******************************************************************
@@ -1323,7 +1323,7 @@ VOID WINAPI EMUPATCH(D3DDevice_DrawIndexedVerticesUP)
 VOID WINAPI EMUPATCH(D3DDevice_GetLight)
 (
     DWORD            Index,
-    D3DLIGHT8       *pLight
+	Native::D3DLIGHT8       *pLight
 );
 
 // ******************************************************************
@@ -1332,7 +1332,7 @@ VOID WINAPI EMUPATCH(D3DDevice_GetLight)
 HRESULT WINAPI EMUPATCH(D3DDevice_SetLight)
 (
     DWORD            Index,
-    CONST D3DLIGHT8 *pLight
+    CONST Native::D3DLIGHT8 *pLight
 );
 
 // ******************************************************************
@@ -1340,7 +1340,7 @@ HRESULT WINAPI EMUPATCH(D3DDevice_SetLight)
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_SetMaterial)
 (
-    CONST D3DMATERIAL8 *pMaterial
+    CONST Native::D3DMATERIAL8 *pMaterial
 );
 
 // ******************************************************************
@@ -1414,14 +1414,14 @@ void WINAPI EMUPATCH(D3DDevice_SetSoftDisplayFilter)
 VOID WINAPI EMUPATCH(D3DPalette_Lock)
 (
     X_D3DPalette   *pThis,
-    D3DCOLOR      **ppColors,
+	Native::D3DCOLOR      **ppColors,
     DWORD           Flags
 );
 
 // ******************************************************************
 // * patch: IDirect3DPalette8_Lock2
 // ******************************************************************
-D3DCOLOR * WINAPI EMUPATCH(D3DPalette_Lock2)
+Native::D3DCOLOR * WINAPI EMUPATCH(D3DPalette_Lock2)
 (
     X_D3DPalette   *pThis,
     DWORD           Flags
@@ -1609,8 +1609,8 @@ HRESULT WINAPI EMUPATCH(Direct3D_CheckDeviceMultiSampleType)
 HRESULT WINAPI EMUPATCH(D3D_GetDeviceCaps)
 (
     UINT        Adapter,
-    D3DDEVTYPE  DeviceType,
-    D3DCAPS8    *pCaps
+    Native::D3DDEVTYPE  DeviceType,
+    Native::D3DCAPS8    *pCaps
 );
 #endif
 
@@ -1672,7 +1672,7 @@ VOID WINAPI EMUPATCH(D3DDevice_SetScissors)
 (
     DWORD          Count,
     BOOL           Exclusive,
-    CONST D3DRECT  *pRects
+    CONST Native::D3DRECT  *pRects
 );
 
 // ******************************************************************
@@ -1697,7 +1697,7 @@ VOID WINAPI EMUPATCH(D3DDevice_SetPixelShaderProgram)
 // ******************************************************************
 HRESULT WINAPI EMUPATCH(D3DDevice_CreateStateBlock)
 (
-	D3DSTATEBLOCKTYPE Type,
+	Native::D3DSTATEBLOCKTYPE Type,
 	DWORD			  *pToken
 );
 
@@ -1718,7 +1718,7 @@ HRESULT WINAPI EMUPATCH(D3DDevice_DrawRectPatch)
 (
 	UINT					Handle,
 	CONST FLOAT				*pNumSegs,
-	CONST D3DRECTPATCH_INFO *pRectPatchInfo
+	CONST Native::D3DRECTPATCH_INFO *pRectPatchInfo
 );
 
 // ******************************************************************
@@ -1726,7 +1726,7 @@ HRESULT WINAPI EMUPATCH(D3DDevice_DrawRectPatch)
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_GetProjectionViewportMatrix)
 (
-	D3DXMATRIX *pProjectionViewport
+	Native::D3DXMATRIX *pProjectionViewport
 );
 
 // ******************************************************************
@@ -1831,9 +1831,9 @@ VOID WINAPI EMUPATCH(D3DDevice_DeleteStateBlock)
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_SetModelView)
 (
-	CONST D3DMATRIX *pModelView, 
-	CONST D3DMATRIX *pInverseModelView, 
-	CONST D3DMATRIX *pComposite
+	CONST Native::D3DMATRIX *pModelView, 
+	CONST Native::D3DMATRIX *pInverseModelView, 
+	CONST Native::D3DMATRIX *pComposite
 );
 
 // ******************************************************************
@@ -1862,12 +1862,12 @@ PDWORD WINAPI EMUPATCH(XMETAL_StartPush)(void* Unknown);
 // ******************************************************************
 // * patch: D3DDevice_GetModelView
 // ******************************************************************
-HRESULT WINAPI EMUPATCH(D3DDevice_GetModelView)(D3DXMATRIX* pModelView);
+HRESULT WINAPI EMUPATCH(D3DDevice_GetModelView)(Native::D3DXMATRIX* pModelView);
 
 // ******************************************************************
 // * patch: D3DDevice_SetBackMaterial
 // ******************************************************************
-VOID WINAPI EMUPATCH(D3DDevice_SetBackMaterial)(D3DMATERIAL8* pMaterial);
+VOID WINAPI EMUPATCH(D3DDevice_SetBackMaterial)(Native::D3DMATERIAL8* pMaterial);
 
 #if 0 // patch disabled
 // ******************************************************************
@@ -1924,7 +1924,7 @@ VOID WINAPI EMUPATCH(D3DDevice_GetPushBufferOffset)
 HRESULT WINAPI EMUPATCH(D3DCubeTexture_GetCubeMapSurface)
 (
 	X_D3DCubeTexture*	pThis,
-	D3DCUBEMAP_FACES	FaceType,
+	Native::D3DCUBEMAP_FACES	FaceType,
 	UINT				Level,
 	X_D3DSurface**		ppCubeMapSurface
 );
@@ -1935,7 +1935,7 @@ HRESULT WINAPI EMUPATCH(D3DCubeTexture_GetCubeMapSurface)
 X_D3DSurface* WINAPI EMUPATCH(D3DCubeTexture_GetCubeMapSurface2)
 (
 	X_D3DCubeTexture*	pThis,
-	D3DCUBEMAP_FACES	FaceType,
+	Native::D3DCUBEMAP_FACES	FaceType,
 	UINT				Level
 );
 
@@ -1965,12 +1965,12 @@ VOID WINAPI EMUPATCH(D3DDevice_GetScissors)
 (
 	DWORD	*pCount, 
 	BOOL	*pExclusive, 
-	D3DRECT *pRects
+	Native::D3DRECT *pRects
 );
 // ******************************************************************
 // * patch: D3DDevice_GetBackMaterial
 // ******************************************************************
-VOID WINAPI EMUPATCH(D3DDevice_GetBackMaterial)(D3DMATERIAL8* pMaterial);
+VOID WINAPI EMUPATCH(D3DDevice_GetBackMaterial)(Native::D3DMATERIAL8* pMaterial);
 
 // ******************************************************************
 // * patch: D3D::LazySetPointParams
@@ -1980,7 +1980,7 @@ void WINAPI EMUPATCH(D3D_LazySetPointParams)( void* Device );
 // ******************************************************************
 // * patch: D3DDevice_GetMaterial
 // ******************************************************************
-VOID WINAPI EMUPATCH(D3DDevice_GetMaterial)(D3DMATERIAL8* pMaterial);
+VOID WINAPI EMUPATCH(D3DDevice_GetMaterial)(Native::D3DMATERIAL8* pMaterial);
 
 } // Xbox
 

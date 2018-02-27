@@ -35,11 +35,10 @@
 #define VERTEXBUFFER_H
 
 #include "Cxbx.h"
+#include "../EmuD3D8Types.h"
 
 namespace Xbox
 {
-
-#define MAX_NBR_STREAMS 16
 
 typedef struct _VertexPatchDesc
 {
@@ -59,7 +58,7 @@ VertexPatchDesc;
 typedef struct _PATCHEDSTREAM
 {
     X_D3DVertexBuffer *pOriginalStream;
-    IDirect3DVertexBuffer8 *pPatchedStream;
+    Native::IDirect3DVertexBuffer8 *pPatchedStream;
     UINT                    uiOrigStride;
     UINT                    uiNewStride;
     bool                    bUsedCached;
@@ -143,16 +142,16 @@ extern DWORD                   g_IVBFVF;
 
 struct _D3DIVB
 {
-    D3DXVECTOR3 Position;   // Position
+	Native::D3DXVECTOR3 Position;   // Position
     FLOAT            Rhw;        // Rhw
 	FLOAT			 Blend1;	 // Blend1		
     DWORD       dwSpecular; // Specular
     DWORD       dwDiffuse;  // Diffuse
-    D3DXVECTOR3 Normal;     // Normal
-    D3DXVECTOR2 TexCoord1;  // TexCoord1
-    D3DXVECTOR2 TexCoord2;  // TexCoord2
-    D3DXVECTOR2 TexCoord3;  // TexCoord3
-    D3DXVECTOR2 TexCoord4;  // TexCoord4
+    Native::D3DXVECTOR3 Normal;     // Normal
+    Native::D3DXVECTOR2 TexCoord1;  // TexCoord1
+    Native::D3DXVECTOR2 TexCoord2;  // TexCoord2
+    Native::D3DXVECTOR2 TexCoord3;  // TexCoord3
+    Native::D3DXVECTOR2 TexCoord4;  // TexCoord4
 };
 
 extern _D3DIVB g_IVBTable[IVB_TABLE_SIZE];

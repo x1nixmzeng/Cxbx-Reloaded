@@ -68,7 +68,7 @@ void PCPoll( PXINPUT_STATE Controller )
 	// Get the PC's XInput values
 	// 
 
-	if( XInputGetState( 0, &g_Controller ) != ERROR_SUCCESS )
+	if( Native::XInputGetState( 0, &g_Controller ) != ERROR_SUCCESS )
 		return;
 
 	//

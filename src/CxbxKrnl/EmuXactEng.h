@@ -34,13 +34,17 @@
 #ifndef EMUXACTENG_H
 #define EMUXACTENG_H
 
-#include "Common/Xbe.h"
+#include "Cxbx.h"
 
-#undef FIELD_OFFSET     // prevent macro redefinition warnings
+namespace Native
+{
+	//#undef FIELD_OFFSET     // prevent macro redefinition warnings
 #include <windows.h>
-
 #include <dsound.h>
+}
 
+namespace Xbox
+{
 
 // ******************************************************************
 // * XACT Interfaces
@@ -351,5 +355,7 @@ HRESULT WINAPI EMUPATCH(IXACTEngine_UnRegisterWaveBank)
 	X_XACTEngine*	pThis,
     X_XACTWaveBank*	pWaveBank
 );
+
+} // Xbox
 
 #endif

@@ -36,8 +36,12 @@
 
 #undef FIELD_OFFSET     // prevent macro redefinition warnings
 
+namespace Native
+{
 #include <dsound.h>
 #include <d3dx8math.h>
+}
+
 #include "CxbxKrnl.h"
 #include "Emu.h"
 
@@ -225,11 +229,11 @@ struct X_DSCAPS
 
 struct X_DS3DBUFFER {
     DWORD dwSize;
-    D3DXVECTOR3 vPosition;
-    D3DXVECTOR3 vVelocity;
+    Native::D3DXVECTOR3 vPosition;
+    Native::D3DXVECTOR3 vVelocity;
     DWORD dwInsideConeAngle;
     DWORD  dwOutsideConeAngle;
-    D3DXVECTOR3 vConeOrientation;
+	Native::D3DXVECTOR3 vConeOrientation;
     LONG lConeOutsideVolume;
     FLOAT flMinDistance;
     FLOAT flMaxDistance;
@@ -301,19 +305,19 @@ struct X_CDirectSoundBuffer
     union                       // Offset: 0x20
     {
         PVOID                   pMpcxBuffer;
-        LPDIRECTSOUNDBUFFER8    EmuDirectSoundBuffer8;
+		Native::LPDIRECTSOUNDBUFFER8    EmuDirectSoundBuffer8;
     };
 
     BYTE                    UnknownB[0x0C];     // Offset: 0x24
     PVOID                   EmuBuffer;          // Offset: 0x28
-    DSBUFFERDESC*           EmuBufferDesc;      // Offset: 0x2C
+	Native::DSBUFFERDESC*           EmuBufferDesc;      // Offset: 0x2C
     PVOID                   EmuLockPtr1;        // Offset: 0x30
     DWORD                   EmuLockBytes1;      // Offset: 0x34
     PVOID                   EmuLockPtr2;        // Offset: 0x38
     DWORD                   EmuLockBytes2;      // Offset: 0x3C
     DWORD                   EmuPlayFlags;       // Offset: 0x40
     DWORD                   EmuFlags;           // Offset: 0x44
-    LPDIRECTSOUND3DBUFFER8  EmuDirectSound3DBuffer8;
+	Native::LPDIRECTSOUND3DBUFFER8  EmuDirectSound3DBuffer8;
     DWORD                   EmuLockOffset;
     DWORD                   EmuLockFlags;
     // Play/Loop Region Section
@@ -322,8 +326,8 @@ struct X_CDirectSoundBuffer
     DWORD                   EmuRegionLoopLength;
     DWORD                   EmuRegionPlayStartOffset;
     DWORD                   EmuRegionPlayLength;
-    LPDIRECTSOUNDBUFFER8    EmuDirectSoundBuffer8Region;
-    LPDIRECTSOUND3DBUFFER8  EmuDirectSound3DBuffer8Region;
+    Native::LPDIRECTSOUNDBUFFER8    EmuDirectSoundBuffer8Region;
+    Native::LPDIRECTSOUND3DBUFFER8  EmuDirectSound3DBuffer8Region;
 };
 
 #define WAVE_FORMAT_XBOX_ADPCM 0x0069
@@ -437,10 +441,10 @@ class X_CDirectSoundStream
 
     public:
         // cached data
-        LPDIRECTSOUNDBUFFER8        EmuDirectSoundBuffer8;
-        LPDIRECTSOUND3DBUFFER8      EmuDirectSound3DBuffer8;
+        Native::LPDIRECTSOUNDBUFFER8        EmuDirectSoundBuffer8;
+        Native::LPDIRECTSOUND3DBUFFER8      EmuDirectSound3DBuffer8;
         PVOID                       EmuBuffer;
-        LPDSBUFFERDESC              EmuBufferDesc;
+		Native::LPDSBUFFERDESC              EmuBufferDesc;
         PVOID                       EmuLockPtr1;
         DWORD                       EmuLockBytes1;
         PVOID                       EmuLockPtr2;

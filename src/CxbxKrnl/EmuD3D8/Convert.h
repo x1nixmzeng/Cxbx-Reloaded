@@ -34,7 +34,7 @@
 #ifndef CONVERT_H
 #define CONVERT_H
 
-#include "CxbxKrnl.h"
+#include "../CxbxKrnl.h"
 
 namespace Xbox
 {
@@ -61,7 +61,7 @@ namespace EmuXBFormat
 
 const ComponentEncodingInfo *GetComponentEncodingInfo(X_D3DFORMAT Format);
 
-D3DCOLOR DecodeUInt32ToColor(const ComponentEncodingInfo * encoding, const uint32 value);
+Native::D3DCOLOR DecodeUInt32ToColor(const ComponentEncodingInfo * encoding, const uint32 value);
 #endif // OLD_COLOR_CONVERSION
 
 typedef void(*FormatToARGBRow)(const uint8* src, uint8* dst_argb, int width);
@@ -96,16 +96,16 @@ BOOL IsDepthBuffer(X_D3DFORMAT Format);
 } // EmuXBFormat
 
 // convert from xbox to pc color formats
-extern D3DFORMAT EmuXB2PC_D3DFormat(X_D3DFORMAT Format);
+extern Native::D3DFORMAT EmuXB2PC_D3DFormat(X_D3DFORMAT Format);
 
 // convert from pc to xbox color formats
-extern X_D3DFORMAT EmuPC2XB_D3DFormat(D3DFORMAT Format);
+extern X_D3DFORMAT EmuPC2XB_D3DFormat(Native::D3DFORMAT Format);
 
 // convert from xbox to pc d3d lock flags
 extern DWORD EmuXB2PC_D3DLock(DWORD Flags);
 
 // convert from xbox to pc multisample formats
-extern D3DMULTISAMPLE_TYPE EmuXB2PC_D3DMultiSampleFormat(DWORD Type);
+extern Native::D3DMULTISAMPLE_TYPE EmuXB2PC_D3DMultiSampleFormat(DWORD Type);
 
 /**
 // convert from pc to xbox texture transform state types (unnecessary so far)
@@ -120,16 +120,16 @@ else
 //*/
 
 // convert from xbox to pc texture transform state types
-inline D3DTRANSFORMSTATETYPE EmuXB2PC_D3DTS(D3DTRANSFORMSTATETYPE State)
+inline Native::D3DTRANSFORMSTATETYPE EmuXB2PC_D3DTS(Native::D3DTRANSFORMSTATETYPE State)
 {
     if((uint32)State < 2)
-        return (D3DTRANSFORMSTATETYPE)(State + 2);
+        return (Native::D3DTRANSFORMSTATETYPE)(State + 2);
     else if((uint32)State < 6)
-        return (D3DTRANSFORMSTATETYPE)(State + 14);
-    else if((uint32)State < 10)
-        return D3DTS_WORLDMATRIX(State-6);
+        return (Native::D3DTRANSFORMSTATETYPE)(State + 14);
+    //else if((uint32)State < 10)
+    //    return D3DTS_WORLDMATRIX(State-6); // FIXME this is a define, not a constant
     else if((uint32)State == 10) // Max
-        return (D3DTRANSFORMSTATETYPE)(D3DTS_TEXTURE7 + 1);
+        return (Native::D3DTRANSFORMSTATETYPE)(Native::D3DTS_TEXTURE7 + 1);
 
     CxbxKrnlCleanup("Unknown Transform State Type (%d)", State);
 
@@ -137,94 +137,94 @@ inline D3DTRANSFORMSTATETYPE EmuXB2PC_D3DTS(D3DTRANSFORMSTATETYPE State)
 }
 
 // convert from xbox to pc blend ops
-inline D3DBLENDOP EmuXB2PC_D3DBLENDOP(X_D3DBLENDOP Value)
+inline Native::D3DBLENDOP EmuXB2PC_D3DBLENDOP(X_D3DBLENDOP Value)
 {
     switch(Value)
     {
         case 0x8006:
-            return D3DBLENDOP_ADD;
+            return Native::D3DBLENDOP_ADD;
 		case 0x800a:
-			return D3DBLENDOP_SUBTRACT;
+			return Native::D3DBLENDOP_SUBTRACT;
 		case 0x800b:
-			return D3DBLENDOP_REVSUBTRACT;
+			return Native::D3DBLENDOP_REVSUBTRACT;
 		case 0x8007:
-			return D3DBLENDOP_MIN;
+			return Native::D3DBLENDOP_MIN;
 		case 0x8008:
-			return D3DBLENDOP_MAX;
+			return Native::D3DBLENDOP_MAX;
 		case 0xF006:
 			{
 				EmuWarning("D3DBLENDOP_ADDSIGNED is not supported!");
-				return D3DBLENDOP_ADD;
+				return Native::D3DBLENDOP_ADD;
 			};
 		case 0xF005:
 			{
 				EmuWarning("D3DBLENDOP_REVSUBTRACTSIGNED is not supported!");
-				return D3DBLENDOP_REVSUBTRACT;
+				return Native::D3DBLENDOP_REVSUBTRACT;
 			}
     }
 
     EmuWarning("Unknown D3DBLENDOP (0x%.08X)", Value);
 
-    return (D3DBLENDOP)D3DBLENDOP_ADD;
+    return (Native::D3DBLENDOP)Native::D3DBLENDOP_ADD;
 }
 
 // convert from xbox to pc blend types 
-inline D3DBLEND EmuXB2PC_D3DBLEND(X_D3DBLEND Value)
+inline Native::D3DBLEND EmuXB2PC_D3DBLEND(X_D3DBLEND Value)
 {
     if(Value < 2)
-        return (D3DBLEND)(Value + 1);
+        return (Native::D3DBLEND)(Value + 1);
     else if(Value < 0x309)
-        return (D3DBLEND)((Value & 0xF) + 3);
+        return (Native::D3DBLEND)((Value & 0xF) + 3);
 
     EmuWarning("Unknown Xbox D3DBLEND Extension (0x%.08X)", Value);
-	return D3DBLEND_ONE;
+	return Native::D3DBLEND_ONE;
 }
 
 // convert from xbox to pc comparison functions
-inline D3DCMPFUNC EmuXB2PC_D3DCMPFUNC(X_D3DCMPFUNC Value)
+inline Native::D3DCMPFUNC EmuXB2PC_D3DCMPFUNC(X_D3DCMPFUNC Value)
 {
-    return (D3DCMPFUNC)((Value & 0xF) + 1);
+    return (Native::D3DCMPFUNC)((Value & 0xF) + 1);
 }
 
 // convert from xbox to pc fill modes
-inline D3DFILLMODE EmuXB2PC_D3DFILLMODE(X_D3DFILLMODE Value)
+inline Native::D3DFILLMODE EmuXB2PC_D3DFILLMODE(X_D3DFILLMODE Value)
 {
-    return (D3DFILLMODE)((Value & 0xF) + 1);
+    return (Native::D3DFILLMODE)((Value & 0xF) + 1);
 }
 
 // convert from xbox to pc shade modes
-inline D3DSHADEMODE EmuXB2PC_D3DSHADEMODE(X_D3DSHADEMODE Value)
+inline Native::D3DSHADEMODE EmuXB2PC_D3DSHADEMODE(X_D3DSHADEMODE Value)
 {
-    return (D3DSHADEMODE)((Value & 0x3) + 1);
+    return (Native::D3DSHADEMODE)((Value & 0x3) + 1);
 }
 
 // convert from xbox to pc stencilop modes
-inline D3DSTENCILOP EmuXB2PC_D3DSTENCILOP(X_D3DSTENCILOP Value)
+inline Native::D3DSTENCILOP EmuXB2PC_D3DSTENCILOP(X_D3DSTENCILOP Value)
 {
 	switch(Value)
 	{
 	case 0x1e00:
-		return D3DSTENCILOP_KEEP;
+		return Native::D3DSTENCILOP_KEEP;
 	case 0:
-		return D3DSTENCILOP_ZERO;
+		return Native::D3DSTENCILOP_ZERO;
 	case 0x1e01:
-		return D3DSTENCILOP_REPLACE;
+		return Native::D3DSTENCILOP_REPLACE;
 	case 0x1e02:
-		return D3DSTENCILOP_INCRSAT;
+		return Native::D3DSTENCILOP_INCRSAT;
 	case 0x1e03:
-		return D3DSTENCILOP_DECRSAT;
+		return Native::D3DSTENCILOP_DECRSAT;
 	case 0x150a:
-		return D3DSTENCILOP_INVERT;
+		return Native::D3DSTENCILOP_INVERT;
 	case 0x8507:
-		return D3DSTENCILOP_INCR;
+		return Native::D3DSTENCILOP_INCR;
 	case 0x8508:
-		return D3DSTENCILOP_DECR;
+		return Native::D3DSTENCILOP_DECR;
 
 	default:
 		CxbxKrnlCleanup("Unknown D3DSTENCILOP (0x%.08X)", Value);
 	}
 
-	return (D3DSTENCILOP) Value;
+	return (Native::D3DSTENCILOP) Value;
 }
 
 // table used for vertex->primitive count conversion
@@ -243,13 +243,13 @@ inline int EmuD3DPrimitive2VertexCount(X_D3DPRIMITIVETYPE PrimitiveType, int Pri
 }
 
 // conversion table for xbox->pc primitive types
-extern D3DPRIMITIVETYPE EmuPrimitiveTypeLookup[];
+extern Native::D3DPRIMITIVETYPE EmuPrimitiveTypeLookup[];
 
 // convert xbox->pc primitive type
-inline D3DPRIMITIVETYPE EmuXB2PC_D3DPrimitiveType(X_D3DPRIMITIVETYPE PrimitiveType)
+inline Native::D3DPRIMITIVETYPE EmuXB2PC_D3DPrimitiveType(X_D3DPRIMITIVETYPE PrimitiveType)
 {
     if((DWORD)PrimitiveType == 0x7FFFFFFF)
-        return D3DPT_FORCE_DWORD;
+        return Native::D3DPT_FORCE_DWORD;
 
     return EmuPrimitiveTypeLookup[PrimitiveType];
 }
@@ -1788,7 +1788,7 @@ typedef struct _RenderStateInfo {
 	WORD V;    // The XDK version since which a render state was introduced (using the 5911 declarations as a base).
 	TXBType T; // The Xbox data type. Defaults to xt_Unknown.
 	DWORD M;   // The related push buffer method. Not always a 1-to-1 mapping. Needs push-buffer interpretation & conversion code.
-	D3DRENDERSTATETYPE PC; // Map XBox to PC render state. Defaults to D3DRS_UNSUPPORTED.
+	Native::D3DRENDERSTATETYPE PC; // Map XBox to PC render state. Defaults to D3DRS_UNSUPPORTED.
 	char *N;   // XDK notes. Defaults to ''.
 }
 RenderStateInfo;

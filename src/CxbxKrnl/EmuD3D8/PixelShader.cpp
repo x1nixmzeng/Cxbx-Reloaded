@@ -75,6 +75,7 @@ typedef uint8_t uint8; // TODO : Remove
 
 #include <process.h>
 #include <locale.h>
+#include <string>
 
 //#include "EmuD3DPixelShader.h"
 

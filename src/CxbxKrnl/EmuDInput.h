@@ -34,22 +34,29 @@
 #ifndef EMUDINPUT_H
 #define EMUDINPUT_H
 
-#define DIRECTINPUT_VERSION 0x0800
-#include <dinput.h>
+//namespace Native
+//{
+//	#define DIRECTINPUT_VERSION 0x0800
+//	#include <dinput.h>
+//}
 
-// ******************************************************************
-// * patch: DInputInit
-// ******************************************************************
-extern bool EmuDInputInit();
+namespace Xbox
+{
 
-// ******************************************************************
-// * patch: DInputCleanup
-// ******************************************************************
-extern void EmuDInputCleanup();
+	// ******************************************************************
+	// * patch: DInputInit
+	// ******************************************************************
+	bool EmuDInputInit();
 
-// ******************************************************************
-// * patch: DInputPoll
-// ******************************************************************
-extern void EmuDInputPoll(Xbox::PXINPUT_STATE Controller);
+	// ******************************************************************
+	// * patch: DInputCleanup
+	// ******************************************************************
+	void EmuDInputCleanup();
+
+	// ******************************************************************
+	// * patch: DInputPoll
+	// ******************************************************************
+	void EmuDInputPoll(Xbox::PXINPUT_STATE Controller);
+}
 
 #endif

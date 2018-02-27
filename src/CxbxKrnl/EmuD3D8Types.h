@@ -34,11 +34,17 @@
 #ifndef EMUD3D8TYPES_H
 #define EMUD3D8TYPES_H
 
-// include direct3d 8x headers
-#define DIRECT3D_VERSION 0x0800
-#include <d3d8.h>
-#include <d3dx8tex.h>
-#include <d3d8types.h>
+namespace Native
+{
+	// include direct3d 8x headers
+	#define DIRECT3D_VERSION 0x0800
+	#include <d3d8.h>
+	#include <d3dx8tex.h>
+	#include <d3d8types.h>
+} // Native
+
+namespace Xbox
+{
 
 // TODO: fill out these enumeration tables for convienance
 typedef DWORD X_D3DBLENDOP;
@@ -292,7 +298,7 @@ typedef struct _X_D3DSURFACE_DESC
     X_D3DRESOURCETYPE   Type;
     DWORD               Usage;
     UINT                Size;
-    D3DMULTISAMPLE_TYPE MultiSampleType;
+    Native::D3DMULTISAMPLE_TYPE MultiSampleType;
     UINT                Width;
     UINT                Height;
 }
@@ -305,9 +311,9 @@ typedef struct _X_D3DPRESENT_PARAMETERS
     X_D3DFORMAT         BackBufferFormat;
     UINT                BackBufferCount;
 
-    D3DMULTISAMPLE_TYPE MultiSampleType;
+	Native::D3DMULTISAMPLE_TYPE MultiSampleType;
 
-    D3DSWAPEFFECT       SwapEffect;
+	Native::D3DSWAPEFFECT       SwapEffect;
     HWND                hDeviceWindow;
     BOOL                Windowed;
     BOOL                EnableAutoDepthStencil;
@@ -319,8 +325,8 @@ typedef struct _X_D3DPRESENT_PARAMETERS
     // The Windows DirectX8 variant ends here
     // This check guarantees identical layout, compared to Direct3D8._D3DPRESENT_PARAMETERS_:
     // assert(offsetof(X_D3DPRESENT_PARAMETERS, BufferSurfaces) == sizeof(_D3DPRESENT_PARAMETERS_));
-    IDirect3DSurface8  *BufferSurfaces[3];
-    IDirect3DSurface8  *DepthStencilSurface;
+    Native::IDirect3DSurface8  *BufferSurfaces[3];
+    Native::IDirect3DSurface8  *DepthStencilSurface;
 }
 X_D3DPRESENT_PARAMETERS;
 
@@ -1111,5 +1117,7 @@ const int MAX_NBR_STREAMS = 16;
 
 #define X_D3DVSD_EXTINFOSHIFT 0
 #define X_D3DVSD_EXTINFOMASK (0xFFFFFF << X_D3DVSD_EXTINFOSHIFT)
+
+} // Xbox
 
 #endif

@@ -39,7 +39,10 @@
 #include "DlgAudioConfig.h"
 #include "ResCxbx.h"
 
+namespace Xbox
+{
 #include <dsound.h>
+}
 
 /*! windows dialog procedure */
 static INT_PTR CALLBACK DlgAudioConfigProc(HWND hWndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -108,7 +111,7 @@ INT_PTR CALLBACK DlgAudioConfigProc(HWND hWndDlg, UINT uMsg, WPARAM wParam, LPAR
 
                 SendMessage(g_hAudioAdapter, CB_RESETCONTENT, 0, 0);
 
-                DirectSoundEnumerate(&DSEnumProc, NULL);
+                Native::DirectSoundEnumerate(&DSEnumProc, NULL);
             }
 
             /*! refresh UI based on currently selected audio adapter */

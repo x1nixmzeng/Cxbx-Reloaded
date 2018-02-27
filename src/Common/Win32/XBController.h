@@ -202,7 +202,7 @@ class XBController : public Error
         // ******************************************************************
         struct InputDevice
         {
-            LPDIRECTINPUTDEVICE8 m_Device;
+            Native::LPDIRECTINPUTDEVICE8 m_Device;
             int                       m_Flags;
         }
         m_InputDevice[XBCTRL_MAX_DEVICES];

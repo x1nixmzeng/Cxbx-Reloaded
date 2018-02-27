@@ -49,14 +49,14 @@
 #include "EmuXactEng.h"
 #include "EmuXInput.h"
 
-namespace XTL
+namespace Xbox
 {
-	extern LPDIRECT3DDEVICE8   g_pD3DDevice8;
+	extern Native::LPDIRECT3DDEVICE8   g_pD3DDevice8;
 	extern DWORD                    g_CurrentVertexShader;
-	extern PIXEL_SHADER *		g_CurrentPixelShader;
+	extern Xbox::PIXEL_SHADER *		g_CurrentPixelShader;
 	extern BOOL                     g_bFakePixelShaderLoaded;
 	extern BOOL                     g_bIsFauxFullscreen;
 
-} // XTL
+} // Xbox
 
 #endif

@@ -45,12 +45,12 @@
 /*! windows dialog procedure */
 static INT_PTR CALLBACK DlgControllerConfigProc(HWND hWndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 /*! configure input for the specified controller object */
-static VOID ConfigureInput(HWND hWndDlg, HWND hWndButton, XBCtrlObject object);
+static VOID ConfigureInput(HWND hWndDlg, HWND hWndButton, Xbox::XBCtrlObject object);
 /*! enable / disable button windows */
 static VOID EnableButtonWindows(HWND hWndDlg, HWND hExclude, BOOL bEnable);
 
 /*! controller configuration */
-static XBController g_XBController;
+static Xbox::XBController g_XBController;
 /*! changes flag */
 static BOOL g_bHasChanges = FALSE;
 
@@ -119,99 +119,99 @@ INT_PTR CALLBACK DlgControllerConfigProc(HWND hWndDlg, UINT uMsg, WPARAM wParam,
                     break;
 
                 case IDC_SET_LEFT_POSY:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_LTHUMBPOSY);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_LTHUMBPOSY);
                     break;
 
                 case IDC_SET_LEFT_NEGY:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_LTHUMBNEGY);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_LTHUMBNEGY);
                     break;
 
                 case IDC_SET_LEFT_POSX:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_LTHUMBPOSX);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_LTHUMBPOSX);
                     break;
 
                 case IDC_SET_LEFT_NEGX:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_LTHUMBNEGX);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_LTHUMBNEGX);
                     break;
 
                 case IDC_SET_RIGHT_POSY:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_RTHUMBPOSY);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_RTHUMBPOSY);
                     break;
 
                 case IDC_SET_RIGHT_NEGY:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_RTHUMBNEGY);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_RTHUMBNEGY);
                     break;
 
                 case IDC_SET_RIGHT_POSX:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_RTHUMBPOSX);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_RTHUMBPOSX);
                     break;
 
                 case IDC_SET_RIGHT_NEGX:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_RTHUMBNEGX);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_RTHUMBNEGX);
                     break;
 
                 case IDC_SET_X:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_X);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_X);
                     break;
 
                 case IDC_SET_Y:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_Y);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_Y);
                     break;
 
                 case IDC_SET_A:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_A);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_A);
                     break;
 
                 case IDC_SET_B:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_B);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_B);
                     break;
 
                 case IDC_SET_WHITE:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_WHITE);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_WHITE);
                     break;
 
                 case IDC_SET_BLACK:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_BLACK);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_BLACK);
                     break;
 
                 case IDC_SET_LTRIGGER:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_LTRIGGER);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_LTRIGGER);
                     break;
 
                 case IDC_SET_RTRIGGER:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_RTRIGGER);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_RTRIGGER);
                     break;
 
                 case IDC_SET_DPAD_UP:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_DPADUP);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_DPADUP);
                     break;
 
                 case IDC_SET_DPAD_DOWN:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_DPADDOWN);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_DPADDOWN);
                     break;
 
                 case IDC_SET_DPAD_LEFT:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_DPADLEFT);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_DPADLEFT);
                     break;
 
                 case IDC_SET_DPAD_RIGHT:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_DPADRIGHT);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_DPADRIGHT);
                     break;
 
                 case IDC_SET_BACK:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_BACK);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_BACK);
                     break;
 
                 case IDC_SET_START:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_START);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_START);
                     break;
 
                 case IDC_SET_LTHUMB:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_LTHUMB);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_LTHUMB);
                     break;
 
                 case IDC_SET_RTHUMB:
-                    ConfigureInput(hWndDlg, hWndButton, XBCTRL_OBJECT_RTHUMB);
+                    ConfigureInput(hWndDlg, hWndButton, Xbox::XBCTRL_OBJECT_RTHUMB);
                     break;
 
                 case IDC_CONFIGURE_ALL:
@@ -221,34 +221,34 @@ INT_PTR CALLBACK DlgControllerConfigProc(HWND hWndDlg, UINT uMsg, WPARAM wParam,
                     struct _ConfigObj
                     {
                         int idcVal;
-                        XBCtrlObject ctrl;
+                        Xbox::XBCtrlObject ctrl;
                     }
                     configObj[] =
                     {
-                        { IDC_SET_X, XBCTRL_OBJECT_X },
-                        { IDC_SET_Y, XBCTRL_OBJECT_Y },
-                        { IDC_SET_A, XBCTRL_OBJECT_A },
-                        { IDC_SET_B, XBCTRL_OBJECT_B },
-                        { IDC_SET_WHITE, XBCTRL_OBJECT_WHITE },
-                        { IDC_SET_BLACK, XBCTRL_OBJECT_BLACK },
-                        { IDC_SET_LTRIGGER, XBCTRL_OBJECT_LTRIGGER },
-                        { IDC_SET_RTRIGGER, XBCTRL_OBJECT_RTRIGGER },
-                        { IDC_SET_DPAD_UP, XBCTRL_OBJECT_DPADUP },
-                        { IDC_SET_DPAD_DOWN, XBCTRL_OBJECT_DPADDOWN },
-                        { IDC_SET_DPAD_LEFT, XBCTRL_OBJECT_DPADLEFT },
-                        { IDC_SET_DPAD_RIGHT, XBCTRL_OBJECT_DPADRIGHT },
-                        { IDC_SET_BACK, XBCTRL_OBJECT_BACK },
-                        { IDC_SET_START, XBCTRL_OBJECT_START },
-                        { IDC_SET_LTHUMB, XBCTRL_OBJECT_LTHUMB },
-                        { IDC_SET_RTHUMB, XBCTRL_OBJECT_RTHUMB },
-                        { IDC_SET_LEFT_POSY, XBCTRL_OBJECT_LTHUMBPOSY },
-                        { IDC_SET_LEFT_NEGY, XBCTRL_OBJECT_LTHUMBNEGY },
-                        { IDC_SET_LEFT_NEGX, XBCTRL_OBJECT_LTHUMBNEGX },
-                        { IDC_SET_LEFT_POSX, XBCTRL_OBJECT_LTHUMBPOSX },
-                        { IDC_SET_RIGHT_POSY, XBCTRL_OBJECT_RTHUMBPOSY },
-                        { IDC_SET_RIGHT_NEGY, XBCTRL_OBJECT_RTHUMBNEGY },
-                        { IDC_SET_RIGHT_NEGX, XBCTRL_OBJECT_RTHUMBNEGX },
-                        { IDC_SET_RIGHT_POSX, XBCTRL_OBJECT_RTHUMBPOSX },
+                        { IDC_SET_X, Xbox::XBCTRL_OBJECT_X },
+                        { IDC_SET_Y, Xbox::XBCTRL_OBJECT_Y },
+                        { IDC_SET_A, Xbox::XBCTRL_OBJECT_A },
+                        { IDC_SET_B, Xbox::XBCTRL_OBJECT_B },
+                        { IDC_SET_WHITE, Xbox::XBCTRL_OBJECT_WHITE },
+                        { IDC_SET_BLACK, Xbox::XBCTRL_OBJECT_BLACK },
+                        { IDC_SET_LTRIGGER, Xbox::XBCTRL_OBJECT_LTRIGGER },
+                        { IDC_SET_RTRIGGER, Xbox::XBCTRL_OBJECT_RTRIGGER },
+                        { IDC_SET_DPAD_UP, Xbox::XBCTRL_OBJECT_DPADUP },
+                        { IDC_SET_DPAD_DOWN, Xbox::XBCTRL_OBJECT_DPADDOWN },
+                        { IDC_SET_DPAD_LEFT, Xbox::XBCTRL_OBJECT_DPADLEFT },
+                        { IDC_SET_DPAD_RIGHT, Xbox::XBCTRL_OBJECT_DPADRIGHT },
+                        { IDC_SET_BACK, Xbox::XBCTRL_OBJECT_BACK },
+                        { IDC_SET_START, Xbox::XBCTRL_OBJECT_START },
+                        { IDC_SET_LTHUMB, Xbox::XBCTRL_OBJECT_LTHUMB },
+                        { IDC_SET_RTHUMB, Xbox::XBCTRL_OBJECT_RTHUMB },
+                        { IDC_SET_LEFT_POSY, Xbox::XBCTRL_OBJECT_LTHUMBPOSY },
+                        { IDC_SET_LEFT_NEGY, Xbox::XBCTRL_OBJECT_LTHUMBNEGY },
+                        { IDC_SET_LEFT_NEGX, Xbox::XBCTRL_OBJECT_LTHUMBNEGX },
+                        { IDC_SET_LEFT_POSX, Xbox::XBCTRL_OBJECT_LTHUMBPOSX },
+                        { IDC_SET_RIGHT_POSY, Xbox::XBCTRL_OBJECT_RTHUMBPOSY },
+                        { IDC_SET_RIGHT_NEGY, Xbox::XBCTRL_OBJECT_RTHUMBNEGY },
+                        { IDC_SET_RIGHT_NEGX, Xbox::XBCTRL_OBJECT_RTHUMBNEGX },
+                        { IDC_SET_RIGHT_POSX, Xbox::XBCTRL_OBJECT_RTHUMBPOSX },
                     };
 
                     for(v=0;v<sizeof(configObj) / sizeof(_ConfigObj);v++)
@@ -266,7 +266,7 @@ INT_PTR CALLBACK DlgControllerConfigProc(HWND hWndDlg, UINT uMsg, WPARAM wParam,
     return FALSE;
 }
 
-VOID ConfigureInput(HWND hWndDlg, HWND hWndButton, XBCtrlObject object)
+VOID ConfigureInput(HWND hWndDlg, HWND hWndButton, Xbox::XBCtrlObject object)
 {
     static bool bConfigDone = true;
 

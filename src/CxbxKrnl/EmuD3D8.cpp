@@ -73,7 +73,7 @@ namespace Xbox
 
 // Global(s)
 HWND                                g_hEmuWindow   = NULL; // rendering window
-LPDIRECT3DDEVICE8              g_pD3DDevice8  = NULL; // Direct3D8 Device
+Native::LPDIRECT3DDEVICE8              g_pD3DDevice8  = NULL; // Direct3D8 Device
 Native::LPDIRECTDRAWSURFACE7           g_pDDSPrimary  = NULL; // DirectDraw7 Primary Surface
 Native::LPDIRECTDRAWCLIPPER            g_pDDClipper   = nullptr; // DirectDraw7 Clipper
 DWORD                               g_CurrentVertexShader = 0;
@@ -119,8 +119,8 @@ static unsigned int					g_Frames = 0;				 // Used for benchmarking/fps count
 
 // D3D based variables
 static GUID                         g_ddguid;               // DirectDraw driver GUID
-static LPDIRECT3D8             g_pD3D8 = NULL;			// Direct3D8
-static D3DCAPS8                g_D3DCaps;              // Direct3D8 Caps
+static Native::LPDIRECT3D8             g_pD3D8 = NULL;			// Direct3D8
+static Native::D3DCAPS8                g_D3DCaps;              // Direct3D8 Caps
 
 // wireframe toggle
 static int                          g_iWireframe    = 0;

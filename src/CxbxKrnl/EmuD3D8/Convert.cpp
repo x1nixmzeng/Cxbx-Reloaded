@@ -181,7 +181,7 @@ void X1R5G5B5ToARGBRow_C(const uint8* src_x1r5g5b5, uint8* dst_argb,
 }
 
 void A8R8G8B8ToARGBRow_C(const uint8* src_a8r8g8b8, uint8* dst_argb, int width) {
-	memcpy(dst_argb, src_a8r8g8b8, width * sizeof(D3DCOLOR)); // Cxbx pass-through
+	memcpy(dst_argb, src_a8r8g8b8, width * sizeof(Native::D3DCOLOR)); // Cxbx pass-through
 }
 
 void X8R8G8B8ToARGBRow_C(const uint8* src_x8r8g8b8, uint8* dst_argb, int width) {
@@ -723,7 +723,7 @@ void ______P8ToARGBRow_C(const uint8* src_p8, uint8* dst_argb, int width) {
 	}
 }
 
-static const FormatToARGBRow ComponentConverters[] = {
+static const EmuXBFormat::FormatToARGBRow ComponentConverters[] = {
 	nullptr, // NoCmpnts,
 	ARGB1555ToARGBRow_C, // A1R5G5B5,
 	X1R5G5B5ToARGBRow_C, // X1R5G5B5, // Test : Convert X into 255
@@ -767,7 +767,7 @@ typedef struct _FormatInfo {
 	uint8_t bits_per_pixel;
 	_FormatStorage stored;
 	_ComponentEncoding components;
-	D3DFORMAT pc;
+	Native::D3DFORMAT pc;
 	_FormatUsage usage;
 	char *warning;
 } FormatInfo;
@@ -857,8 +857,10 @@ static const FormatInfo FormatInfos[] = {
 };
 
 #ifdef OLD_COLOR_CONVERSION
-D3DCOLOR DecodeUInt32ToColor(const ComponentEncodingInfo * encoding, const uint32 value)
+Native::D3DCOLOR DecodeUInt32ToColor(const ComponentEncodingInfo * encoding, const uint32 value)
 {
+	using namespace Native;
+
 	return D3DCOLOR_ARGB(
 		((encoding->AShift < 0) ? 255 : (value >> encoding->AShift)) << (8 - encoding->ABits),
 		((encoding->RShift < 0) ? 255 : (value >> encoding->RShift)) << (8 - encoding->RBits),
@@ -970,7 +972,7 @@ BOOL IsDepthBuffer(X_D3DFORMAT Format)
 
 } // EmuXBFormat
 
-D3DFORMAT EmuXB2PC_D3DFormat(X_D3DFORMAT Format)
+Native::D3DFORMAT EmuXB2PC_D3DFormat(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8 && Format != -1 /*X_D3DFMT_UNKNOWN*/) // The last bit prevents crashing (Metal Slug 3)
 	{
@@ -983,107 +985,108 @@ D3DFORMAT EmuXB2PC_D3DFormat(X_D3DFORMAT Format)
 
 	switch (Format) {
 	case X_D3DFMT_VERTEXDATA:
-		return D3DFMT_VERTEXDATA;
+		return Native::D3DFMT_VERTEXDATA;
 	case ((X_D3DFORMAT)0xffffffff):
-		return D3DFMT_UNKNOWN; // TODO -oCXBX: Not sure if this counts as swizzled or not...
+		return Native::D3DFMT_UNKNOWN; // TODO -oCXBX: Not sure if this counts as swizzled or not...
 	default:
 		CxbxKrnlCleanup("EmuXB2PC_D3DFormat: Unknown Format (0x%.08X)", Format);
 	}
 
-	return D3DFMT_UNKNOWN;
+	return Native::D3DFMT_UNKNOWN;
 }
 
-X_D3DFORMAT EmuPC2XB_D3DFormat(D3DFORMAT Format)
+X_D3DFORMAT EmuPC2XB_D3DFormat(Native::D3DFORMAT Format)
 {
 	X_D3DFORMAT result;
     switch(Format)
     {
-	case D3DFMT_YUY2:
+	case Native::D3DFMT_YUY2:
 		result = X_D3DFMT_YUY2;
 		break;
-	case D3DFMT_UYVY:
+	case Native::D3DFMT_UYVY:
 		result = X_D3DFMT_UYVY;
 		break;
-	case D3DFMT_R5G6B5:
+	case Native::D3DFMT_R5G6B5:
 		result = X_D3DFMT_LIN_R5G6B5;
 		break; // Linear
 			   //      Result := X_D3DFMT_R5G6B5; // Swizzled
 
-	case D3DFMT_D24S8:
+	case Native::D3DFMT_D24S8:
 		result = X_D3DFMT_D24S8;
 		break; // Swizzled
 
-	case D3DFMT_DXT5:
+	case Native::D3DFMT_DXT5:
 		result = X_D3DFMT_DXT5;
 		break; // Compressed
 
-	case D3DFMT_DXT4:
+	case Native::D3DFMT_DXT4:
 		result = X_D3DFMT_DXT4; // Same as X_D3DFMT_DXT5
 		break; // Compressed
 
-	case D3DFMT_DXT3:
+	case Native::D3DFMT_DXT3:
 		result = X_D3DFMT_DXT3;
 		break; // Compressed
 
-	case D3DFMT_DXT2:
+	case Native::D3DFMT_DXT2:
 		result = X_D3DFMT_DXT2; // Same as X_D3DFMT_DXT3
 		break; // Compressed
 
-	case D3DFMT_DXT1:
+	case Native::D3DFMT_DXT1:
 		result = X_D3DFMT_DXT1;
 		break; // Compressed
 
-	case D3DFMT_A1R5G5B5:
+	case Native::D3DFMT_A1R5G5B5:
 		result = X_D3DFMT_LIN_A1R5G5B5;
 		break; // Linear
 
-	case D3DFMT_X8R8G8B8:
+	case Native::D3DFMT_X8R8G8B8:
 		result = X_D3DFMT_LIN_X8R8G8B8;
 		break; // Linear
 			   //      Result := X_D3DFMT_X8R8G8B8; // Swizzled
 
-	case D3DFMT_A8R8G8B8:
+	case Native::D3DFMT_A8R8G8B8:
 		//      Result := X_D3DFMT_LIN_A8R8G8B8; // Linear
 		result = X_D3DFMT_A8R8G8B8;
 		break;
-	case D3DFMT_A4R4G4B4:
+	case Native::D3DFMT_A4R4G4B4:
 		result = X_D3DFMT_LIN_A4R4G4B4;
 		break; // Linear
 			   //      Result := X_D3DFMT_A4R4G4B4; // Swizzled
-	case D3DFMT_X1R5G5B5:	// Linear
+	case Native::D3DFMT_X1R5G5B5:	// Linear
 		result = X_D3DFMT_LIN_X1R5G5B5;
 		break;
-	case D3DFMT_A8:
+	case Native::D3DFMT_A8:
 		result = X_D3DFMT_A8;
 		break;
-	case D3DFMT_L8:
+	case Native::D3DFMT_L8:
 		result = X_D3DFMT_LIN_L8;
 		break; // Linear
 			   //        Result := X_D3DFMT_L8; // Swizzled
 
-	case D3DFMT_D16: case D3DFMT_D16_LOCKABLE:
+	case Native::D3DFMT_D16:
+	case Native::D3DFMT_D16_LOCKABLE:
 		result = X_D3DFMT_D16_LOCKABLE;
 		break; // Swizzled
 
-	case D3DFMT_UNKNOWN:
+	case Native::D3DFMT_UNKNOWN:
 		result = ((X_D3DFORMAT)0xffffffff);
 		break;
 
 		// Dxbx additions :
 
-	case D3DFMT_L6V5U5:
+	case Native::D3DFMT_L6V5U5:
 		result = X_D3DFMT_L6V5U5;
 		break; // Swizzled
 
-	case D3DFMT_V8U8:
+	case Native::D3DFMT_V8U8:
 		result = X_D3DFMT_V8U8;
 		break; // Swizzled
 
-	case D3DFMT_V16U16:
+	case Native::D3DFMT_V16U16:
 		result = X_D3DFMT_V16U16;
 		break; // Swizzled
 
-	case D3DFMT_VERTEXDATA:
+	case Native::D3DFMT_VERTEXDATA:
 		result = X_D3DFMT_VERTEXDATA;
 		break;
 
@@ -1115,33 +1118,33 @@ DWORD EmuXB2PC_D3DLock(DWORD Flags)
 }
 
 // convert from xbox to pc multisample formats
-D3DMULTISAMPLE_TYPE EmuXB2PC_D3DMultiSampleFormat(DWORD Type)
+Native::D3DMULTISAMPLE_TYPE EmuXB2PC_D3DMultiSampleFormat(DWORD Type)
 {
-	D3DMULTISAMPLE_TYPE result;
+	Native::D3DMULTISAMPLE_TYPE result;
 	switch (Type & 0xFFFF)
 	{
 	case X_D3DMULTISAMPLE_NONE:
-		result = D3DMULTISAMPLE_NONE;
+		result = Native::D3DMULTISAMPLE_NONE;
 		break;
 	case X_D3DMULTISAMPLE_2_SAMPLES_MULTISAMPLE_LINEAR: 
 	case X_D3DMULTISAMPLE_2_SAMPLES_MULTISAMPLE_QUINCUNX: 
 	case X_D3DMULTISAMPLE_2_SAMPLES_SUPERSAMPLE_HORIZONTAL_LINEAR: 
 	case X_D3DMULTISAMPLE_2_SAMPLES_SUPERSAMPLE_VERTICAL_LINEAR:
-		result = D3DMULTISAMPLE_2_SAMPLES;
+		result = Native::D3DMULTISAMPLE_2_SAMPLES;
 		break;
 	case X_D3DMULTISAMPLE_4_SAMPLES_MULTISAMPLE_LINEAR: 
 	case X_D3DMULTISAMPLE_4_SAMPLES_MULTISAMPLE_GAUSSIAN: 
 	case X_D3DMULTISAMPLE_4_SAMPLES_SUPERSAMPLE_LINEAR: 
 	case X_D3DMULTISAMPLE_4_SAMPLES_SUPERSAMPLE_GAUSSIAN:
-		result = D3DMULTISAMPLE_4_SAMPLES;
+		result = Native::D3DMULTISAMPLE_4_SAMPLES;
 		break;
 	case X_D3DMULTISAMPLE_9_SAMPLES_MULTISAMPLE_GAUSSIAN: 
 	case X_D3DMULTISAMPLE_9_SAMPLES_SUPERSAMPLE_GAUSSIAN:
-		result = D3DMULTISAMPLE_9_SAMPLES;
+		result = Native::D3DMULTISAMPLE_9_SAMPLES;
 		break;
 	default:
 		EmuWarning("Unknown Multisample Type (0x%X)!\x0d\x0a.", Type);
-		result = D3DMULTISAMPLE_NONE;
+		result = Native::D3DMULTISAMPLE_NONE;
 	}
 	return result;
 }
@@ -1163,20 +1166,20 @@ UINT EmuD3DVertexToPrimitive[11][2] =
 };
 
 // conversion table for xbox->pc primitive types
-D3DPRIMITIVETYPE EmuPrimitiveTypeLookup[] =
+Native::D3DPRIMITIVETYPE EmuPrimitiveTypeLookup[] =
 {
-    /* NULL                 = 0         */ (D3DPRIMITIVETYPE)0,
-    /* D3DPT_POINTLIST      = 1,        */ D3DPT_POINTLIST,
-    /* D3DPT_LINELIST       = 2,        */ D3DPT_LINELIST,
-    /* D3DPT_LINELOOP       = 3,  Xbox  */ D3DPT_LINESTRIP,
-    /* D3DPT_LINESTRIP      = 4,        */ D3DPT_LINESTRIP,
-    /* D3DPT_TRIANGLELIST   = 5,        */ D3DPT_TRIANGLELIST,
-    /* D3DPT_TRIANGLESTRIP  = 6,        */ D3DPT_TRIANGLESTRIP,
-    /* D3DPT_TRIANGLEFAN    = 7,        */ D3DPT_TRIANGLEFAN,
-    /* D3DPT_QUADLIST       = 8,  Xbox  */ D3DPT_TRIANGLELIST,
-    /* D3DPT_QUADSTRIP      = 9,  Xbox  */ D3DPT_TRIANGLESTRIP,
-    /* D3DPT_POLYGON        = 10, Xbox  */ D3DPT_TRIANGLEFAN,
-    /* D3DPT_MAX            = 11,       */ (D3DPRIMITIVETYPE)11
+    /* NULL                 = 0         */ (Native::D3DPRIMITIVETYPE)0,
+    /* D3DPT_POINTLIST      = 1,        */ Native::D3DPT_POINTLIST,
+    /* D3DPT_LINELIST       = 2,        */ Native::D3DPT_LINELIST,
+    /* D3DPT_LINELOOP       = 3,  Xbox  */ Native::D3DPT_LINESTRIP,
+    /* D3DPT_LINESTRIP      = 4,        */ Native::D3DPT_LINESTRIP,
+    /* D3DPT_TRIANGLELIST   = 5,        */ Native::D3DPT_TRIANGLELIST,
+    /* D3DPT_TRIANGLESTRIP  = 6,        */ Native::D3DPT_TRIANGLESTRIP,
+    /* D3DPT_TRIANGLEFAN    = 7,        */ Native::D3DPT_TRIANGLEFAN,
+    /* D3DPT_QUADLIST       = 8,  Xbox  */ Native::D3DPT_TRIANGLELIST,
+    /* D3DPT_QUADSTRIP      = 9,  Xbox  */ Native::D3DPT_TRIANGLESTRIP,
+    /* D3DPT_POLYGON        = 10, Xbox  */ Native::D3DPT_TRIANGLEFAN,
+    /* D3DPT_MAX            = 11,       */ (Native::D3DPRIMITIVETYPE)11
 };
 
 // render state conversion table

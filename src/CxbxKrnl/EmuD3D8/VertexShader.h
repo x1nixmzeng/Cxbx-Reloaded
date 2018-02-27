@@ -65,7 +65,7 @@ extern DWORD EmuRecompileVshDeclaration
 extern HRESULT EmuRecompileVshFunction
 (
     DWORD        *pFunction,
-    LPD3DXBUFFER *ppRecompiled,
+    Native::LPD3DXBUFFER *ppRecompiled,
     DWORD        *pOriginalSize,
     boolean      bNoReservedConstants,
 	boolean		 *pbUseDeclarationOnly
