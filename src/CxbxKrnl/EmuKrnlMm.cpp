@@ -62,7 +62,7 @@ namespace NtDll
 // ******************************************************************
 // * 0x0066 - MmGlobalData
 // ******************************************************************
-XBSYSAPI EXPORTNUM(102) xboxkrnl::PVOID xboxkrnl::MmGlobalData[8] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+XBSYSAPI EXPORTNUM(102) PVOID MmGlobalData[8] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
 
 // ******************************************************************
 // * 0x00A4 - LaunchDataPage
@@ -71,7 +71,7 @@ XBSYSAPI EXPORTNUM(102) xboxkrnl::PVOID xboxkrnl::MmGlobalData[8] = { NULL, NULL
 // the xbox kernel. Kernel code accessses this as a normal variable.
 // XAPI code however, reference to the address of this kernel variable,
 // thus use indirection (*LaunchDataPage) to get to the same contents.
-XBSYSAPI EXPORTNUM(164) xboxkrnl::PLAUNCH_DATA_PAGE xboxkrnl::LaunchDataPage = xbnull;
+XBSYSAPI EXPORTNUM(164) PLAUNCH_DATA_PAGE LaunchDataPage = xbnull;
 
 // ******************************************************************
 // * 0x00A5 - MmAllocateContiguousMemory()
@@ -81,7 +81,7 @@ XBSYSAPI EXPORTNUM(164) xboxkrnl::PLAUNCH_DATA_PAGE xboxkrnl::LaunchDataPage = x
 //
 // Differences from NT: HighestAcceptableAddress was deleted, opting instead
 //     to not care about the highest address.
-XBSYSAPI EXPORTNUM(165) xboxkrnl::PVOID NTAPI xboxkrnl::MmAllocateContiguousMemory
+XBSYSAPI EXPORTNUM(165) PVOID NTAPI MmAllocateContiguousMemory
 (
 	IN ULONG NumberOfBytes
 )
@@ -118,7 +118,7 @@ bool CheckMmProtectFlags(DWORD protect)
 // ******************************************************************
 // * 0x00A6 - MmAllocateContiguousMemoryEx()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(166) xboxkrnl::PVOID NTAPI xboxkrnl::MmAllocateContiguousMemoryEx
+XBSYSAPI EXPORTNUM(166) PVOID NTAPI MmAllocateContiguousMemoryEx
 (
 	IN ULONG            NumberOfBytes,
 	IN PHYSICAL_ADDRESS LowestAcceptableAddress,
@@ -153,7 +153,7 @@ XBSYSAPI EXPORTNUM(166) xboxkrnl::PVOID NTAPI xboxkrnl::MmAllocateContiguousMemo
 // ******************************************************************
 // * 0x00A7 - MmAllocateSystemMemory()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(167) xboxkrnl::PVOID NTAPI xboxkrnl::MmAllocateSystemMemory
+XBSYSAPI EXPORTNUM(167) PVOID NTAPI MmAllocateSystemMemory
 (
 	ULONG NumberOfBytes,
 	ULONG Protect
@@ -173,7 +173,7 @@ XBSYSAPI EXPORTNUM(167) xboxkrnl::PVOID NTAPI xboxkrnl::MmAllocateSystemMemory
 // ******************************************************************
 // * 0x00A8 - MmClaimGpuInstanceMemory()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(168) xboxkrnl::PVOID NTAPI xboxkrnl::MmClaimGpuInstanceMemory
+XBSYSAPI EXPORTNUM(168) PVOID NTAPI MmClaimGpuInstanceMemory
 (
 	IN SIZE_T NumberOfBytes,
 	OUT SIZE_T *NumberOfPaddingBytes
@@ -216,7 +216,7 @@ XBSYSAPI EXPORTNUM(168) xboxkrnl::PVOID NTAPI xboxkrnl::MmClaimGpuInstanceMemory
 // ******************************************************************
 // * Differences from NT: Custom stack size.
 // ******************************************************************
-XBSYSAPI EXPORTNUM(169) xboxkrnl::PVOID NTAPI xboxkrnl::MmCreateKernelStack
+XBSYSAPI EXPORTNUM(169) PVOID NTAPI MmCreateKernelStack
 (
 	IN ULONG	NumberOfBytes,
 	IN BOOLEAN  DebuggerThread
@@ -245,7 +245,7 @@ XBSYSAPI EXPORTNUM(169) xboxkrnl::PVOID NTAPI xboxkrnl::MmCreateKernelStack
 // ******************************************************************
 // * 0x00AA - MmDeleteKernelStack()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(170) xboxkrnl::VOID NTAPI xboxkrnl::MmDeleteKernelStack
+XBSYSAPI EXPORTNUM(170) VOID NTAPI MmDeleteKernelStack
 (
 	PVOID StackBase,
 	PVOID StackLimit
@@ -264,7 +264,7 @@ XBSYSAPI EXPORTNUM(170) xboxkrnl::VOID NTAPI xboxkrnl::MmDeleteKernelStack
 	// Could be that we don't properly emulate the KPCR? 
 	// The KPCRs stack base / stack limit never get updated by push/pop
 	// as the host stack ends up being used...
-	EmuWarning("xboxkrnl::MmDeleteKernelStack Ignored");
+	EmuWarning("MmDeleteKernelStack Ignored");
 	//g_VMManager.DeallocateStack(StackBottom);
 }
 
@@ -274,7 +274,7 @@ XBSYSAPI EXPORTNUM(170) xboxkrnl::VOID NTAPI xboxkrnl::MmDeleteKernelStack
 // Frees memory allocated with MmAllocateContiguousMemory.
 //
 // Differences from NT: None.
-XBSYSAPI EXPORTNUM(171) xboxkrnl::VOID NTAPI xboxkrnl::MmFreeContiguousMemory
+XBSYSAPI EXPORTNUM(171) VOID NTAPI MmFreeContiguousMemory
 (
 	IN PVOID BaseAddress
 )
@@ -292,7 +292,7 @@ XBSYSAPI EXPORTNUM(171) xboxkrnl::VOID NTAPI xboxkrnl::MmFreeContiguousMemory
 // ******************************************************************
 // * 0x00AC - MmFreeSystemMemory()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(172) xboxkrnl::NTSTATUS NTAPI xboxkrnl::MmFreeSystemMemory
+XBSYSAPI EXPORTNUM(172) NTSTATUS NTAPI MmFreeSystemMemory
 (
 	PVOID BaseAddress,
 	ULONG NumberOfBytes
@@ -314,7 +314,7 @@ XBSYSAPI EXPORTNUM(172) xboxkrnl::NTSTATUS NTAPI xboxkrnl::MmFreeSystemMemory
 // Translates a virtual address into a physical address.
 //
 // Differences from NT: PhysicalAddress is 32 bit, not 64.
-XBSYSAPI EXPORTNUM(173) xboxkrnl::PHYSICAL_ADDRESS NTAPI xboxkrnl::MmGetPhysicalAddress
+XBSYSAPI EXPORTNUM(173) PHYSICAL_ADDRESS NTAPI MmGetPhysicalAddress
 (
 	IN PVOID   BaseAddress
 )
@@ -331,7 +331,7 @@ XBSYSAPI EXPORTNUM(173) xboxkrnl::PHYSICAL_ADDRESS NTAPI xboxkrnl::MmGetPhysical
 // ******************************************************************
 // * 0x00AE - MmIsAddressValid()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(174) xboxkrnl::BOOLEAN NTAPI xboxkrnl::MmIsAddressValid
+XBSYSAPI EXPORTNUM(174) BOOLEAN NTAPI MmIsAddressValid
 (
 	IN PVOID   VirtualAddress
 )
@@ -351,7 +351,7 @@ XBSYSAPI EXPORTNUM(174) xboxkrnl::BOOLEAN NTAPI xboxkrnl::MmIsAddressValid
 // ******************************************************************
 // * 0x00AF - MmLockUnlockBufferPages()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(175) xboxkrnl::VOID NTAPI xboxkrnl::MmLockUnlockBufferPages
+XBSYSAPI EXPORTNUM(175) VOID NTAPI MmLockUnlockBufferPages
 (
 	IN PHYSICAL_ADDRESS	BaseAddress,
 	IN ULONG			NumberOfBytes,
@@ -371,7 +371,7 @@ XBSYSAPI EXPORTNUM(175) xboxkrnl::VOID NTAPI xboxkrnl::MmLockUnlockBufferPages
 // ******************************************************************
 // * 0x00B0 - MmLockUnlockPhysicalPage()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(176) xboxkrnl::VOID NTAPI xboxkrnl::MmLockUnlockPhysicalPage
+XBSYSAPI EXPORTNUM(176) VOID NTAPI MmLockUnlockPhysicalPage
 (
 	IN ULONG_PTR PhysicalAddress,
 	IN BOOLEAN UnlockPage
@@ -397,7 +397,7 @@ XBSYSAPI EXPORTNUM(176) xboxkrnl::VOID NTAPI xboxkrnl::MmLockUnlockPhysicalPage
 //     specifies the page protections, but it's a Win32 PAGE_ macro instead
 //     of the normal NT enumeration.  PAGE_READWRITE is probably what you
 //     want...
-XBSYSAPI EXPORTNUM(177) xboxkrnl::PVOID NTAPI xboxkrnl::MmMapIoSpace
+XBSYSAPI EXPORTNUM(177) PVOID NTAPI MmMapIoSpace
 (
 	IN PHYSICAL_ADDRESS PhysicalAddress,
 	IN ULONG            NumberOfBytes,
@@ -429,7 +429,7 @@ XBSYSAPI EXPORTNUM(177) xboxkrnl::PVOID NTAPI xboxkrnl::MmMapIoSpace
 // ******************************************************************
 // * 0x00B2 - MmPersistContiguousMemory()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(178) xboxkrnl::VOID NTAPI xboxkrnl::MmPersistContiguousMemory
+XBSYSAPI EXPORTNUM(178) VOID NTAPI MmPersistContiguousMemory
 (
 	IN PVOID   BaseAddress,
 	IN ULONG   NumberOfBytes,
@@ -477,7 +477,7 @@ XBSYSAPI EXPORTNUM(178) xboxkrnl::VOID NTAPI xboxkrnl::MmPersistContiguousMemory
 // ******************************************************************
 // * 0x00B3 - MmQueryAddressProtect()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(179) xboxkrnl::ULONG NTAPI xboxkrnl::MmQueryAddressProtect
+XBSYSAPI EXPORTNUM(179) ULONG NTAPI MmQueryAddressProtect
 (
 	IN PVOID VirtualAddress
 )
@@ -494,7 +494,7 @@ XBSYSAPI EXPORTNUM(179) xboxkrnl::ULONG NTAPI xboxkrnl::MmQueryAddressProtect
 // ******************************************************************
 // * 0x00B4 - MmQueryAllocationSize()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(180) xboxkrnl::ULONG NTAPI xboxkrnl::MmQueryAllocationSize
+XBSYSAPI EXPORTNUM(180) ULONG NTAPI MmQueryAllocationSize
 (
 	IN PVOID   BaseAddress
 )
@@ -509,7 +509,7 @@ XBSYSAPI EXPORTNUM(180) xboxkrnl::ULONG NTAPI xboxkrnl::MmQueryAllocationSize
 // ******************************************************************
 // * 0x00B5 - MmQueryStatistics()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(181) xboxkrnl::NTSTATUS NTAPI xboxkrnl::MmQueryStatistics
+XBSYSAPI EXPORTNUM(181) NTSTATUS NTAPI MmQueryStatistics
 (
 	OUT PMM_STATISTICS MemoryStatistics
 )
@@ -555,7 +555,7 @@ XBSYSAPI EXPORTNUM(181) xboxkrnl::NTSTATUS NTAPI xboxkrnl::MmQueryStatistics
 // ******************************************************************
 // * 0x00B6 - MmSetAddressProtect()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(182) xboxkrnl::VOID NTAPI xboxkrnl::MmSetAddressProtect
+XBSYSAPI EXPORTNUM(182) VOID NTAPI MmSetAddressProtect
 (
 	IN PVOID BaseAddress,
 	IN ULONG NumberOfBytes,
@@ -580,7 +580,7 @@ XBSYSAPI EXPORTNUM(182) xboxkrnl::VOID NTAPI xboxkrnl::MmSetAddressProtect
 // Unmaps a virtual address mapping made by MmMapIoSpace.
 //
 // Differences from NT: None.
-XBSYSAPI EXPORTNUM(183) xboxkrnl::NTSTATUS NTAPI xboxkrnl::MmUnmapIoSpace
+XBSYSAPI EXPORTNUM(183) NTSTATUS NTAPI MmUnmapIoSpace
 (
 	IN PVOID BaseAddress,
 	IN ULONG NumberOfBytes

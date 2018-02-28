@@ -54,7 +54,7 @@ namespace xboxkrnl
 // ******************************************************************
 // * 0x003B - IoAllocateIrp()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(59) xboxkrnl::PVOID NTAPI xboxkrnl::IoAllocateIrp
+XBSYSAPI EXPORTNUM(59) PVOID NTAPI IoAllocateIrp
 (
 	IN CCHAR StackSize
 )
@@ -63,7 +63,7 @@ XBSYSAPI EXPORTNUM(59) xboxkrnl::PVOID NTAPI xboxkrnl::IoAllocateIrp
 
 	LOG_UNIMPLEMENTED();
 
-	xboxkrnl::PVOID ret = nullptr;
+	PVOID ret = nullptr;
 
 	RETURN(ret);
 }
@@ -71,7 +71,7 @@ XBSYSAPI EXPORTNUM(59) xboxkrnl::PVOID NTAPI xboxkrnl::IoAllocateIrp
 // ******************************************************************
 // * 0x003C - IoBuildAsynchronousFsdRequest()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(60) xboxkrnl::PVOID NTAPI xboxkrnl::IoBuildAsynchronousFsdRequest
+XBSYSAPI EXPORTNUM(60) PVOID NTAPI IoBuildAsynchronousFsdRequest
 (
 	IN ULONG MajorFunction,
 	IN PDEVICE_OBJECT DeviceObject,
@@ -90,7 +90,7 @@ XBSYSAPI EXPORTNUM(60) xboxkrnl::PVOID NTAPI xboxkrnl::IoBuildAsynchronousFsdReq
 		LOG_FUNC_ARG_OUT(IoStatusBlock)
 		LOG_FUNC_END;
 
-	xboxkrnl::PVOID ret = nullptr;
+	PVOID ret = nullptr;
 
 	LOG_UNIMPLEMENTED();
 
@@ -100,7 +100,7 @@ XBSYSAPI EXPORTNUM(60) xboxkrnl::PVOID NTAPI xboxkrnl::IoBuildAsynchronousFsdReq
 // ******************************************************************
 // * 0x003D - IoBuildDeviceIoControlRequest()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(61) xboxkrnl::PVOID NTAPI xboxkrnl::IoBuildDeviceIoControlRequest
+XBSYSAPI EXPORTNUM(61) PVOID NTAPI IoBuildDeviceIoControlRequest
 (
 	IN ULONG IoControlCode,
 	IN PDEVICE_OBJECT DeviceObject,
@@ -125,7 +125,7 @@ XBSYSAPI EXPORTNUM(61) xboxkrnl::PVOID NTAPI xboxkrnl::IoBuildDeviceIoControlReq
 		LOG_FUNC_ARG_OUT(IoStatusBlock)
 		LOG_FUNC_END;
 
-	xboxkrnl::PVOID ret = nullptr;
+	PVOID ret = nullptr;
 
 	LOG_UNIMPLEMENTED();
 
@@ -135,7 +135,7 @@ XBSYSAPI EXPORTNUM(61) xboxkrnl::PVOID NTAPI xboxkrnl::IoBuildDeviceIoControlReq
 // ******************************************************************
 // * 0x003E - IoBuildSynchronousFsdRequest()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(62) xboxkrnl::PVOID NTAPI xboxkrnl::IoBuildSynchronousFsdRequest
+XBSYSAPI EXPORTNUM(62) PVOID NTAPI IoBuildSynchronousFsdRequest
 (
 	IN ULONG MajorFunction,
 	IN PDEVICE_OBJECT DeviceObject,
@@ -156,7 +156,7 @@ XBSYSAPI EXPORTNUM(62) xboxkrnl::PVOID NTAPI xboxkrnl::IoBuildSynchronousFsdRequ
 		LOG_FUNC_ARG_OUT(IoStatusBlock)
 		LOG_FUNC_END;
 
-	xboxkrnl::PVOID ret = nullptr;
+	PVOID ret = nullptr;
 
 	LOG_UNIMPLEMENTED();
 
@@ -166,7 +166,7 @@ XBSYSAPI EXPORTNUM(62) xboxkrnl::PVOID NTAPI xboxkrnl::IoBuildSynchronousFsdRequ
 // ******************************************************************
 // * 0x003F - IoCheckShareAccess()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(63) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoCheckShareAccess
+XBSYSAPI EXPORTNUM(63) NTSTATUS NTAPI IoCheckShareAccess
 (
 	IN ACCESS_MASK DesiredAccess,
 	IN ULONG DesiredShareAccess,
@@ -191,21 +191,21 @@ XBSYSAPI EXPORTNUM(63) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoCheckShareAccess
 // ******************************************************************
 // * 0x0040 - IoCompletionObjectType
 // ******************************************************************
-XBSYSAPI EXPORTNUM(64) xboxkrnl::OBJECT_TYPE xboxkrnl::IoCompletionObjectType =
+XBSYSAPI EXPORTNUM(64) OBJECT_TYPE IoCompletionObjectType =
 {
-	xboxkrnl::ExAllocatePoolWithTag,
-	xboxkrnl::ExFreePool,
+	ExAllocatePoolWithTag,
+	ExFreePool,
 	NULL,
-	NULL, // TODO : xboxkrnl::IopDeleteIoCompletion,
+	NULL, // TODO : IopDeleteIoCompletion,
 	NULL,
-	NULL, // &xboxkrnl::ObpDefaultObject,
+	NULL, // &ObpDefaultObject,
 	'pmoC' // = first four characters of "Completion" in reverse
 };
 
 // ******************************************************************
 // * 0x0041 - IoCreateDevice()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(65) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoCreateDevice
+XBSYSAPI EXPORTNUM(65) NTSTATUS NTAPI IoCreateDevice
 (
 	IN  PDRIVER_OBJECT		DriverObject,
 	IN  ULONG				DeviceExtensionSize,
@@ -232,7 +232,7 @@ XBSYSAPI EXPORTNUM(65) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoCreateDevice
 // ******************************************************************
 // * 0x0042 - IoCreateFile()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(66) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoCreateFile
+XBSYSAPI EXPORTNUM(66) NTSTATUS NTAPI IoCreateFile
 (
 	OUT PHANDLE             FileHandle,
 	IN  ACCESS_MASK         DesiredAccess,
@@ -316,7 +316,7 @@ XBSYSAPI EXPORTNUM(66) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoCreateFile
 // ******************************************************************
 // * 0x0043 - IoCreateSymbolicLink()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(67) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoCreateSymbolicLink
+XBSYSAPI EXPORTNUM(67) NTSTATUS NTAPI IoCreateSymbolicLink
 (
 	IN PSTRING SymbolicLinkName,
 	IN PSTRING DeviceName
@@ -335,7 +335,7 @@ XBSYSAPI EXPORTNUM(67) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoCreateSymbolicLink
 // ******************************************************************
 // * 0x0044 - IoDeleteDevice()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(68) xboxkrnl::VOID NTAPI xboxkrnl::IoDeleteDevice
+XBSYSAPI EXPORTNUM(68) VOID NTAPI IoDeleteDevice
 (
 	IN PDEVICE_OBJECT Irql
 )
@@ -348,7 +348,7 @@ XBSYSAPI EXPORTNUM(68) xboxkrnl::VOID NTAPI xboxkrnl::IoDeleteDevice
 // ******************************************************************
 // * 0x0045 - IoDeleteSymbolicLink()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(69) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoDeleteSymbolicLink
+XBSYSAPI EXPORTNUM(69) NTSTATUS NTAPI IoDeleteSymbolicLink
 (
 	IN PSTRING SymbolicLinkName
 )
@@ -369,35 +369,35 @@ XBSYSAPI EXPORTNUM(69) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoDeleteSymbolicLink
 // ******************************************************************
 // * 0x0046 - IoDeviceObjectType
 // ******************************************************************
-XBSYSAPI EXPORTNUM(70) xboxkrnl::OBJECT_TYPE xboxkrnl::IoDeviceObjectType =
+XBSYSAPI EXPORTNUM(70) OBJECT_TYPE IoDeviceObjectType =
 {
-	xboxkrnl::ExAllocatePoolWithTag,
-	xboxkrnl::ExFreePool,
+	ExAllocatePoolWithTag,
+	ExFreePool,
 	NULL,
 	NULL,
-	NULL, // TODO : xboxkrnl::IoParseDevice,
-	NULL, // TODO : &xboxkrnl::ObpDefaultObject,
+	NULL, // TODO : IoParseDevice,
+	NULL, // TODO : &ObpDefaultObject,
 	'iveD' // = first four characters of "Device" in reverse
 };
 
 // ******************************************************************
 // * 0x0047 - IoFileObjectType
 // ******************************************************************
-XBSYSAPI EXPORTNUM(71) xboxkrnl::OBJECT_TYPE xboxkrnl::IoFileObjectType =
+XBSYSAPI EXPORTNUM(71) OBJECT_TYPE IoFileObjectType =
 {
-	xboxkrnl::ExAllocatePoolWithTag,
-	xboxkrnl::ExFreePool,
-	NULL, // TODO : xboxkrnl::IopCloseFile,
-	NULL, // TODO : xboxkrnl::IopDeleteFile,
-	NULL, // TODO : xboxkrnl::IopParseFile,
-	(PVOID)offsetof(xboxkrnl::FILE_OBJECT, Event.Header),
+	ExAllocatePoolWithTag,
+	ExFreePool,
+	NULL, // TODO : IopCloseFile,
+	NULL, // TODO : IopDeleteFile,
+	NULL, // TODO : IopParseFile,
+	(PVOID)offsetof(FILE_OBJECT, Event.Header),
 	'eliF' // = "File" in reverse
 };
 
 // ******************************************************************
 // * 0x0048 - IoFreeIrp()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(72) xboxkrnl::VOID NTAPI xboxkrnl::IoFreeIrp
+XBSYSAPI EXPORTNUM(72) VOID NTAPI IoFreeIrp
 (
 	IN PIRP Irp
 )
@@ -410,7 +410,7 @@ XBSYSAPI EXPORTNUM(72) xboxkrnl::VOID NTAPI xboxkrnl::IoFreeIrp
 // ******************************************************************
 // * 0x0049 - IoInitializeIrp()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(73) xboxkrnl::PVOID NTAPI xboxkrnl::IoInitializeIrp
+XBSYSAPI EXPORTNUM(73) PVOID NTAPI IoInitializeIrp
 (
 	IN PIRP Irp,
 	IN USHORT PacketSize,
@@ -423,7 +423,7 @@ XBSYSAPI EXPORTNUM(73) xboxkrnl::PVOID NTAPI xboxkrnl::IoInitializeIrp
 		LOG_FUNC_ARG(StackSize)
 		LOG_FUNC_END;
 
-	xboxkrnl::PVOID ret = nullptr;
+	PVOID ret = nullptr;
 
 	LOG_UNIMPLEMENTED();
 
@@ -433,7 +433,7 @@ XBSYSAPI EXPORTNUM(73) xboxkrnl::PVOID NTAPI xboxkrnl::IoInitializeIrp
 // ******************************************************************
 // * 0x004A - IoInvalidDeviceRequest()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(74) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoInvalidDeviceRequest
+XBSYSAPI EXPORTNUM(74) NTSTATUS NTAPI IoInvalidDeviceRequest
 (
 	IN PDEVICE_OBJECT DeviceObject,
 	IN PIRP Irp
@@ -452,7 +452,7 @@ XBSYSAPI EXPORTNUM(74) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoInvalidDeviceRequest
 // ******************************************************************
 // * 0x004B - IoQueryFileInformation()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(75) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoQueryFileInformation
+XBSYSAPI EXPORTNUM(75) NTSTATUS NTAPI IoQueryFileInformation
 (
 	IN PFILE_OBJECT FileObject,
 	IN FILE_INFORMATION_CLASS FileInformationClass,
@@ -478,7 +478,7 @@ XBSYSAPI EXPORTNUM(75) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoQueryFileInformation
 // ******************************************************************
 // * 0x004C - IoQueryVolumeInformation()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(76) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoQueryVolumeInformation
+XBSYSAPI EXPORTNUM(76) NTSTATUS NTAPI IoQueryVolumeInformation
 (
 	IN PFILE_OBJECT FileObject,
 	IN FS_INFORMATION_CLASS FsInformationClass,
@@ -505,7 +505,7 @@ XBSYSAPI EXPORTNUM(76) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoQueryVolumeInformati
 // ******************************************************************
 // * 0x004D - IoQueueThreadIrp()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(77) xboxkrnl::VOID NTAPI xboxkrnl::IoQueueThreadIrp
+XBSYSAPI EXPORTNUM(77) VOID NTAPI IoQueueThreadIrp
 (
 	IN PIRP Irp
 )
@@ -518,7 +518,7 @@ XBSYSAPI EXPORTNUM(77) xboxkrnl::VOID NTAPI xboxkrnl::IoQueueThreadIrp
 // ******************************************************************
 // * 0x004E - IoRemoveShareAccess()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(78) xboxkrnl::VOID NTAPI xboxkrnl::IoRemoveShareAccess
+XBSYSAPI EXPORTNUM(78) VOID NTAPI IoRemoveShareAccess
 (
 	IN PFILE_OBJECT FileObject,
 	IN PSHARE_ACCESS ShareAccess
@@ -535,7 +535,7 @@ XBSYSAPI EXPORTNUM(78) xboxkrnl::VOID NTAPI xboxkrnl::IoRemoveShareAccess
 // ******************************************************************
 // * 0x004F - IoSetIoCompletion()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(79) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoSetIoCompletion
+XBSYSAPI EXPORTNUM(79) NTSTATUS NTAPI IoSetIoCompletion
 (
 	IN PKQUEUE IoCompletion,
 	IN PVOID KeyContext,
@@ -560,7 +560,7 @@ XBSYSAPI EXPORTNUM(79) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoSetIoCompletion
 // ******************************************************************
 // * 0x0050 - IoSetShareAccess()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(80) xboxkrnl::CCHAR NTAPI xboxkrnl::IoSetShareAccess
+XBSYSAPI EXPORTNUM(80) CCHAR NTAPI IoSetShareAccess
 (
 	IN ULONG DesiredAccess,
 	IN ULONG DesiredShareAccess,
@@ -575,7 +575,7 @@ XBSYSAPI EXPORTNUM(80) xboxkrnl::CCHAR NTAPI xboxkrnl::IoSetShareAccess
 		LOG_FUNC_ARG_OUT(ShareAccess)
 		LOG_FUNC_END;
 
-	xboxkrnl::CCHAR ret = 0; // ShareAccess->OpenCount;
+	CCHAR ret = 0; // ShareAccess->OpenCount;
 
 	LOG_UNIMPLEMENTED();
 	
@@ -585,7 +585,7 @@ XBSYSAPI EXPORTNUM(80) xboxkrnl::CCHAR NTAPI xboxkrnl::IoSetShareAccess
 // ******************************************************************
 // * 0x0051 - IoStartNextPacket()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(81) xboxkrnl::VOID NTAPI xboxkrnl::IoStartNextPacket
+XBSYSAPI EXPORTNUM(81) VOID NTAPI IoStartNextPacket
 (
 	IN PDEVICE_OBJECT DeviceObject
 )
@@ -598,7 +598,7 @@ XBSYSAPI EXPORTNUM(81) xboxkrnl::VOID NTAPI xboxkrnl::IoStartNextPacket
 // ******************************************************************
 // * 0x0052 - IoStartNextPacketByKey()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(82) xboxkrnl::VOID NTAPI xboxkrnl::IoStartNextPacketByKey
+XBSYSAPI EXPORTNUM(82) VOID NTAPI IoStartNextPacketByKey
 (
 	IN PDEVICE_OBJECT DeviceObject,
 	IN ULONG Key
@@ -615,7 +615,7 @@ XBSYSAPI EXPORTNUM(82) xboxkrnl::VOID NTAPI xboxkrnl::IoStartNextPacketByKey
 // ******************************************************************
 // * 0x0053 - IoStartPacket()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(83) xboxkrnl::VOID NTAPI xboxkrnl::IoStartPacket
+XBSYSAPI EXPORTNUM(83) VOID NTAPI IoStartPacket
 (
 	IN PDEVICE_OBJECT DeviceObject,
 	IN PIRP Irp,
@@ -639,7 +639,7 @@ XBSYSAPI EXPORTNUM(83) xboxkrnl::VOID NTAPI xboxkrnl::IoStartPacket
 // blocking IOCTL on the specified device.
 //
 // New to the XBOX.
-XBSYSAPI EXPORTNUM(84) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoSynchronousDeviceIoControlRequest
+XBSYSAPI EXPORTNUM(84) NTSTATUS NTAPI IoSynchronousDeviceIoControlRequest
 (
 	IN ULONG IoControlCode,
 	IN PDEVICE_OBJECT DeviceObject,
@@ -670,7 +670,7 @@ XBSYSAPI EXPORTNUM(84) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoSynchronousDeviceIoC
 // ******************************************************************
 // * 0x0055 - IoSynchronousFsdRequest()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(85) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoSynchronousFsdRequest
+XBSYSAPI EXPORTNUM(85) NTSTATUS NTAPI IoSynchronousFsdRequest
 (
 	IN ULONG MajorFunction,
 	IN PDEVICE_OBJECT DeviceObject,
@@ -695,7 +695,7 @@ XBSYSAPI EXPORTNUM(85) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoSynchronousFsdReques
 // ******************************************************************
 // * 0x0056 - IofCallDriver()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(86) xboxkrnl::NTSTATUS FASTCALL xboxkrnl::IofCallDriver
+XBSYSAPI EXPORTNUM(86) NTSTATUS FASTCALL IofCallDriver
 (
 	IN PDEVICE_OBJECT DeviceObject,
 	IN PIRP Irp
@@ -714,7 +714,7 @@ XBSYSAPI EXPORTNUM(86) xboxkrnl::NTSTATUS FASTCALL xboxkrnl::IofCallDriver
 // ******************************************************************
 // * 0x0057 - IofCompleteRequest()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(87) xboxkrnl::VOID FASTCALL xboxkrnl::IofCompleteRequest
+XBSYSAPI EXPORTNUM(87) VOID FASTCALL IofCompleteRequest
 (
 	IN PIRP Irp,
 	IN CCHAR PriorityBoost
@@ -731,7 +731,7 @@ XBSYSAPI EXPORTNUM(87) xboxkrnl::VOID FASTCALL xboxkrnl::IofCompleteRequest
 // ******************************************************************
 // * 0x005A - IoDismountVolume()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(90) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoDismountVolume
+XBSYSAPI EXPORTNUM(90) NTSTATUS NTAPI IoDismountVolume
 (
 	IN PDEVICE_OBJECT DeviceObject
 )
@@ -748,7 +748,7 @@ XBSYSAPI EXPORTNUM(90) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoDismountVolume
 // ******************************************************************
 // * 0x005B - IoDismountVolumeByName()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(91) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoDismountVolumeByName
+XBSYSAPI EXPORTNUM(91) NTSTATUS NTAPI IoDismountVolumeByName
 (
 	IN PSTRING VolumeName
 )
@@ -766,14 +766,14 @@ XBSYSAPI EXPORTNUM(91) xboxkrnl::NTSTATUS NTAPI xboxkrnl::IoDismountVolumeByName
 // ******************************************************************
 // * 0x0167 - IoMarkIrpMustComplete()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(359) xboxkrnl::CCHAR NTAPI xboxkrnl::IoMarkIrpMustComplete
+XBSYSAPI EXPORTNUM(359) CCHAR NTAPI IoMarkIrpMustComplete
 (
 	IN PIRP Irp
 )
 {
 	LOG_FUNC_ONE_ARG(Irp);
 
-	xboxkrnl::CCHAR ret = 0; // ShareAccess->OpenCount;
+	CCHAR ret = 0; // ShareAccess->OpenCount;
 
 	LOG_UNIMPLEMENTED();
 

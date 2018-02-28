@@ -47,10 +47,10 @@ namespace xboxkrnl
 // ******************************************************************
 // * 0x0058 - KdDebuggerEnabled
 // ******************************************************************
-XBSYSAPI EXPORTNUM(88) xboxkrnl::BOOLEAN xboxkrnl::KdDebuggerEnabled = false;
+XBSYSAPI EXPORTNUM(88) BOOLEAN KdDebuggerEnabled = false;
 
 // ******************************************************************
 // * 0x0059 - KdDebuggerNotPresent
 // ******************************************************************
 // Source:ReactOS
-XBSYSAPI EXPORTNUM(89) xboxkrnl::BOOLEAN xboxkrnl::KdDebuggerNotPresent = true;
+XBSYSAPI EXPORTNUM(89) BOOLEAN KdDebuggerNotPresent = true;

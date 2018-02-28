@@ -38,11 +38,7 @@
 
 #define LOG_PREFIX "KRNL"
 
-// prevent name collisions
-namespace xboxkrnl
-{
 #include <xboxkrnl/xboxkrnl.h> // For NtAllocateVirtualMemory, etc.
-};
 
 #include "Logging.h" // For LOG_FUNC()
 #include "EmuKrnlLogging.h"
@@ -73,7 +69,7 @@ namespace NtDll
 // ******************************************************************
 // * 0x00B8 - NtAllocateVirtualMemory()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(184) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtAllocateVirtualMemory
+XBSYSAPI EXPORTNUM(184) NTSTATUS NTAPI NtAllocateVirtualMemory
 (
 	IN OUT PVOID    *BaseAddress,
 	IN ULONG         ZeroBits,
@@ -164,7 +160,7 @@ XBSYSAPI EXPORTNUM(184) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtAllocateVirtualMemo
 // ******************************************************************
 // * 0x00B9 - NtCancelTimer()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(185) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCancelTimer
+XBSYSAPI EXPORTNUM(185) NTSTATUS NTAPI NtCancelTimer
 (
 	IN HANDLE TimerHandle,
 	OUT PBOOLEAN CurrentState OPTIONAL
@@ -190,7 +186,7 @@ XBSYSAPI EXPORTNUM(185) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCancelTimer
 // ******************************************************************
 // * 0x00BA - NtClearEvent()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(186) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtClearEvent
+XBSYSAPI EXPORTNUM(186) NTSTATUS NTAPI NtClearEvent
 (
 	IN HANDLE EventHandle
 )
@@ -208,7 +204,7 @@ XBSYSAPI EXPORTNUM(186) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtClearEvent
 // ******************************************************************
 // * 0x00BB - NtClose()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(187) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtClose
+XBSYSAPI EXPORTNUM(187) NTSTATUS NTAPI NtClose
 (
 	IN HANDLE Handle
 )
@@ -242,7 +238,7 @@ XBSYSAPI EXPORTNUM(187) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtClose
 // ******************************************************************
 // * 0x00BC - NtCreateDirectoryObject()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(188) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateDirectoryObject
+XBSYSAPI EXPORTNUM(188) NTSTATUS NTAPI NtCreateDirectoryObject
 (
 	OUT PHANDLE             DirectoryHandle,
 	IN  POBJECT_ATTRIBUTES  ObjectAttributes
@@ -281,7 +277,7 @@ XBSYSAPI EXPORTNUM(188) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateDirectoryObje
 // ******************************************************************
 // * 0x00BD - NtCreateEvent()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(189) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateEvent
+XBSYSAPI EXPORTNUM(189) NTSTATUS NTAPI NtCreateEvent
 (
 	OUT PHANDLE             EventHandle,
 	IN  POBJECT_ATTRIBUTES  ObjectAttributes OPTIONAL,
@@ -361,7 +357,7 @@ XBSYSAPI EXPORTNUM(189) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateEvent
 // ******************************************************************
 // * 0x00BE - NtCreateFile()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(190) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateFile
+XBSYSAPI EXPORTNUM(190) NTSTATUS NTAPI NtCreateFile
 (
 	OUT PHANDLE             FileHandle,
 	IN  ACCESS_MASK         DesiredAccess,
@@ -378,7 +374,7 @@ XBSYSAPI EXPORTNUM(190) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateFile
 
 	// TODO : How to base IoCreateFile on ObCreateObject, KeInitialize and ObInsertObject ?
 
-	return xboxkrnl::IoCreateFile(
+	return IoCreateFile(
 		FileHandle,
 		DesiredAccess,
 		ObjectAttributes,
@@ -391,7 +387,7 @@ XBSYSAPI EXPORTNUM(190) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateFile
 		0);
 }
 
-XBSYSAPI EXPORTNUM(191) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateIoCompletion
+XBSYSAPI EXPORTNUM(191) NTSTATUS NTAPI NtCreateIoCompletion
 (
 	OUT PHANDLE IoCompletionHandle,
 	IN ACCESS_MASK DesiredAccess,
@@ -414,7 +410,7 @@ XBSYSAPI EXPORTNUM(191) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateIoCompletion
 // ******************************************************************
 // * 0x00C0 - NtCreateMutant()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(192) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateMutant
+XBSYSAPI EXPORTNUM(192) NTSTATUS NTAPI NtCreateMutant
 (
 	OUT PHANDLE             MutantHandle,
 	IN  POBJECT_ATTRIBUTES  ObjectAttributes,
@@ -486,7 +482,7 @@ XBSYSAPI EXPORTNUM(192) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateMutant
 // ******************************************************************
 // * 0x00C1 - NtCreateSemaphore()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(193) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateSemaphore
+XBSYSAPI EXPORTNUM(193) NTSTATUS NTAPI NtCreateSemaphore
 (
 	OUT PHANDLE             SemaphoreHandle,
 	IN  POBJECT_ATTRIBUTES  ObjectAttributes OPTIONAL,
@@ -561,7 +557,7 @@ XBSYSAPI EXPORTNUM(193) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateSemaphore
 // ******************************************************************
 // * 0x00C2 - NtCreateTimer()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(194) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateTimer
+XBSYSAPI EXPORTNUM(194) NTSTATUS NTAPI NtCreateTimer
 (
 	OUT PHANDLE TimerHandle,
 	IN POBJECT_ATTRIBUTES ObjectAttributes OPTIONAL,
@@ -621,7 +617,7 @@ XBSYSAPI EXPORTNUM(194) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtCreateTimer
 // ******************************************************************
 // * 0x00C3 - NtDeleteFile()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(195) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtDeleteFile
+XBSYSAPI EXPORTNUM(195) NTSTATUS NTAPI NtDeleteFile
 (
 	IN POBJECT_ATTRIBUTES ObjectAttributes
 )
@@ -649,7 +645,7 @@ XBSYSAPI EXPORTNUM(195) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtDeleteFile
 // ******************************************************************
 // * 0x00C4 - NtDeviceIoControlFile()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(196) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtDeviceIoControlFile
+XBSYSAPI EXPORTNUM(196) NTSTATUS NTAPI NtDeviceIoControlFile
 (
 	IN HANDLE FileHandle,
 	IN HANDLE Event OPTIONAL,
@@ -727,7 +723,7 @@ XBSYSAPI EXPORTNUM(196) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtDeviceIoControlFile
 // ******************************************************************
 // * 0x00C5 - NtDuplicateObject()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(197) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtDuplicateObject
+XBSYSAPI EXPORTNUM(197) NTSTATUS NTAPI NtDuplicateObject
 (
 	HANDLE  SourceHandle,
 	HANDLE *TargetHandle,
@@ -786,7 +782,7 @@ XBSYSAPI EXPORTNUM(197) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtDuplicateObject
 // ******************************************************************
 // * 0x00C6 - NtFlushBuffersFile()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(198) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtFlushBuffersFile
+XBSYSAPI EXPORTNUM(198) NTSTATUS NTAPI NtFlushBuffersFile
 (
 	PVOID                FileHandle,
 	OUT PIO_STATUS_BLOCK IoStatusBlock
@@ -812,7 +808,7 @@ XBSYSAPI EXPORTNUM(198) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtFlushBuffersFile
 // Frees virtual memory.
 //
 // Differences from NT: There is no ProcessHandle parameter.
-XBSYSAPI EXPORTNUM(199) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtFreeVirtualMemory
+XBSYSAPI EXPORTNUM(199) NTSTATUS NTAPI NtFreeVirtualMemory
 (
 	IN OUT PVOID *BaseAddress,
 	IN OUT PULONG FreeSize,
@@ -845,7 +841,7 @@ XBSYSAPI EXPORTNUM(199) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtFreeVirtualMemory
 // ******************************************************************
 // * 0x00C8 - NtFsControlFile
 // ******************************************************************
-XBSYSAPI EXPORTNUM(200) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtFsControlFile
+XBSYSAPI EXPORTNUM(200) NTSTATUS NTAPI NtFsControlFile
 (
 	IN HANDLE               FileHandle,
 	IN HANDLE               Event OPTIONAL,
@@ -891,7 +887,7 @@ XBSYSAPI EXPORTNUM(200) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtFsControlFile
 // ******************************************************************
 // * 0x00C9 - NtOpenDirectoryObject()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(201) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtOpenDirectoryObject
+XBSYSAPI EXPORTNUM(201) NTSTATUS NTAPI NtOpenDirectoryObject
 (
 	OUT PHANDLE DirectoryHandle,
 	IN POBJECT_ATTRIBUTES ObjectAttributes
@@ -910,7 +906,7 @@ XBSYSAPI EXPORTNUM(201) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtOpenDirectoryObject
 //     IoStatusBlock, NULL, 0, ShareAccess, OPEN_EXISTING, OpenOptions);
 //
 // Differences from NT: See NtCreateFile.
-XBSYSAPI EXPORTNUM(202) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtOpenFile
+XBSYSAPI EXPORTNUM(202) NTSTATUS NTAPI NtOpenFile
 (
 	OUT PHANDLE             FileHandle,
 	IN  ACCESS_MASK         DesiredAccess,
@@ -922,7 +918,7 @@ XBSYSAPI EXPORTNUM(202) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtOpenFile
 {
 	LOG_FORWARD("IoCreateFile");
 
-	return xboxkrnl::IoCreateFile(
+	return IoCreateFile(
 		FileHandle,
 		DesiredAccess,
 		ObjectAttributes,
@@ -938,7 +934,7 @@ XBSYSAPI EXPORTNUM(202) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtOpenFile
 // ******************************************************************
 // * 0x00CB - NtOpenSymbolicLinkObject()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(203) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtOpenSymbolicLinkObject
+XBSYSAPI EXPORTNUM(203) NTSTATUS NTAPI NtOpenSymbolicLinkObject
 (
 	OUT PHANDLE LinkHandle,
 	IN POBJECT_ATTRIBUTES ObjectAttributes
@@ -976,7 +972,7 @@ XBSYSAPI EXPORTNUM(203) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtOpenSymbolicLinkObj
 // ******************************************************************
 // * 0x00CC - NtProtectVirtualMemory()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(204) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtProtectVirtualMemory
+XBSYSAPI EXPORTNUM(204) NTSTATUS NTAPI NtProtectVirtualMemory
 (
 	IN OUT PVOID *BaseAddress,
 	IN OUT PSIZE_T RegionSize,
@@ -999,7 +995,7 @@ XBSYSAPI EXPORTNUM(204) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtProtectVirtualMemor
 // ******************************************************************
 // * 0x00CD - NtPulseEvent()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(205) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtPulseEvent
+XBSYSAPI EXPORTNUM(205) NTSTATUS NTAPI NtPulseEvent
 (
 	IN HANDLE	EventHandle,
 	OUT PLONG	PreviousState OPTIONAL
@@ -1025,7 +1021,7 @@ XBSYSAPI EXPORTNUM(205) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtPulseEvent
 // ******************************************************************
 // * 0x00CE - NtQueueApcThread()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(206) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueueApcThread
+XBSYSAPI EXPORTNUM(206) NTSTATUS NTAPI NtQueueApcThread
 (
 	IN HANDLE               ThreadHandle,
 	IN PIO_APC_ROUTINE      ApcRoutine,
@@ -1060,7 +1056,7 @@ XBSYSAPI EXPORTNUM(206) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueueApcThread
 // ******************************************************************
 // * 0x00CF - NtQueryDirectoryFile()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(207) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryDirectoryFile
+XBSYSAPI EXPORTNUM(207) NTSTATUS NTAPI NtQueryDirectoryFile
 (
 	IN  HANDLE                      FileHandle,
 	IN  HANDLE                      Event OPTIONAL,
@@ -1145,7 +1141,7 @@ XBSYSAPI EXPORTNUM(207) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryDirectoryFile
 
 	// convert from PC to Xbox
 	{
-		// TODO : assert that NtDll::FILE_DIRECTORY_INFORMATION has same members and size as xboxkrnl::FILE_DIRECTORY_INFORMATION
+		// TODO : assert that NtDll::FILE_DIRECTORY_INFORMATION has same members and size as FILE_DIRECTORY_INFORMATION
 		memcpy(/*Dst=*/FileInformation, /*Src=*/NtFileDirInfo, /*Size=*/NtFileDirectoryInformationSize);
 		wcstombs(/*Dest=*/mbstr, /*Source=*/wcstr, MAX_PATH);
 		FileInformation->FileNameLength /= sizeof(wchar_t);
@@ -1160,10 +1156,10 @@ XBSYSAPI EXPORTNUM(207) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryDirectoryFile
 // ******************************************************************
 // * 0x00D2 - NtQueryFullAttributesFile()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(210) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryFullAttributesFile
+XBSYSAPI EXPORTNUM(210) NTSTATUS NTAPI NtQueryFullAttributesFile
 (
 	IN  POBJECT_ATTRIBUTES          ObjectAttributes,
-	OUT xboxkrnl::PFILE_NETWORK_OPEN_INFORMATION   Attributes
+	OUT PFILE_NETWORK_OPEN_INFORMATION   Attributes
 )
 {
 	LOG_FUNC_BEGIN
@@ -1186,7 +1182,7 @@ XBSYSAPI EXPORTNUM(210) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryFullAttributes
 			&nativeNetOpenInfo);
 	
 	// Convert Attributes to Xbox
-	NTToXboxFileInformation(&nativeNetOpenInfo, Attributes, FileNetworkOpenInformation, sizeof(xboxkrnl::FILE_NETWORK_OPEN_INFORMATION));
+	NTToXboxFileInformation(&nativeNetOpenInfo, Attributes, FileNetworkOpenInformation, sizeof(FILE_NETWORK_OPEN_INFORMATION));
 
 	if (FAILED(ret))
 		EmuWarning("NtQueryFullAttributesFile failed! (0x%.08X)", ret);
@@ -1197,7 +1193,7 @@ XBSYSAPI EXPORTNUM(210) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryFullAttributes
 // ******************************************************************
 // * 0x00D1  - NtQueryEvent()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(209) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryEvent
+XBSYSAPI EXPORTNUM(209) NTSTATUS NTAPI NtQueryEvent
 (
 	IN HANDLE EventHandle,
 	OUT PEVENT_BASIC_INFORMATION EventInformation
@@ -1224,7 +1220,7 @@ XBSYSAPI EXPORTNUM(209) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryEvent
 // ******************************************************************
 // * 0x00D3 - NtQueryInformationFile()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(211) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryInformationFile
+XBSYSAPI EXPORTNUM(211) NTSTATUS NTAPI NtQueryInformationFile
 (
 	IN  HANDLE                      FileHandle,
 	OUT PIO_STATUS_BLOCK            IoStatusBlock,
@@ -1291,7 +1287,7 @@ XBSYSAPI EXPORTNUM(211) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryInformationFil
 // ******************************************************************
 // * 0x00D5 - NtQueryMutant()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(213) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryMutant
+XBSYSAPI EXPORTNUM(213) NTSTATUS NTAPI NtQueryMutant
 (
 	IN HANDLE MutantHandle,
 	OUT PMUTANT_BASIC_INFORMATION MutantInformation
@@ -1318,7 +1314,7 @@ XBSYSAPI EXPORTNUM(213) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryMutant
 // ******************************************************************
 // * 0x00D6 - NtQuerySemaphore()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(214) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQuerySemaphore
+XBSYSAPI EXPORTNUM(214) NTSTATUS NTAPI NtQuerySemaphore
 (
 	IN HANDLE SemaphoreHandle,
 	OUT PSEMAPHORE_BASIC_INFORMATION SemaphoreInformation
@@ -1345,7 +1341,7 @@ XBSYSAPI EXPORTNUM(214) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQuerySemaphore
 // ******************************************************************
 // * 0x00D7 - NtQuerySymbolicLinkObject()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(215) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQuerySymbolicLinkObject
+XBSYSAPI EXPORTNUM(215) NTSTATUS NTAPI NtQuerySymbolicLinkObject
 (
 	HANDLE LinkHandle,
 	OUT PSTRING LinkTarget,
@@ -1398,7 +1394,7 @@ XBSYSAPI EXPORTNUM(215) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQuerySymbolicLinkOb
 // ******************************************************************
 // * 0x00D8 - NtQueryTimer()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(216) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryTimer
+XBSYSAPI EXPORTNUM(216) NTSTATUS NTAPI NtQueryTimer
 (
 	IN HANDLE TimerHandle,
 	OUT PTIMER_BASIC_INFORMATION TimerInformation
@@ -1425,7 +1421,7 @@ XBSYSAPI EXPORTNUM(216) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryTimer
 // ******************************************************************
 // * 0x00D9 - NtQueryVirtualMemory()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(217) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryVirtualMemory
+XBSYSAPI EXPORTNUM(217) NTSTATUS NTAPI NtQueryVirtualMemory
 (
 	IN  PVOID                       BaseAddress,
 	OUT PMEMORY_BASIC_INFORMATION   Buffer
@@ -1474,7 +1470,7 @@ XBSYSAPI EXPORTNUM(217) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryVirtualMemory
 // ******************************************************************
 // * 0x00DA - NtQueryVolumeInformationFile()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(218) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryVolumeInformationFile
+XBSYSAPI EXPORTNUM(218) NTSTATUS NTAPI NtQueryVolumeInformationFile
 (
 	IN  HANDLE                      FileHandle,
 	OUT PIO_STATUS_BLOCK            IoStatusBlock,
@@ -1587,7 +1583,7 @@ XBSYSAPI EXPORTNUM(218) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtQueryVolumeInformat
 // ******************************************************************
 // * 0x00DA - NtReadFile()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(219) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtReadFile
+XBSYSAPI EXPORTNUM(219) NTSTATUS NTAPI NtReadFile
 (
 	IN  HANDLE          FileHandle,            // TODO: correct paramters
 	IN  HANDLE          Event OPTIONAL,
@@ -1644,7 +1640,7 @@ XBSYSAPI EXPORTNUM(219) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtReadFile
 // ******************************************************************
 // * 0x00DD - NtReleaseMutant()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(221) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtReleaseMutant
+XBSYSAPI EXPORTNUM(221) NTSTATUS NTAPI NtReleaseMutant
 (
 	IN  HANDLE  MutantHandle,
 	OUT PLONG   PreviousCount
@@ -1667,7 +1663,7 @@ XBSYSAPI EXPORTNUM(221) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtReleaseMutant
 // ******************************************************************
 // * 0x00DE - NtReleaseSemaphore()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(222) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtReleaseSemaphore
+XBSYSAPI EXPORTNUM(222) NTSTATUS NTAPI NtReleaseSemaphore
 (
 	IN  HANDLE              SemaphoreHandle,
 	IN  ULONG               ReleaseCount,
@@ -1694,7 +1690,7 @@ XBSYSAPI EXPORTNUM(222) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtReleaseSemaphore
 // ******************************************************************
 // * 0x00E0 - NtResumeThread()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(224) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtResumeThread
+XBSYSAPI EXPORTNUM(224) NTSTATUS NTAPI NtResumeThread
 (
 	IN  HANDLE ThreadHandle,
 	OUT PULONG PreviousSuspendCount
@@ -1719,7 +1715,7 @@ XBSYSAPI EXPORTNUM(224) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtResumeThread
 // ******************************************************************
 // * 0x00E1 - NtSetEvent()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(225) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtSetEvent
+XBSYSAPI EXPORTNUM(225) NTSTATUS NTAPI NtSetEvent
 (
 	IN  HANDLE EventHandle,
 	OUT PLONG  PreviousState
@@ -1743,7 +1739,7 @@ XBSYSAPI EXPORTNUM(225) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtSetEvent
 // ******************************************************************
 // * 0x00E2 - NtSetInformationFile()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(226) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtSetInformationFile
+XBSYSAPI EXPORTNUM(226) NTSTATUS NTAPI NtSetInformationFile
 (
 	IN  HANDLE                   FileHandle,
 	OUT PIO_STATUS_BLOCK         IoStatusBlock,
@@ -1775,7 +1771,7 @@ XBSYSAPI EXPORTNUM(226) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtSetInformationFile
 // ******************************************************************
 // * 0x00E4 - NtSetSystemTime()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(228) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtSetSystemTime
+XBSYSAPI EXPORTNUM(228) NTSTATUS NTAPI NtSetSystemTime
 (
 	IN  PLARGE_INTEGER			SystemTime,
 	OUT PLARGE_INTEGER			PreviousTime OPTIONAL
@@ -1798,14 +1794,14 @@ XBSYSAPI EXPORTNUM(228) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtSetSystemTime
 
 		// Is the previous time requested?
 		if (PreviousTime != NULL)
-			// Apply current HostSystemTimeDelta, same as in xboxkrnl::KeQuerySystemTime :
+			// Apply current HostSystemTimeDelta, same as in KeQuerySystemTime :
 			PreviousTime->QuadPart = HostSystemTime.QuadPart + HostSystemTimeDelta.QuadPart;
 
 		// Is a new time given?
 		if (SystemTime != NULL)
 		{
 			if (SystemTime->QuadPart > 0)
-				// Calculate new HostSystemTimeDelta, to be used in xboxkrnl::KeQuerySystemTime :
+				// Calculate new HostSystemTimeDelta, to be used in KeQuerySystemTime :
 				HostSystemTimeDelta.QuadPart = HostSystemTime.QuadPart - SystemTime->QuadPart;
 			else
 				ret = STATUS_INVALID_PARAMETER;
@@ -1818,7 +1814,7 @@ XBSYSAPI EXPORTNUM(228) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtSetSystemTime
 // ******************************************************************
 // * 0x00E5 - NtSetTimerEx()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(229) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtSetTimerEx
+XBSYSAPI EXPORTNUM(229) NTSTATUS NTAPI NtSetTimerEx
 (
 	IN HANDLE TimerHandle,
 	IN PLARGE_INTEGER DueTime,
@@ -1861,7 +1857,7 @@ XBSYSAPI EXPORTNUM(229) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtSetTimerEx
 // ******************************************************************
 // * 0x00E7 - NtSuspendThread()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(231) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtSuspendThread
+XBSYSAPI EXPORTNUM(231) NTSTATUS NTAPI NtSuspendThread
 (
 	IN  HANDLE  ThreadHandle,
 	OUT PULONG  PreviousSuspendCount OPTIONAL
@@ -1884,7 +1880,7 @@ XBSYSAPI EXPORTNUM(231) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtSuspendThread
 // ******************************************************************
 // * 0x00E8 - NtUserIoApcDispatcher()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(232) xboxkrnl::VOID NTAPI xboxkrnl::NtUserIoApcDispatcher
+XBSYSAPI EXPORTNUM(232) VOID NTAPI NtUserIoApcDispatcher
 (
 	PVOID            ApcContext,
 	PIO_STATUS_BLOCK IoStatusBlock,
@@ -1917,7 +1913,7 @@ XBSYSAPI EXPORTNUM(232) xboxkrnl::VOID NTAPI xboxkrnl::NtUserIoApcDispatcher
 // ******************************************************************
 // * 0x00E9 - NtWaitForSingleObject()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(233) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtWaitForSingleObject
+XBSYSAPI EXPORTNUM(233) NTSTATUS NTAPI NtWaitForSingleObject
 (
     IN  HANDLE  Handle,
     IN  BOOLEAN Alertable,
@@ -1926,7 +1922,7 @@ XBSYSAPI EXPORTNUM(233) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtWaitForSingleObject
 {
 	LOG_FORWARD("KeWaitForMultipleObjects");
 
-	return xboxkrnl::KeWaitForMultipleObjects(
+	return KeWaitForMultipleObjects(
 		/*Count=*/1,
 		&Handle,
 		/*WaitType=*/WaitAll,
@@ -1941,7 +1937,7 @@ XBSYSAPI EXPORTNUM(233) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtWaitForSingleObject
 // ******************************************************************
 // * 0x00EA - NtWaitForSingleObjectEx()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(234) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtWaitForSingleObjectEx
+XBSYSAPI EXPORTNUM(234) NTSTATUS NTAPI NtWaitForSingleObjectEx
 (
 	IN  HANDLE          Handle,
 	IN  KPROCESSOR_MODE WaitMode,
@@ -1951,7 +1947,7 @@ XBSYSAPI EXPORTNUM(234) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtWaitForSingleObject
 {
 	LOG_FORWARD("KeWaitForMultipleObjects");
 
-	return xboxkrnl::KeWaitForMultipleObjects(
+	return KeWaitForMultipleObjects(
 		/*Count=*/1,
 		&Handle,
 		/*WaitType=*/WaitAll,
@@ -1966,7 +1962,7 @@ XBSYSAPI EXPORTNUM(234) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtWaitForSingleObject
 // ******************************************************************
 // * 0x00EB - NtWaitForMultipleObjectsEx()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(235) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtWaitForMultipleObjectsEx
+XBSYSAPI EXPORTNUM(235) NTSTATUS NTAPI NtWaitForMultipleObjectsEx
 (
 	IN  ULONG           Count,
 	IN  HANDLE         *Handles,
@@ -1978,7 +1974,7 @@ XBSYSAPI EXPORTNUM(235) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtWaitForMultipleObje
 {
 	LOG_FORWARD("KeWaitForMultipleObjects");
 
-	return xboxkrnl::KeWaitForMultipleObjects(
+	return KeWaitForMultipleObjects(
 		Count,
 		Handles,
 		WaitType,
@@ -1995,7 +1991,7 @@ XBSYSAPI EXPORTNUM(235) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtWaitForMultipleObje
 // Writes a file.
 //
 // Differences from NT: There is no Key parameter.
-XBSYSAPI EXPORTNUM(236) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtWriteFile
+XBSYSAPI EXPORTNUM(236) NTSTATUS NTAPI NtWriteFile
 (
 	IN  HANDLE          FileHandle,
 	IN  HANDLE          Event,
@@ -2051,7 +2047,7 @@ XBSYSAPI EXPORTNUM(236) xboxkrnl::NTSTATUS NTAPI xboxkrnl::NtWriteFile
 // ******************************************************************
 // * 0x00EE - NtYieldExecution()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(238) xboxkrnl::VOID NTAPI xboxkrnl::NtYieldExecution()
+XBSYSAPI EXPORTNUM(238) VOID NTAPI NtYieldExecution()
 {
 	// NOTE: Logging this fills the debug log far too quickly, so don't.
 	// LOG_FUNC();

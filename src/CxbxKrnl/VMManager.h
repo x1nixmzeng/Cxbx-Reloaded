@@ -129,7 +129,7 @@ class VMManager : public PhysicalMemory
 		// maps the virtual memory region used by a device
 		void MapHardwareDevice(VAddr base, size_t size, VMAType vma_type);
 		// retrieves memory statistics
-		void MemoryStatistics(xboxkrnl::PMM_STATISTICS memory_statistics);
+		void MemoryStatistics(Xbox::PMM_STATISTICS memory_statistics);
 		// allocates a block of memory
 		VAddr Allocate(size_t size, PageType page_type = PageType::VirtualMemory, PAddr low_addr = 0, PAddr high_addr = MAXULONG_PTR, ULONG alignment = PAGE_SIZE,
 			DWORD protect = PAGE_READWRITE);
@@ -152,10 +152,10 @@ class VMManager : public PhysicalMemory
 		// retrieves the size of an allocation
 		size_t QuerySize(VAddr addr);
 		// xbox implementation of NtAllocateVirtualMemory
-		xboxkrnl::NTSTATUS XbAllocateVirtualMemory(VAddr* addr, ULONG zero_bits, size_t* size, DWORD allocation_type,
+		NTSTATUS XbAllocateVirtualMemory(VAddr* addr, ULONG zero_bits, size_t* size, DWORD allocation_type,
 			DWORD protect, bool bStub = false);
 		// xbox implementation of NtFreeVirtualMemory
-		xboxkrnl::NTSTATUS XbFreeVirtualMemory(VAddr* addr, size_t* size, DWORD free_type, bool bStub = false);
+		NTSTATUS XbFreeVirtualMemory(VAddr* addr, size_t* size, DWORD free_type, bool bStub = false);
 
 	
 	private:

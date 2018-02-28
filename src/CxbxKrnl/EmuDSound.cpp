@@ -37,10 +37,7 @@
 // ******************************************************************
 #define _XBOXKRNL_DEFEXTRN_
 
-// prevent name collisions
-namespace xboxkrnl {
-    #include <xboxkrnl/xboxkrnl.h>
-};
+#include <xboxkrnl/xboxkrnl.h>
 
 namespace Native
 {

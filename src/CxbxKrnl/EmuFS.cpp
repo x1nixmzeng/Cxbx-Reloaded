@@ -37,11 +37,7 @@
 
 #define LOG_PREFIX "KRNL"
 
-// prevent name collisions
-namespace xboxkrnl
-{
 #include <xboxkrnl/xboxkrnl.h>
-};
 
 #include "EmuKrnl.h" // For InitializeListHead(), etc.
 #include "EmuFS.h"
@@ -126,9 +122,9 @@ NT_TIB *GetNtTib()
 }
 
 
-xboxkrnl::KPCR* KeGetPcr();
+KPCR* KeGetPcr();
 
-void EmuKeSetPcr(xboxkrnl::KPCR *Pcr)
+void EmuKeSetPcr(KPCR *Pcr)
 {
 	// Store the Xbox KPCR pointer in FS (See KeGetPcr())
 	// 
@@ -543,9 +539,9 @@ void EmuGenerateFS(Xbe::TLS *pTLS, void *pTLSData)
 	}
 
 	// Allocate the xbox KPCR structure
-	xboxkrnl::KPCR *NewPcr = (xboxkrnl::KPCR*)g_VMManager.AllocateZeroed(sizeof(xboxkrnl::KPCR));
-	xboxkrnl::NT_TIB *XbTib = &(NewPcr->NtTib);
-	xboxkrnl::PKPRCB Prcb = &(NewPcr->PrcbData);
+	KPCR *NewPcr = (KPCR*)g_VMManager.AllocateZeroed(sizeof(KPCR));
+	NT_TIB *XbTib = &(NewPcr->NtTib);
+	PKPRCB Prcb = &(NewPcr->PrcbData);
 	// Note : As explained above (at EmuKeSetPcr), Cxbx cannot allocate one NT_TIB and KPRCB
 	// structure per thread, since Cxbx currently doesn't do thread-switching.
 	// Thus, the only way to give each thread it's own PrcbData.CurrentThread, is to put the
@@ -584,12 +580,12 @@ void EmuGenerateFS(Xbe::TLS *pTLS, void *pTLSData)
 
 	// Initialize a fake PrcbData.CurrentThread 
 	{
-		xboxkrnl::ETHREAD *EThread = (xboxkrnl::ETHREAD*)g_VMManager.AllocateZeroed(sizeof(xboxkrnl::ETHREAD)); // Clear, to prevent side-effects on random contents
+		ETHREAD *EThread = (ETHREAD*)g_VMManager.AllocateZeroed(sizeof(ETHREAD)); // Clear, to prevent side-effects on random contents
 
 		EThread->Tcb.TlsData = pNewTLS;
 		EThread->UniqueThread = GetCurrentThreadId();
 		// Set PrcbData.CurrentThread
-		Prcb->CurrentThread = (xboxkrnl::KTHREAD*)EThread;
+		Prcb->CurrentThread = (KTHREAD*)EThread;
 	}
 
 	// Make the KPCR struct available to KeGetPcr()

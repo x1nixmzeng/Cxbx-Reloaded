@@ -37,11 +37,7 @@
 #include "xxhash32.h"
 #include <condition_variable>
 
-// prevent name collisions
-namespace xboxkrnl
-{
-    #include <xboxkrnl/xboxkrnl.h>
-};
+#include <xboxkrnl/xboxkrnl.h>
 
 #include "CxbxUtil.h"
 #include "CxbxVersion.h"
@@ -856,7 +852,7 @@ size_t GetXboxResourceSize(X_D3DResource* pXboxResource)
 		return SrcSize;
 	default:
 		// Fallback to querying the allocation size, if no other calculation was present
-		return xboxkrnl::MmQueryAllocationSize(GetDataFromXboxResource(pXboxResource));
+		return MmQueryAllocationSize(GetDataFromXboxResource(pXboxResource));
 	}
 	
 }
@@ -1753,7 +1749,7 @@ static DWORD WINAPI EmuUpdateTickCount(LPVOID)
 
     while(true)
     {
-        xboxkrnl::KeTickCount = timeGetTime();	
+        KeTickCount = timeGetTime();	
 		SwitchToThread();
 
         //

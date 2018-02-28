@@ -42,11 +42,7 @@
 
 #define LOG_PREFIX "NV2A"
 
-// prevent name collisions
-namespace xboxkrnl
-{
 #include <xboxkrnl/xboxkrnl.h> // For PKINTERRUPT, etc.
-};
 
 #ifdef _MSC_VER                         // Check if MS Visual C compiler
 #  pragma comment(lib, "opengl32.lib")  // Compiler-specific directive to avoid manually configuration
@@ -139,10 +135,10 @@ static void update_irq(NV2AState *d)
 	} */
 
 	if (d->pmc.pending_interrupts && d->pmc.enabled_interrupts) {
-		HalSystemInterrupts[3].Assert(true);
+		Xbox::HalSystemInterrupts[3].Assert(true);
 	}
 	else {
-		HalSystemInterrupts[3].Assert(false);
+		Xbox::HalSystemInterrupts[3].Assert(false);
 	}
 
 	SwitchToThread();

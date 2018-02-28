@@ -35,11 +35,7 @@
 // ******************************************************************
 #define _XBOXKRNL_DEFEXTRN_
 
-/* prevent name collisions */
-namespace xboxkrnl
-{
 #include <xboxkrnl/xboxkrnl.h> // For xbox.h:AV_PACK_HDTV
-};
 
 #include "CxbxKrnl\CxbxKrnl.h"
 #include "CxbxKrnl\EmuShared.h"

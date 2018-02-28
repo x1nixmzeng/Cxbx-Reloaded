@@ -38,11 +38,7 @@
 
 #define LOG_PREFIX "KRNL"
 
-// prevent name collisions
-namespace xboxkrnl
-{
 #include <xboxkrnl/xboxkrnl.h> // For FscGetCacheSize, etc.
-};
 
 #include "Logging.h" // For LOG_FUNC()
 #include "EmuKrnlLogging.h"
@@ -58,12 +54,12 @@ namespace NtDll
 #define FSCACHE_MAXIMUM_NUMBER_OF_CACHE_PAGES 2048
 
 // global variables
-xboxkrnl::LONG g_FscNumberOfCachePages = 16; // 16 = default number of file system cache pages
+LONG g_FscNumberOfCachePages = 16; // 16 = default number of file system cache pages
 
 // ******************************************************************
 // * 0x0023 - FscGetCacheSize()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(35) xboxkrnl::ULONG NTAPI xboxkrnl::FscGetCacheSize()
+XBSYSAPI EXPORTNUM(35) ULONG NTAPI FscGetCacheSize()
 {
 	LOG_FUNC();
 
@@ -73,7 +69,7 @@ XBSYSAPI EXPORTNUM(35) xboxkrnl::ULONG NTAPI xboxkrnl::FscGetCacheSize()
 // ******************************************************************
 // * 0x0024 - FscInvalidateIdleBlocks()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(36) xboxkrnl::VOID NTAPI xboxkrnl::FscInvalidateIdleBlocks()
+XBSYSAPI EXPORTNUM(36) VOID NTAPI FscInvalidateIdleBlocks()
 {
 	LOG_FUNC();
 
@@ -83,7 +79,7 @@ XBSYSAPI EXPORTNUM(36) xboxkrnl::VOID NTAPI xboxkrnl::FscInvalidateIdleBlocks()
 // ******************************************************************
 // * 0x0025 - FscSetCacheSize()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(37) xboxkrnl::NTSTATUS NTAPI xboxkrnl::FscSetCacheSize
+XBSYSAPI EXPORTNUM(37) NTSTATUS NTAPI FscSetCacheSize
 (
 	ULONG NumberOfCachePages
 )

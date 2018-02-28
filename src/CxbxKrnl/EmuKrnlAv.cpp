@@ -38,11 +38,7 @@
 
 #define LOG_PREFIX "KRNL"
 
-// prevent name collisions
-namespace xboxkrnl
-{
-	#include <xboxkrnl/xboxkrnl.h> // For AvGetSavedDataAddress, etc.
-};
+#include <xboxkrnl/xboxkrnl.h> // For AvGetSavedDataAddress, etc.
 
 #include "Logging.h" // For LOG_FUNC()
 #include "EmuKrnlLogging.h"
@@ -54,6 +50,9 @@ namespace NtDll
 };
 
 #include "Emu.h" // For EmuWarning()
+
+namespace Xbox
+{
 
 // Global Variable(s)
 PVOID g_pPersistedData = NULL;
@@ -68,8 +67,8 @@ ULONG AvQueryAvCapabilities()
 
 	// First, read the factory AV settings
 	ULONG avRegion;
-	NTSTATUS result = xboxkrnl::ExQueryNonVolatileSetting(
-		xboxkrnl::XC_FACTORY_AV_REGION,
+	NTSTATUS result = ExQueryNonVolatileSetting(
+		XC_FACTORY_AV_REGION,
 		&type,
 		&avRegion,
 		sizeof(ULONG),
@@ -82,8 +81,8 @@ ULONG AvQueryAvCapabilities()
 
 	// Read the user-configurable (via the dashboard) settings
 	ULONG userSettings;
-	result = xboxkrnl::ExQueryNonVolatileSetting(
-		xboxkrnl::XC_VIDEO,
+	result = ExQueryNonVolatileSetting(
+		XC_VIDEO,
 		&type,
 		&userSettings,
 		sizeof(ULONG),
@@ -106,7 +105,7 @@ PVOID g_AvSavedDataAddress = NULL;
 // ******************************************************************
 // * 0x0001 - AvGetSavedDataAddress()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(1) xboxkrnl::PVOID NTAPI xboxkrnl::AvGetSavedDataAddress(void)
+XBSYSAPI EXPORTNUM(1) PVOID NTAPI AvGetSavedDataAddress(void)
 {
 	LOG_FUNC();
 
@@ -116,7 +115,7 @@ XBSYSAPI EXPORTNUM(1) xboxkrnl::PVOID NTAPI xboxkrnl::AvGetSavedDataAddress(void
 // ******************************************************************
 // * 0x0002 - AvSendTVEncoderOption()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(2) xboxkrnl::VOID NTAPI xboxkrnl::AvSendTVEncoderOption
+XBSYSAPI EXPORTNUM(2) VOID NTAPI AvSendTVEncoderOption
 (
 	IN  PVOID   RegisterBase,
 	IN  ULONG   Option,
@@ -195,7 +194,7 @@ XBSYSAPI EXPORTNUM(2) xboxkrnl::VOID NTAPI xboxkrnl::AvSendTVEncoderOption
 // ******************************************************************
 // * 0x0003 - AvSetDisplayMode()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(3) xboxkrnl::ULONG NTAPI xboxkrnl::AvSetDisplayMode
+XBSYSAPI EXPORTNUM(3) ULONG NTAPI AvSetDisplayMode
 (
 	IN  PVOID   RegisterBase,
 	IN  ULONG   Step,
@@ -224,7 +223,7 @@ XBSYSAPI EXPORTNUM(3) xboxkrnl::ULONG NTAPI xboxkrnl::AvSetDisplayMode
 // ******************************************************************
 // * 0x0004 - AvSetSavedDataAddress()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(4) xboxkrnl::VOID NTAPI xboxkrnl::AvSetSavedDataAddress
+XBSYSAPI EXPORTNUM(4) VOID NTAPI AvSetSavedDataAddress
 (
 	IN  PVOID   Address
 )
@@ -235,3 +234,5 @@ XBSYSAPI EXPORTNUM(4) xboxkrnl::VOID NTAPI xboxkrnl::AvSetSavedDataAddress
 
 	g_AvSavedDataAddress = Address;
 }
+
+} // Xbox

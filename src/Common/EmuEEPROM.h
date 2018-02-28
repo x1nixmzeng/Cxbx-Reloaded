@@ -36,19 +36,19 @@
 #ifndef EMU_EEPROM_H
 #define EMU_EEPROM_H
 
-#define EEPROM_SIZE sizeof(xboxkrnl::XBOX_EEPROM)
+#define EEPROM_SIZE sizeof(XBOX_EEPROM)
 
 typedef struct EEPROMInfo {
-	xboxkrnl::XC_VALUE_INDEX index;
+	XC_VALUE_INDEX index;
 	int value_offset;
 	int value_type;
 	int value_length;
 } EEPROMInfo;
 
-#define XC_END_MARKER (xboxkrnl::XC_VALUE_INDEX)-1
+#define XC_END_MARKER (XC_VALUE_INDEX)-1
 
 #define EEPROM_INFO_ENTRY(XC, Member, REG_Type) \
-	{ xboxkrnl::##XC, offsetof(xboxkrnl::XBOX_EEPROM, Member), REG_Type, sizeof(((xboxkrnl::XBOX_EEPROM *)0)->Member) }
+	{ ##XC, offsetof(XBOX_EEPROM, Member), REG_Type, sizeof(((XBOX_EEPROM *)0)->Member) }
 
 static const EEPROMInfo EEPROMInfos[] = {
 	EEPROM_INFO_ENTRY(XC_TIMEZONE_BIAS,         UserSettings.TimeZoneBias,                REG_DWORD),
@@ -81,18 +81,18 @@ static const EEPROMInfo EEPROMInfos[] = {
 	EEPROM_INFO_ENTRY(XC_FACTORY_AV_REGION,     FactorySettings.AVRegion,                 REG_DWORD),
 	// Note : XC_FACTORY_GAME_REGION is linked to a separate ULONG XboxFactoryGameRegion (of type REG_DWORD)
 	EEPROM_INFO_ENTRY(XC_ENCRYPTED_SECTION,     EncryptedSettings,                        REG_BINARY),
-	{ xboxkrnl::XC_MAX_ALL,                     0,                                        REG_BINARY, sizeof(xboxkrnl::XBOX_EEPROM) },
+	{ XC_MAX_ALL,                     0,                                        REG_BINARY, sizeof(XBOX_EEPROM) },
 	{ XC_END_MARKER }
 };
 
-extern xboxkrnl::XBOX_EEPROM *CxbxRestoreEEPROM(char *szFilePath_EEPROM_bin);
+extern XBOX_EEPROM *CxbxRestoreEEPROM(char *szFilePath_EEPROM_bin);
 
-extern const EEPROMInfo* EmuFindEEPROMInfo(xboxkrnl::XC_VALUE_INDEX index);
+extern const EEPROMInfo* EmuFindEEPROMInfo(XC_VALUE_INDEX index);
 
-extern xboxkrnl::XBOX_EEPROM *EEPROM;
+extern XBOX_EEPROM *EEPROM;
 
-extern xboxkrnl::ULONG XboxFactoryGameRegion;
+extern ULONG XboxFactoryGameRegion;
 
-void gen_section_CRCs(xboxkrnl::XBOX_EEPROM*);
+void gen_section_CRCs(XBOX_EEPROM*);
 
 #endif // EMU_EEPROM_H

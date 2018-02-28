@@ -236,7 +236,7 @@ void VMManager::MapHardwareDevice(VAddr base, size_t size, VMAType vma_type)
 	Unlock();
 }
 
-void VMManager::MemoryStatistics(xboxkrnl::PMM_STATISTICS memory_statistics)
+void VMManager::MemoryStatistics(Xbox::PMM_STATISTICS memory_statistics)
 {
 	Lock();
 	memory_statistics->TotalPhysicalPages = m_MaxPhysicalMemory / PAGE_SIZE;
@@ -467,7 +467,7 @@ namespace NtDll
 #include "EmuNtDll.h" // TODO : Remove dependancy once NtDll::NtAllocateVirtualMemory is gone again
 };
 
-xboxkrnl::NTSTATUS VMManager::XbAllocateVirtualMemory(VAddr* addr, ULONG zero_bits, size_t* size, DWORD allocation_type,
+NTSTATUS VMManager::XbAllocateVirtualMemory(VAddr* addr, ULONG zero_bits, size_t* size, DWORD allocation_type,
 	DWORD protect, bool bStub)
 {
 	LOG_FUNC_BEGIN
@@ -485,7 +485,7 @@ xboxkrnl::NTSTATUS VMManager::XbAllocateVirtualMemory(VAddr* addr, ULONG zero_bi
 	assert(size); // size must be assigned
 	size_t CapturedSize = *size;
 
-	xboxkrnl::NTSTATUS ret = STATUS_SUCCESS;
+	NTSTATUS ret = STATUS_SUCCESS;
 
 	Lock();
 
@@ -597,7 +597,7 @@ failed:
 	RETURN(ret);
 }
 
-xboxkrnl::NTSTATUS VMManager::XbFreeVirtualMemory(VAddr* addr, size_t* size, DWORD free_type, bool bStub)
+NTSTATUS VMManager::XbFreeVirtualMemory(VAddr* addr, size_t* size, DWORD free_type, bool bStub)
 {
 	LOG_FUNC_BEGIN
 		LOG_FUNC_ARG(*addr);
@@ -614,7 +614,7 @@ xboxkrnl::NTSTATUS VMManager::XbFreeVirtualMemory(VAddr* addr, size_t* size, DWO
 	assert(size); // Callers must pass in an assigned `size`
 	size_t CapturedSize = *size;
 
-	xboxkrnl::NTSTATUS ret = STATUS_SUCCESS;
+	NTSTATUS ret = STATUS_SUCCESS;
 
 	// Only MEM_DECOMMIT and MEM_RELEASE are valid
 	if ((free_type & ~(MEM_DECOMMIT | MEM_RELEASE)) != 0) { ret = STATUS_INVALID_PARAMETER; RETURN(ret); }

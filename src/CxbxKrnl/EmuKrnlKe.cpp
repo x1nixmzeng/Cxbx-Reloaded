@@ -69,15 +69,15 @@ namespace NtDll
 typedef struct _DpcData {
 	CRITICAL_SECTION Lock;
 	HANDLE DpcEvent;
-	xboxkrnl::LIST_ENTRY DpcQueue; // TODO : Use KeGetCurrentPrcb()->DpcListHead instead
-	xboxkrnl::LIST_ENTRY TimerQueue;
+	LIST_ENTRY DpcQueue; // TODO : Use KeGetCurrentPrcb()->DpcListHead instead
+	LIST_ENTRY TimerQueue;
 } DpcData;
 
 DpcData g_DpcData = { 0 }; // Note : g_DpcData is initialized in InitDpcAndTimerThread()
 
-std::map<xboxkrnl::PRKEVENT, HANDLE> g_KeEventHandles;
+std::map<PRKEVENT, HANDLE> g_KeEventHandles;
 
-xboxkrnl::ULONGLONG LARGE_INTEGER2ULONGLONG(xboxkrnl::LARGE_INTEGER value)
+ULONGLONG LARGE_INTEGER2ULONGLONG(LARGE_INTEGER value)
 {
 	// Weird construction because there doesn't seem to exist an implicit
 	// conversion of LARGE_INTEGER to ULONGLONG :
@@ -89,18 +89,18 @@ xboxkrnl::ULONGLONG LARGE_INTEGER2ULONGLONG(xboxkrnl::LARGE_INTEGER value)
 // * NOTE: This is a macro on the Xbox, however we implement it 
 // * as a function so it can suit our emulated KPCR structure
 // ******************************************************************
-xboxkrnl::KPCR* KeGetPcr()
+KPCR* KeGetPcr()
 {
-	xboxkrnl::PKPCR Pcr;
+	PKPCR Pcr;
 
 	// See EmuKeSetPcr()
-	Pcr = (xboxkrnl::PKPCR)__readfsdword(TIB_ArbitraryDataSlot);
+	Pcr = (PKPCR)__readfsdword(TIB_ArbitraryDataSlot);
 
 	if (Pcr == nullptr) {
 		EmuWarning("KeGetPCR returned nullptr: Was this called from a non-xbox thread?");
 		// Attempt to salvage the situation by calling InitXboxThread to setup KPCR in place
 		InitXboxThread(g_CPUXbox);
-		Pcr = (xboxkrnl::PKPCR)__readfsdword(TIB_ArbitraryDataSlot);
+		Pcr = (PKPCR)__readfsdword(TIB_ArbitraryDataSlot);
 	}
 
 	return Pcr;
@@ -109,7 +109,7 @@ xboxkrnl::KPCR* KeGetPcr()
 // ******************************************************************
 // * KeGetCurrentPrcb()
 // ******************************************************************
-xboxkrnl::KPRCB *KeGetCurrentPrcb()
+KPRCB *KeGetCurrentPrcb()
 {
 	return &(KeGetPcr()->PrcbData);
 }
@@ -134,11 +134,11 @@ DWORD CxbxXboxGetTickCount()
 
 DWORD ExecuteDpcQueue()
 {
-	xboxkrnl::PKDPC pkdpc;
+	PKDPC pkdpc;
 	DWORD dwWait;
 	DWORD dwNow;
 	LONG lWait;
-	xboxkrnl::PKTIMER pktimer;
+	PKTIMER pktimer;
 
 	// While we're working with the DpcQueue, we need to be thread-safe :
 	EnterCriticalSection(&(g_DpcData.Lock));
@@ -155,7 +155,7 @@ DWORD ExecuteDpcQueue()
 	while (!IsListEmpty(&(g_DpcData.DpcQueue)))
 	{
 		// Extract the head entry and retrieve the containing KDPC pointer for it:
-		pkdpc = CONTAINING_RECORD(RemoveHeadList(&(g_DpcData.DpcQueue)), xboxkrnl::KDPC, DpcListEntry);
+		pkdpc = CONTAINING_RECORD(RemoveHeadList(&(g_DpcData.DpcQueue)), KDPC, DpcListEntry);
 		// Mark it as no longer linked into the DpcQueue
 		pkdpc->Inserted = FALSE;
 		// Set DpcRoutineActive to support KeIsExecutingDpc:
@@ -183,9 +183,9 @@ DWORD ExecuteDpcQueue()
 		{
 			dwNow = CxbxXboxGetTickCount();
 			dwWait = INFINITE;
-			pktimer = (xboxkrnl::PKTIMER)g_DpcData.TimerQueue.Flink;
+			pktimer = (PKTIMER)g_DpcData.TimerQueue.Flink;
 			pkdpc = nullptr;
-			while (pktimer != (xboxkrnl::PKTIMER)&(g_DpcData.TimerQueue))
+			while (pktimer != (PKTIMER)&(g_DpcData.TimerQueue))
 			{
 				lWait = (LONG)pktimer->DueTime.u.LowPart - dwNow;
 				if (lWait <= 0)
@@ -198,7 +198,7 @@ DWORD ExecuteDpcQueue()
 				if (dwWait > (DWORD)lWait)
 					dwWait = (DWORD)lWait;
 
-				pktimer = (xboxkrnl::PKTIMER)pktimer->TimerListEntry.Flink;
+				pktimer = (PKTIMER)pktimer->TimerListEntry.Flink;
 			}
 
 			if (pkdpc == nullptr)
@@ -271,7 +271,7 @@ void CxbxInitPerformanceCounters()
 // * 0x005C - KeAlertResumeThread()
 // ******************************************************************
 // Source:Dxbx
-XBSYSAPI EXPORTNUM(92) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeAlertResumeThread
+XBSYSAPI EXPORTNUM(92) NTSTATUS NTAPI KeAlertResumeThread
 (
 	IN HANDLE ThreadHandle,
 	IN OUT PULONG PreviousSuspendCount
@@ -292,7 +292,7 @@ XBSYSAPI EXPORTNUM(92) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeAlertResumeThread
 // * 0x005D - KeAlertThread()
 // ******************************************************************
 // Source:Dxbx
-XBSYSAPI EXPORTNUM(93) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeAlertThread
+XBSYSAPI EXPORTNUM(93) NTSTATUS NTAPI KeAlertThread
 (
 	IN HANDLE ThreadHandle
 )
@@ -309,7 +309,7 @@ XBSYSAPI EXPORTNUM(93) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeAlertThread
 // * 0x005E - KeBoostPriorityThread()
 // ******************************************************************
 // Source:Dxbx
-XBSYSAPI EXPORTNUM(94) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeBoostPriorityThread
+XBSYSAPI EXPORTNUM(94) NTSTATUS NTAPI KeBoostPriorityThread
 (
 	IN PKTHREAD Thread,
 	IN KPRIORITY Increment
@@ -329,7 +329,7 @@ XBSYSAPI EXPORTNUM(94) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeBoostPriorityThread
 // ******************************************************************
 // * 0x005F - KeBugCheck()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(95) xboxkrnl::VOID NTAPI xboxkrnl::KeBugCheck
+XBSYSAPI EXPORTNUM(95) VOID NTAPI KeBugCheck
 (
 	IN ULONG BugCheckMode
 )
@@ -343,7 +343,7 @@ XBSYSAPI EXPORTNUM(95) xboxkrnl::VOID NTAPI xboxkrnl::KeBugCheck
 // * 0x0060 - KeBugCheckEx()
 // ******************************************************************
 // Source:Dxbx
-XBSYSAPI EXPORTNUM(96) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeBugCheckEx
+XBSYSAPI EXPORTNUM(96) NTSTATUS NTAPI KeBugCheckEx
 (
 	IN DWORD BugCheckCode,
 	IN PVOID BugCheckParameter1,
@@ -391,7 +391,7 @@ XBSYSAPI EXPORTNUM(96) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeBugCheckEx
 // ******************************************************************
 // * 0x0061 - KeCancelTimer()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(96) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeCancelTimer
+XBSYSAPI EXPORTNUM(96) BOOLEAN NTAPI KeCancelTimer
 (
 	IN PKTIMER Timer
 )
@@ -409,12 +409,12 @@ XBSYSAPI EXPORTNUM(96) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeCancelTimer
 	RETURN(Inserted);
 }
 
-xboxkrnl::PKINTERRUPT EmuInterruptList[MAX_BUS_INTERRUPT_LEVEL + 1] = { 0 };
+PKINTERRUPT EmuInterruptList[MAX_BUS_INTERRUPT_LEVEL + 1] = { 0 };
 
 // ******************************************************************
 // * 0x0062 - KeConnectInterrupt()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(98) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeConnectInterrupt
+XBSYSAPI EXPORTNUM(98) BOOLEAN NTAPI KeConnectInterrupt
 (
 	IN PKINTERRUPT  InterruptObject
 )
@@ -448,7 +448,7 @@ XBSYSAPI EXPORTNUM(98) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeConnectInterrupt
 // ******************************************************************
 // * 0x0063 - KeDelayExecutionThread()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(99) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeDelayExecutionThread
+XBSYSAPI EXPORTNUM(99) NTSTATUS NTAPI KeDelayExecutionThread
 (
 	IN KPROCESSOR_MODE  WaitMode,
 	IN BOOLEAN          Alertable,
@@ -469,7 +469,7 @@ XBSYSAPI EXPORTNUM(99) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeDelayExecutionThread
 // ******************************************************************
 // * 0x0064 - KeDisconnectInterrupt()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(100) xboxkrnl::VOID NTAPI xboxkrnl::KeDisconnectInterrupt
+XBSYSAPI EXPORTNUM(100) VOID NTAPI KeDisconnectInterrupt
 (
 	IN PKINTERRUPT  InterruptObject
 ) 
@@ -494,7 +494,7 @@ XBSYSAPI EXPORTNUM(100) xboxkrnl::VOID NTAPI xboxkrnl::KeDisconnectInterrupt
 // ******************************************************************
 // * 0x0065 - KeEnterCriticalRegion()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(101) xboxkrnl::VOID NTAPI xboxkrnl::KeEnterCriticalRegion
+XBSYSAPI EXPORTNUM(101) VOID NTAPI KeEnterCriticalRegion
 (
     VOID
 )
@@ -507,7 +507,7 @@ XBSYSAPI EXPORTNUM(101) xboxkrnl::VOID NTAPI xboxkrnl::KeEnterCriticalRegion
 // ******************************************************************
 // * 0x0067 - KeGetCurrentIrql()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(103) xboxkrnl::KIRQL NTAPI xboxkrnl::KeGetCurrentIrql(void)
+XBSYSAPI EXPORTNUM(103) KIRQL NTAPI KeGetCurrentIrql(void)
 {
 	LOG_FUNC(); // TODO : Remove nested logging on this somehow, so we can call this (instead of inlining)
 
@@ -520,7 +520,7 @@ XBSYSAPI EXPORTNUM(103) xboxkrnl::KIRQL NTAPI xboxkrnl::KeGetCurrentIrql(void)
 // ******************************************************************
 // * 0x0068 - KeGetCurrentThread()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(104) xboxkrnl::PKTHREAD NTAPI xboxkrnl::KeGetCurrentThread(void)
+XBSYSAPI EXPORTNUM(104) PKTHREAD NTAPI KeGetCurrentThread(void)
 {
 	LOG_FUNC();
 
@@ -534,7 +534,7 @@ XBSYSAPI EXPORTNUM(104) xboxkrnl::PKTHREAD NTAPI xboxkrnl::KeGetCurrentThread(vo
 // ******************************************************************
 // * 0x0069 - KeInitializeApc()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(105) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeApc
+XBSYSAPI EXPORTNUM(105) VOID NTAPI KeInitializeApc
 (
 	IN PKAPC Apc,
 	IN PKTHREAD Thread,
@@ -573,7 +573,7 @@ XBSYSAPI EXPORTNUM(105) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeApc
 // ******************************************************************
 // * 0x006A - KeInitializeDeviceQueue()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(106) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeDeviceQueue
+XBSYSAPI EXPORTNUM(106) VOID NTAPI KeInitializeDeviceQueue
 (
 	OUT PKDEVICE_QUEUE DeviceQueue
 )
@@ -590,7 +590,7 @@ XBSYSAPI EXPORTNUM(106) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeDeviceQueue
 // ******************************************************************
 // * 0x006B - KeInitializeDpc()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(107) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeDpc
+XBSYSAPI EXPORTNUM(107) VOID NTAPI KeInitializeDpc
 (
 	KDPC                *Dpc,
 	PKDEFERRED_ROUTINE   DeferredRoutine,
@@ -613,7 +613,7 @@ XBSYSAPI EXPORTNUM(107) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeDpc
 // ******************************************************************
 // * 0x006C - KeInitializeEvent()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(108) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeEvent
+XBSYSAPI EXPORTNUM(108) VOID NTAPI KeInitializeEvent
 (
 	IN PRKEVENT Event,
 	IN EVENT_TYPE Type,
@@ -644,7 +644,7 @@ XBSYSAPI EXPORTNUM(108) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeEvent
 // ******************************************************************
 // * 0x006D - KeInitializeInterrupt()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(109) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeInterrupt
+XBSYSAPI EXPORTNUM(109) VOID NTAPI KeInitializeInterrupt
 (
 	OUT PKINTERRUPT Interrupt,
 	IN PKSERVICE_ROUTINE ServiceRoutine,
@@ -683,7 +683,7 @@ XBSYSAPI EXPORTNUM(109) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeInterrupt
 // ******************************************************************
 // * 0x006E - KeInitializeMutant()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(110) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeMutant
+XBSYSAPI EXPORTNUM(110) VOID NTAPI KeInitializeMutant
 (
 	IN PRKMUTANT Mutant,
 	IN BOOLEAN InitialOwner
@@ -722,7 +722,7 @@ XBSYSAPI EXPORTNUM(110) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeMutant
 // ******************************************************************
 // * 0x006F - KeInitializeQueue()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(111) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeQueue
+XBSYSAPI EXPORTNUM(111) VOID NTAPI KeInitializeQueue
 (
 	IN PKQUEUE Queue,
 	IN ULONG Count OPTIONAL
@@ -748,7 +748,7 @@ XBSYSAPI EXPORTNUM(111) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeQueue
 // ******************************************************************
 // * 0x0070 - KeInitializeSemaphore()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(112) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeSemaphore
+XBSYSAPI EXPORTNUM(112) VOID NTAPI KeInitializeSemaphore
 (
 	IN PRKSEMAPHORE Semaphore,
 	IN LONG Count,
@@ -773,7 +773,7 @@ XBSYSAPI EXPORTNUM(112) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeSemaphore
 // ******************************************************************
 // * 0x0071 - KeInitializeTimerEx()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(113) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeTimerEx
+XBSYSAPI EXPORTNUM(113) VOID NTAPI KeInitializeTimerEx
 (
 	IN PKTIMER      Timer,
 	IN TIMER_TYPE   Type
@@ -797,7 +797,7 @@ XBSYSAPI EXPORTNUM(113) xboxkrnl::VOID NTAPI xboxkrnl::KeInitializeTimerEx
 	Timer->Period = 0;
 }
 
-XBSYSAPI EXPORTNUM(114) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeInsertByKeyDeviceQueue
+XBSYSAPI EXPORTNUM(114) BOOLEAN NTAPI KeInsertByKeyDeviceQueue
 (
 	IN PKDEVICE_QUEUE DeviceQueue,
 	IN PKDEVICE_QUEUE_ENTRY DeviceQueueEntry,
@@ -845,7 +845,7 @@ XBSYSAPI EXPORTNUM(114) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeInsertByKeyDeviceQue
 // * This implementation is inspired by ReactOS source code
 // * Ref: https://github.com/reactos/reactos/blob/master/ntoskrnl/ke/devqueue.c
 // ******************************************************************
-XBSYSAPI EXPORTNUM(115) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeInsertDeviceQueue
+XBSYSAPI EXPORTNUM(115) BOOLEAN NTAPI KeInsertDeviceQueue
 (
 	IN PKDEVICE_QUEUE DeviceQueue,
 	IN PKDEVICE_QUEUE_ENTRY DeviceQueueEntry
@@ -875,7 +875,7 @@ XBSYSAPI EXPORTNUM(115) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeInsertDeviceQueue
 	RETURN(Res);
 }
 
-XBSYSAPI EXPORTNUM(116) xboxkrnl::LONG NTAPI xboxkrnl::KeInsertHeadQueue
+XBSYSAPI EXPORTNUM(116) LONG NTAPI KeInsertHeadQueue
 (
 	IN PRKQUEUE Queue,
 	IN PLIST_ENTRY Entry
@@ -891,7 +891,7 @@ XBSYSAPI EXPORTNUM(116) xboxkrnl::LONG NTAPI xboxkrnl::KeInsertHeadQueue
 	RETURN(0);
 }
 
-XBSYSAPI EXPORTNUM(117) xboxkrnl::LONG NTAPI xboxkrnl::KeInsertQueue
+XBSYSAPI EXPORTNUM(117) LONG NTAPI KeInsertQueue
 (
 	IN PRKQUEUE Queue,
 	IN PLIST_ENTRY Entry
@@ -907,7 +907,7 @@ XBSYSAPI EXPORTNUM(117) xboxkrnl::LONG NTAPI xboxkrnl::KeInsertQueue
 	RETURN(0);
 }
 
-XBSYSAPI EXPORTNUM(118) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeInsertQueueApc
+XBSYSAPI EXPORTNUM(118) BOOLEAN NTAPI KeInsertQueueApc
 (
 	IN PRKAPC Apc,
 	IN PVOID SystemArgument1,
@@ -930,7 +930,7 @@ XBSYSAPI EXPORTNUM(118) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeInsertQueueApc
 // ******************************************************************
 // * 0x0077 - KeInsertQueueDpc()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(119) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeInsertQueueDpc
+XBSYSAPI EXPORTNUM(119) BOOLEAN NTAPI KeInsertQueueDpc
 (
 	IN PKDPC        Dpc,
 	IN PVOID        SystemArgument1,
@@ -973,7 +973,7 @@ XBSYSAPI EXPORTNUM(119) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeInsertQueueDpc
 // ******************************************************************
 // * 0x0079 - KeIsExecutingDpc()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(121) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeIsExecutingDpc
+XBSYSAPI EXPORTNUM(121) BOOLEAN NTAPI KeIsExecutingDpc
 ()
 {
 	LOG_FUNC();
@@ -988,17 +988,17 @@ XBSYSAPI EXPORTNUM(121) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeIsExecutingDpc
 // ******************************************************************
 // Dxbx note : This was once a value, but instead we now point to
 // the native Windows versions (see ConnectWindowsTimersToThunkTable) :
-XBSYSAPI EXPORTNUM(120) xboxkrnl::PKSYSTEM_TIME xboxkrnl::KeInterruptTime = nullptr; // Set by ConnectKeInterruptTimeToThunkTable
+XBSYSAPI EXPORTNUM(120) PKSYSTEM_TIME KeInterruptTime = nullptr; // Set by ConnectKeInterruptTimeToThunkTable
 
 void ConnectKeInterruptTimeToThunkTable()
 {
-	xboxkrnl::KeInterruptTime = (xboxkrnl::PKSYSTEM_TIME)CxbxKrnl_KernelThunkTable[120];
+	KeInterruptTime = (PKSYSTEM_TIME)CxbxKrnl_KernelThunkTable[120];
 }
 
 // ******************************************************************
 // * 0x007A - KeLeaveCriticalRegion()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(122) xboxkrnl::VOID NTAPI xboxkrnl::KeLeaveCriticalRegion
+XBSYSAPI EXPORTNUM(122) VOID NTAPI KeLeaveCriticalRegion
 (
     VOID
 )
@@ -1016,7 +1016,7 @@ XBSYSAPI EXPORTNUM(122) xboxkrnl::VOID NTAPI xboxkrnl::KeLeaveCriticalRegion
     }
 }
 
-XBSYSAPI EXPORTNUM(123) xboxkrnl::LONG NTAPI xboxkrnl::KePulseEvent
+XBSYSAPI EXPORTNUM(123) LONG NTAPI KePulseEvent
 (
 	IN PRKEVENT Event,
 	IN KPRIORITY Increment,
@@ -1042,7 +1042,7 @@ XBSYSAPI EXPORTNUM(123) xboxkrnl::LONG NTAPI xboxkrnl::KePulseEvent
 	RETURN(0);
 }
 
-XBSYSAPI EXPORTNUM(124) xboxkrnl::LONG NTAPI xboxkrnl::KeQueryBasePriorityThread
+XBSYSAPI EXPORTNUM(124) LONG NTAPI KeQueryBasePriorityThread
 (
 	IN PKTHREAD Thread
 )
@@ -1057,7 +1057,7 @@ XBSYSAPI EXPORTNUM(124) xboxkrnl::LONG NTAPI xboxkrnl::KeQueryBasePriorityThread
 // ******************************************************************
 // * 0x007D - KeQueryInterruptTime()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(125) xboxkrnl::ULONGLONG NTAPI xboxkrnl::KeQueryInterruptTime(void)
+XBSYSAPI EXPORTNUM(125) ULONGLONG NTAPI KeQueryInterruptTime(void)
 {
 	// TODO : Some software might call KeQueryInterruptTime often and fill the log quickly,
 	// in which case we should not LOG_FUNC nor RETURN (use normal return instead).
@@ -1089,7 +1089,7 @@ XBSYSAPI EXPORTNUM(125) xboxkrnl::ULONGLONG NTAPI xboxkrnl::KeQueryInterruptTime
 // ******************************************************************
 // * 0x007E - KeQueryPerformanceCounter()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(126) xboxkrnl::ULONGLONG NTAPI xboxkrnl::KeQueryPerformanceCounter(void)
+XBSYSAPI EXPORTNUM(126) ULONGLONG NTAPI KeQueryPerformanceCounter(void)
 {
 	LOG_FUNC();
 
@@ -1115,7 +1115,7 @@ XBSYSAPI EXPORTNUM(126) xboxkrnl::ULONGLONG NTAPI xboxkrnl::KeQueryPerformanceCo
 // ******************************************************************
 // * 0x007F - KeQueryPerformanceFrequency()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(127) xboxkrnl::ULONGLONG NTAPI xboxkrnl::KeQueryPerformanceFrequency(void)
+XBSYSAPI EXPORTNUM(127) ULONGLONG NTAPI KeQueryPerformanceFrequency(void)
 {
 	LOG_FUNC();
 
@@ -1129,7 +1129,7 @@ XBSYSAPI EXPORTNUM(127) xboxkrnl::ULONGLONG NTAPI xboxkrnl::KeQueryPerformanceFr
 // ******************************************************************
 // * 0x0080 - KeQuerySystemTime()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(128) xboxkrnl::VOID NTAPI xboxkrnl::KeQuerySystemTime
+XBSYSAPI EXPORTNUM(128) VOID NTAPI KeQuerySystemTime
 (
 	PLARGE_INTEGER CurrentTime
 )
@@ -1141,7 +1141,7 @@ XBSYSAPI EXPORTNUM(128) xboxkrnl::VOID NTAPI xboxkrnl::KeQuerySystemTime
 		LARGE_INTEGER HostSystemTime;
 		GetSystemTimeAsFileTime((LPFILETIME)&HostSystemTime); // Available since Windows 2000 (NOT on XP!)
 
-		// Apply the delta set in xboxkrnl::NtSetSystemTime to get the Xbox system time :
+		// Apply the delta set in NtSetSystemTime to get the Xbox system time :
 		CurrentTime->QuadPart = HostSystemTime.QuadPart + HostSystemTimeDelta.QuadPart;
 	}
 }
@@ -1149,7 +1149,7 @@ XBSYSAPI EXPORTNUM(128) xboxkrnl::VOID NTAPI xboxkrnl::KeQuerySystemTime
 // ******************************************************************
 // * 0x0081 - KeRaiseIrqlToDpcLevel()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(129) xboxkrnl::UCHAR NTAPI xboxkrnl::KeRaiseIrqlToDpcLevel()
+XBSYSAPI EXPORTNUM(129) UCHAR NTAPI KeRaiseIrqlToDpcLevel()
 {
 	LOG_FORWARD(KfRaiseIrql);
 
@@ -1159,14 +1159,14 @@ XBSYSAPI EXPORTNUM(129) xboxkrnl::UCHAR NTAPI xboxkrnl::KeRaiseIrqlToDpcLevel()
 // ******************************************************************
 // * 0x0082 - KeRaiseIrqlToSynchLevel()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(130) xboxkrnl::UCHAR NTAPI xboxkrnl::KeRaiseIrqlToSynchLevel()
+XBSYSAPI EXPORTNUM(130) UCHAR NTAPI KeRaiseIrqlToSynchLevel()
 {
 	LOG_FORWARD(KfRaiseIrql);
 
 	return KfRaiseIrql(SYNC_LEVEL);
 }
 
-XBSYSAPI EXPORTNUM(131) xboxkrnl::LONG NTAPI xboxkrnl::KeReleaseMutant
+XBSYSAPI EXPORTNUM(131) LONG NTAPI KeReleaseMutant
 (
 	IN PRKMUTANT Mutant,
 	IN KPRIORITY Increment,
@@ -1186,7 +1186,7 @@ XBSYSAPI EXPORTNUM(131) xboxkrnl::LONG NTAPI xboxkrnl::KeReleaseMutant
 	RETURN(0);
 }
 
-XBSYSAPI EXPORTNUM(132) xboxkrnl::LONG NTAPI xboxkrnl::KeReleaseSemaphore
+XBSYSAPI EXPORTNUM(132) LONG NTAPI KeReleaseSemaphore
 (
 	IN PRKSEMAPHORE Semaphore,
 	IN KPRIORITY Increment,
@@ -1206,7 +1206,7 @@ XBSYSAPI EXPORTNUM(132) xboxkrnl::LONG NTAPI xboxkrnl::KeReleaseSemaphore
 	RETURN(0);
 }
 
-XBSYSAPI EXPORTNUM(133) xboxkrnl::PKDEVICE_QUEUE_ENTRY NTAPI xboxkrnl::KeRemoveByKeyDeviceQueue
+XBSYSAPI EXPORTNUM(133) PKDEVICE_QUEUE_ENTRY NTAPI KeRemoveByKeyDeviceQueue
 (
 	IN PKDEVICE_QUEUE DeviceQueue,
 	IN ULONG SortKey
@@ -1248,7 +1248,7 @@ XBSYSAPI EXPORTNUM(133) xboxkrnl::PKDEVICE_QUEUE_ENTRY NTAPI xboxkrnl::KeRemoveB
 	RETURN(pEntry);
 }
 
-XBSYSAPI EXPORTNUM(134) xboxkrnl::PKDEVICE_QUEUE_ENTRY NTAPI xboxkrnl::KeRemoveDeviceQueue
+XBSYSAPI EXPORTNUM(134) PKDEVICE_QUEUE_ENTRY NTAPI KeRemoveDeviceQueue
 (
 	IN PKDEVICE_QUEUE DeviceQueue
 )
@@ -1274,7 +1274,7 @@ XBSYSAPI EXPORTNUM(134) xboxkrnl::PKDEVICE_QUEUE_ENTRY NTAPI xboxkrnl::KeRemoveD
 	RETURN(pEntry);
 }
 
-XBSYSAPI EXPORTNUM(135) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeRemoveEntryDeviceQueue
+XBSYSAPI EXPORTNUM(135) BOOLEAN NTAPI KeRemoveEntryDeviceQueue
 (
 	IN PKDEVICE_QUEUE DeviceQueue,
 	IN PKDEVICE_QUEUE_ENTRY DeviceQueueEntry
@@ -1303,7 +1303,7 @@ XBSYSAPI EXPORTNUM(135) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeRemoveEntryDeviceQue
 }
 
 
-XBSYSAPI EXPORTNUM(136) xboxkrnl::PLIST_ENTRY NTAPI xboxkrnl::KeRemoveQueue
+XBSYSAPI EXPORTNUM(136) PLIST_ENTRY NTAPI KeRemoveQueue
 (
 	IN PRKQUEUE Queue,
 	IN KPROCESSOR_MODE WaitMode,
@@ -1324,7 +1324,7 @@ XBSYSAPI EXPORTNUM(136) xboxkrnl::PLIST_ENTRY NTAPI xboxkrnl::KeRemoveQueue
 // ******************************************************************
 // * 0x0089 - KeRemoveQueueDpc()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(137) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeRemoveQueueDpc
+XBSYSAPI EXPORTNUM(137) BOOLEAN NTAPI KeRemoveQueueDpc
 (
 	IN PKDPC Dpc
 )
@@ -1353,7 +1353,7 @@ XBSYSAPI EXPORTNUM(137) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeRemoveQueueDpc
 // ******************************************************************
 // * 0x008A - KeResetEvent()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(138) xboxkrnl::LONG NTAPI xboxkrnl::KeResetEvent
+XBSYSAPI EXPORTNUM(138) LONG NTAPI KeResetEvent
 (
 	IN PRKEVENT Event
 )
@@ -1379,7 +1379,7 @@ XBSYSAPI EXPORTNUM(138) xboxkrnl::LONG NTAPI xboxkrnl::KeResetEvent
 // ******************************************************************
 // * 0x008B - KeRestoreFloatingPointState()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(139) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeRestoreFloatingPointState
+XBSYSAPI EXPORTNUM(139) NTSTATUS NTAPI KeRestoreFloatingPointState
 (
 	IN PKFLOATING_SAVE     PublicFloatSave
 )
@@ -1396,7 +1396,7 @@ XBSYSAPI EXPORTNUM(139) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeRestoreFloatingPoin
 // ******************************************************************
 // * 0x008C - KeResumeThread()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(140) xboxkrnl::ULONG NTAPI xboxkrnl::KeResumeThread
+XBSYSAPI EXPORTNUM(140) ULONG NTAPI KeResumeThread
 (
 	IN PKTHREAD Thread
 )
@@ -1410,7 +1410,7 @@ XBSYSAPI EXPORTNUM(140) xboxkrnl::ULONG NTAPI xboxkrnl::KeResumeThread
 	RETURN(ret);
 }
 
-XBSYSAPI EXPORTNUM(141) xboxkrnl::PLIST_ENTRY NTAPI xboxkrnl::KeRundownQueue
+XBSYSAPI EXPORTNUM(141) PLIST_ENTRY NTAPI KeRundownQueue
 (
 	IN PRKQUEUE Queue
 )
@@ -1425,7 +1425,7 @@ XBSYSAPI EXPORTNUM(141) xboxkrnl::PLIST_ENTRY NTAPI xboxkrnl::KeRundownQueue
 // ******************************************************************
 // * 0x008E - KeSaveFloatingPointState()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(142) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeSaveFloatingPointState
+XBSYSAPI EXPORTNUM(142) NTSTATUS NTAPI KeSaveFloatingPointState
 (
 	OUT PKFLOATING_SAVE     PublicFloatSave
 )
@@ -1442,7 +1442,7 @@ XBSYSAPI EXPORTNUM(142) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeSaveFloatingPointSt
 // ******************************************************************
 // * 0x008F - KeSetBasePriorityThread()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(143) xboxkrnl::LONG NTAPI xboxkrnl::KeSetBasePriorityThread
+XBSYSAPI EXPORTNUM(143) LONG NTAPI KeSetBasePriorityThread
 (
 	IN PKTHREAD  Thread,
 	IN LONG  Priority
@@ -1464,7 +1464,7 @@ XBSYSAPI EXPORTNUM(143) xboxkrnl::LONG NTAPI xboxkrnl::KeSetBasePriorityThread
 	RETURN(ret);
 }
 
-XBSYSAPI EXPORTNUM(144) xboxkrnl::ULONG NTAPI xboxkrnl::KeSetDisableBoostThread
+XBSYSAPI EXPORTNUM(144) ULONG NTAPI KeSetDisableBoostThread
 (
 	IN PKTHREAD Thread,
 	IN ULONG Disable
@@ -1489,7 +1489,7 @@ XBSYSAPI EXPORTNUM(144) xboxkrnl::ULONG NTAPI xboxkrnl::KeSetDisableBoostThread
 // ******************************************************************
 // * 0x0091 - KeSetEvent()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(145) xboxkrnl::LONG NTAPI xboxkrnl::KeSetEvent
+XBSYSAPI EXPORTNUM(145) LONG NTAPI KeSetEvent
 (
 	IN PRKEVENT		Event,
 	IN KPRIORITY	Increment,
@@ -1518,7 +1518,7 @@ XBSYSAPI EXPORTNUM(145) xboxkrnl::LONG NTAPI xboxkrnl::KeSetEvent
 	RETURN(ret);
 }
 
-XBSYSAPI EXPORTNUM(146) xboxkrnl::VOID NTAPI xboxkrnl::KeSetEventBoostPriority
+XBSYSAPI EXPORTNUM(146) VOID NTAPI KeSetEventBoostPriority
 (
 	IN PRKEVENT Event,
 	IN PRKTHREAD *Thread
@@ -1532,7 +1532,7 @@ XBSYSAPI EXPORTNUM(146) xboxkrnl::VOID NTAPI xboxkrnl::KeSetEventBoostPriority
 	LOG_UNIMPLEMENTED();
 }
 
-XBSYSAPI EXPORTNUM(147) xboxkrnl::KPRIORITY NTAPI xboxkrnl::KeSetPriorityProcess
+XBSYSAPI EXPORTNUM(147) KPRIORITY NTAPI KeSetPriorityProcess
 (
 	IN PKPROCESS Process,
 	IN KPRIORITY BasePriority
@@ -1552,7 +1552,7 @@ XBSYSAPI EXPORTNUM(147) xboxkrnl::KPRIORITY NTAPI xboxkrnl::KeSetPriorityProcess
 // ******************************************************************
 // * 0x0094 - KeSetPriorityThread()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(148) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeSetPriorityThread
+XBSYSAPI EXPORTNUM(148) BOOLEAN NTAPI KeSetPriorityThread
 (
     IN PKTHREAD  Thread,
     IN LONG  Priority
@@ -1571,7 +1571,7 @@ XBSYSAPI EXPORTNUM(148) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeSetPriorityThread
 // ******************************************************************
 // * 0x0095 - KeSetTimer()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(149) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeSetTimer
+XBSYSAPI EXPORTNUM(149) BOOLEAN NTAPI KeSetTimer
 (
 	IN PKTIMER        Timer,
 	IN LARGE_INTEGER  DueTime,
@@ -1587,7 +1587,7 @@ XBSYSAPI EXPORTNUM(149) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeSetTimer
 // ******************************************************************
 // * 0x0096 - KeSetTimerEx()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(150) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeSetTimerEx
+XBSYSAPI EXPORTNUM(150) BOOLEAN NTAPI KeSetTimerEx
 (
 	IN PKTIMER        Timer,
 	IN LARGE_INTEGER  DueTime,
@@ -1659,7 +1659,7 @@ XBSYSAPI EXPORTNUM(150) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeSetTimerEx
 // ******************************************************************
 // * 0x0097 - KeStallExecutionProcessor()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(151) xboxkrnl::VOID NTAPI xboxkrnl::KeStallExecutionProcessor
+XBSYSAPI EXPORTNUM(151) VOID NTAPI KeStallExecutionProcessor
 (
 	IN ULONG MicroSeconds
 )
@@ -1675,7 +1675,7 @@ XBSYSAPI EXPORTNUM(151) xboxkrnl::VOID NTAPI xboxkrnl::KeStallExecutionProcessor
 // ******************************************************************
 // * 0x0098 - KeSuspendThread()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(152) xboxkrnl::ULONG NTAPI xboxkrnl::KeSuspendThread
+XBSYSAPI EXPORTNUM(152) ULONG NTAPI KeSuspendThread
 (
 	IN PKTHREAD Thread
 )
@@ -1692,7 +1692,7 @@ XBSYSAPI EXPORTNUM(152) xboxkrnl::ULONG NTAPI xboxkrnl::KeSuspendThread
 // ******************************************************************
 // * 0x0099 - KeSynchronizeExecution()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(153) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeSynchronizeExecution
+XBSYSAPI EXPORTNUM(153) BOOLEAN NTAPI KeSynchronizeExecution
 (
 	IN PKINTERRUPT Interrupt,
 	IN PKSYNCHRONIZE_ROUTINE SynchronizeRoutine,
@@ -1717,12 +1717,12 @@ XBSYSAPI EXPORTNUM(153) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeSynchronizeExecution
 // ******************************************************************
 // Dxbx note : This was once a value, but instead we now point to
 // the native Windows versions (see ConnectWindowsTimersToThunkTable) :
-// XBSYSAPI EXPORTNUM(154) xboxkrnl::PKSYSTEM_TIME xboxkrnl::KeSystemTime; // Used for KernelThunk[154]
+// XBSYSAPI EXPORTNUM(154) PKSYSTEM_TIME KeSystemTime; // Used for KernelThunk[154]
 
 // ******************************************************************
 // * 0x009B - KeTestAlertThread()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(155) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeTestAlertThread
+XBSYSAPI EXPORTNUM(155) BOOLEAN NTAPI KeTestAlertThread
 (
 	IN KPROCESSOR_MODE AlertMode
 )
@@ -1739,19 +1739,19 @@ XBSYSAPI EXPORTNUM(155) xboxkrnl::BOOLEAN NTAPI xboxkrnl::KeTestAlertThread
 // ******************************************************************
 // * 0x009C - KeTickCount
 // ******************************************************************
-XBSYSAPI EXPORTNUM(156) xboxkrnl::DWORD VOLATILE xboxkrnl::KeTickCount = 0;
+XBSYSAPI EXPORTNUM(156) DWORD VOLATILE KeTickCount = 0;
 
-const xboxkrnl::ULONG CLOCK_TIME_INCREMENT = 0x2710;
+const ULONG CLOCK_TIME_INCREMENT = 0x2710;
 
 // ******************************************************************
 // * 0x009D - KeTimeIncrement
 // ******************************************************************
-XBSYSAPI EXPORTNUM(157) xboxkrnl::ULONG xboxkrnl::KeTimeIncrement = CLOCK_TIME_INCREMENT;
+XBSYSAPI EXPORTNUM(157) ULONG KeTimeIncrement = CLOCK_TIME_INCREMENT;
 
 // ******************************************************************
 // * 0x009E - KeWaitForMultipleObjects()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(158) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeWaitForMultipleObjects
+XBSYSAPI EXPORTNUM(158) NTSTATUS NTAPI KeWaitForMultipleObjects
 (
 	IN ULONG Count,
 	IN PVOID Object[],
@@ -1825,7 +1825,7 @@ XBSYSAPI EXPORTNUM(158) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeWaitForMultipleObje
 // ******************************************************************
 // * 0x009F - KeWaitForSingleObject()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(159) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeWaitForSingleObject
+XBSYSAPI EXPORTNUM(159) NTSTATUS NTAPI KeWaitForSingleObject
 (
 	IN PVOID Object,
 	IN KWAIT_REASON WaitReason,
@@ -1836,7 +1836,7 @@ XBSYSAPI EXPORTNUM(159) xboxkrnl::NTSTATUS NTAPI xboxkrnl::KeWaitForSingleObject
 {
 	LOG_FORWARD("KeWaitForMultipleObjects");
 
-	return xboxkrnl::KeWaitForMultipleObjects(
+	return KeWaitForMultipleObjects(
 		/*Count=*/1,
 		&Object,
 		/*WaitType=*/WaitAll,

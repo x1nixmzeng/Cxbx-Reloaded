@@ -46,7 +46,7 @@
     (Timer)->Header.Inserted = FALSE;          \
     RemoveEntryList(&(Timer)->TimerListEntry)
 
-xboxkrnl::BOOLEAN KiInsertTreeTimer(
-	IN xboxkrnl::PKTIMER Timer,
-	IN xboxkrnl::LARGE_INTEGER Interval
+BOOLEAN KiInsertTreeTimer(
+	IN PKTIMER Timer,
+	IN LARGE_INTEGER Interval
 );

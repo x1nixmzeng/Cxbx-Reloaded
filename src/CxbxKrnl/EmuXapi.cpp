@@ -38,11 +38,7 @@
 #define LOG_PREFIX "XAPI"
 
 #undef FIELD_OFFSET     // prevent macro redefinition warnings
-/* prevent name collisions */
-namespace xboxkrnl
-{
-	#include <xboxkrnl/xboxkrnl.h>
-};
+#include <xboxkrnl/xboxkrnl.h>
 
 #include <Shlwapi.h>
 #include "CxbxKrnl.h"
@@ -216,13 +212,13 @@ DWORD WINAPI EMUPATCH(XGetDevices)
 
 	LOG_FUNC_ONE_ARG(DeviceType);
 
-	UCHAR oldIrql = xboxkrnl::KeRaiseIrqlToDpcLevel();
+	UCHAR oldIrql = KeRaiseIrqlToDpcLevel();
 
 	DWORD ret = DeviceType->CurrentConnected;
 	DeviceType->ChangeConnected = 0;
 	DeviceType->PreviousConnected = DeviceType->CurrentConnected;
 
-	xboxkrnl::KfLowerIrql(oldIrql);
+	KfLowerIrql(oldIrql);
 
 	RETURN(ret);
 }
@@ -258,7 +254,7 @@ BOOL WINAPI EMUPATCH(XGetDeviceChanges)
     }
     else
     {
-		UCHAR oldIrql = xboxkrnl::KeRaiseIrqlToDpcLevel();
+		UCHAR oldIrql = KeRaiseIrqlToDpcLevel();
 
         *pdwInsertions = (DeviceType->CurrentConnected & ~DeviceType->PreviousConnected);
         *pdwRemovals = (DeviceType->PreviousConnected & ~DeviceType->CurrentConnected);
@@ -271,7 +267,7 @@ BOOL WINAPI EMUPATCH(XGetDeviceChanges)
         DeviceType->PreviousConnected = DeviceType->CurrentConnected;
         ret = (*pdwInsertions | *pdwRemovals) ? TRUE : FALSE;
 
-		xboxkrnl::KfLowerIrql(oldIrql);
+		KfLowerIrql(oldIrql);
     }
 
 	RETURN(ret);
@@ -1036,25 +1032,25 @@ DWORD WINAPI EMUPATCH(XLaunchNewImageA)
 
 	// Update the kernel's LaunchDataPage :
 	{
-		if (xboxkrnl::LaunchDataPage == xbnull)
+		if (LaunchDataPage == xbnull)
 		{
-			PVOID LaunchDataVAddr = xboxkrnl::MmAllocateContiguousMemory(sizeof(xboxkrnl::LAUNCH_DATA_PAGE));
+			PVOID LaunchDataVAddr = MmAllocateContiguousMemory(sizeof(LAUNCH_DATA_PAGE));
 			if (!LaunchDataVAddr)
 			{
 				RETURN(STATUS_NO_MEMORY);
 			}
-			xboxkrnl::LaunchDataPage = (xboxkrnl::LAUNCH_DATA_PAGE*)LaunchDataVAddr;
+			LaunchDataPage = (LAUNCH_DATA_PAGE*)LaunchDataVAddr;
 		}
 
-		xboxkrnl::LaunchDataPage->Header.dwTitleId = g_pCertificate->dwTitleId;
-		xboxkrnl::LaunchDataPage->Header.dwFlags = 0; // TODO : What to put in here?
-		xboxkrnl::LaunchDataPage->Header.dwLaunchDataType = LDT_TITLE;
+		LaunchDataPage->Header.dwTitleId = g_pCertificate->dwTitleId;
+		LaunchDataPage->Header.dwFlags = 0; // TODO : What to put in here?
+		LaunchDataPage->Header.dwLaunchDataType = LDT_TITLE;
 
-		xboxkrnl::MmPersistContiguousMemory((PVOID)xboxkrnl::LaunchDataPage, PAGE_SIZE, TRUE);
+		MmPersistContiguousMemory((PVOID)LaunchDataPage, PAGE_SIZE, TRUE);
 
 		if (pLaunchData != xbnull)
 			// Save the launch data
-			memcpy(&(xboxkrnl::LaunchDataPage->LaunchData[0]), pLaunchData, sizeof(LAUNCH_DATA));
+			memcpy(&(LaunchDataPage->LaunchData[0]), pLaunchData, sizeof(LAUNCH_DATA));
 
 		if (lpTitlePath == xbnull)
 		{
@@ -1068,14 +1064,14 @@ DWORD WINAPI EMUPATCH(XLaunchNewImageA)
 			{
 				MessageBox(CxbxKrnl_hEmuParent, "The title is rebooting to dashboard", "Cxbx-Reloaded", 0);
 				lpTitlePath = "C:\\xboxdash.xbe";
-				xboxkrnl::LaunchDataPage->Header.dwLaunchDataType = LDT_FROM_DASHBOARD;
+				LaunchDataPage->Header.dwLaunchDataType = LDT_FROM_DASHBOARD;
 				// Other options include LDT_NONE, LDT_FROM_DEBUGGER_CMDLINE and LDT_FROM_UPDATE
 			}
 			else
 				CxbxKrnlCleanup("The xbe rebooted to Dashboard and xboxdash.xbe could not be found");
 		}
 
-		strncpy(&(xboxkrnl::LaunchDataPage->Header.szLaunchPath[0]), lpTitlePath, 520);
+		strncpy(&(LaunchDataPage->Header.szLaunchPath[0]), lpTitlePath, 520);
 	}
 
 	// Note : While this patch exists, HalReturnToFirmware() calls
@@ -1083,7 +1079,7 @@ DWORD WINAPI EMUPATCH(XLaunchNewImageA)
 	// patch on XLaunchNewImageA is removed, remove the call to
 	// MmPersistContiguousMemory from HalReturnToFirmware() too!!
 
-	xboxkrnl::HalReturnToFirmware(xboxkrnl::ReturnFirmwareQuickReboot);
+	HalReturnToFirmware(ReturnFirmwareQuickReboot);
 
 	// If this function succeeds, it doesn't get a chance to return anything.
 	RETURN(ERROR_GEN_FAILURE);
@@ -1102,7 +1098,7 @@ DWORD WINAPI EMUPATCH(XGetLaunchInfo)
 	FUNC_EXPORTS
 
 	// TODO : This patch can be removed once we're sure all XAPI library
-	// functions indirectly reference our xboxkrnl::LaunchDataPage variable.
+	// functions indirectly reference our LaunchDataPage variable.
 	// For this, we need a test-case that hits this function, and run that
 	// with and without this patch enabled. Behavior should be identical.
 	// When this is verified, this patch can be removed.
@@ -1115,22 +1111,22 @@ DWORD WINAPI EMUPATCH(XGetLaunchInfo)
 
 	DWORD ret = ERROR_NOT_FOUND;
 
-	if (xboxkrnl::LaunchDataPage != NULL)
+	if (LaunchDataPage != NULL)
 	{
 		// Note : Here, CxbxRestoreLaunchDataPage() was already called,
 		// which has loaded LaunchDataPage from a binary file (if present).
 
 		// A title can pass data only to itself, not another title (unless started from the dashboard, of course) :
-		if (   (xboxkrnl::LaunchDataPage->Header.dwTitleId == g_pCertificate->dwTitleId)
-			|| (xboxkrnl::LaunchDataPage->Header.dwLaunchDataType == LDT_FROM_DASHBOARD)
-			|| (xboxkrnl::LaunchDataPage->Header.dwLaunchDataType == LDT_FROM_DEBUGGER_CMDLINE))
+		if (   (LaunchDataPage->Header.dwTitleId == g_pCertificate->dwTitleId)
+			|| (LaunchDataPage->Header.dwLaunchDataType == LDT_FROM_DASHBOARD)
+			|| (LaunchDataPage->Header.dwLaunchDataType == LDT_FROM_DEBUGGER_CMDLINE))
 		{
-			*pdwLaunchDataType = xboxkrnl::LaunchDataPage->Header.dwLaunchDataType;
-			memcpy(pLaunchData, &(xboxkrnl::LaunchDataPage->LaunchData[0]), sizeof(LAUNCH_DATA));
+			*pdwLaunchDataType = LaunchDataPage->Header.dwLaunchDataType;
+			memcpy(pLaunchData, &(LaunchDataPage->LaunchData[0]), sizeof(LAUNCH_DATA));
 
 			// Now that LaunchDataPage is retrieved by the emulated software, free it :
-			MmFreeContiguousMemory(xboxkrnl::LaunchDataPage);
-			xboxkrnl::LaunchDataPage = NULL;
+			MmFreeContiguousMemory(LaunchDataPage);
+			LaunchDataPage = NULL;
 
 			ret = ERROR_SUCCESS;
 		}

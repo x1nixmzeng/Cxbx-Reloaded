@@ -12,10 +12,8 @@
 #ifndef XBOXKRNL_H
 #define XBOXKRNL_H
 
-#if defined(__cplusplus)
-extern "C"
+namespace Xbox
 {
-#endif
 
 // ******************************************************************
 // * dll import/export
@@ -2208,7 +2206,8 @@ XBOX_TIMEZONE_DATE;
 // ******************************************************************
 // * XBOX_USER_SETTINGS
 // ******************************************************************
-#define TIME_ZONE_NAME_LENGTH 4
+const int TIME_ZONE_NAME_LENGTH = 4;
+
 typedef struct _XBOX_USER_SETTINGS
 {
 	ULONG Checksum;
@@ -2695,9 +2694,7 @@ typedef struct _DISK_GEOMETRY {
 // ******************************************************************
 #include "xbox.h"
 
-#if defined(__cplusplus)
 }
-#endif
 
 #endif
 

@@ -171,8 +171,8 @@ static unsigned int WINAPI PCSTProxy
 		// the first argument in ebp+4) we need the below __asm.
 		//
 		// Otherwise, this call would have looked something like this :
-		// ((xboxkrnl::PKSYSTEM_ROUTINE)SystemRoutine)(
-		//	  (xboxkrnl::PKSTART_ROUTINE)StartRoutine, 
+		// ((PKSYSTEM_ROUTINE)SystemRoutine)(
+		//	  (PKSTART_ROUTINE)StartRoutine, 
 		//	  StartContext);
 		__asm
 		{
@@ -193,7 +193,7 @@ static unsigned int WINAPI PCSTProxy
 callComplete:
 
 	// This will also handle thread notification :
-	xboxkrnl::PsTerminateSystemThread(STATUS_SUCCESS);
+	PsTerminateSystemThread(STATUS_SUCCESS);
 
 	return 0; // will never be reached
 }
@@ -202,7 +202,7 @@ callComplete:
 // Placeholder system function, instead of XapiThreadStartup
 void PspSystemThreadStartup
 (
-	IN xboxkrnl::PKSTART_ROUTINE StartRoutine,
+	IN PKSTART_ROUTINE StartRoutine,
 	IN PVOID StartContext
 )
 {
@@ -216,13 +216,13 @@ void PspSystemThreadStartup
 		EmuWarning("Problem with ExceptionFilter!"); // TODO : Disable?
 	}
 
-	xboxkrnl::PsTerminateSystemThread(STATUS_SUCCESS);
+	PsTerminateSystemThread(STATUS_SUCCESS);
 }
 
 // ******************************************************************
 // * 0x00FE - PsCreateSystemThread()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(254) xboxkrnl::NTSTATUS NTAPI xboxkrnl::PsCreateSystemThread
+XBSYSAPI EXPORTNUM(254) NTSTATUS NTAPI PsCreateSystemThread
 (
 	OUT PHANDLE         ThreadHandle,
 	OUT PHANDLE         ThreadId OPTIONAL,
@@ -263,7 +263,7 @@ XBSYSAPI EXPORTNUM(254) xboxkrnl::NTSTATUS NTAPI xboxkrnl::PsCreateSystemThread
 // SystemRoutine: System function (normally XapiThreadStartup) called when the thread is created
 //
 // New to the XBOX.
-XBSYSAPI EXPORTNUM(255) xboxkrnl::NTSTATUS NTAPI xboxkrnl::PsCreateSystemThreadEx
+XBSYSAPI EXPORTNUM(255) NTSTATUS NTAPI PsCreateSystemThreadEx
 (
 	OUT PHANDLE         ThreadHandle,
 	IN  ULONG           ThreadExtensionSize,
@@ -361,7 +361,7 @@ XBSYSAPI EXPORTNUM(255) xboxkrnl::NTSTATUS NTAPI xboxkrnl::PsCreateSystemThreadE
 		CxbxKrnlRegisterThread(*ThreadHandle);
 
 		if (ThreadId != NULL)
-			*ThreadId = (xboxkrnl::HANDLE)dwThreadId;
+			*ThreadId = (HANDLE)dwThreadId;
 	}
 
 	RETURN(STATUS_SUCCESS);
@@ -370,7 +370,7 @@ XBSYSAPI EXPORTNUM(255) xboxkrnl::NTSTATUS NTAPI xboxkrnl::PsCreateSystemThreadE
 // ******************************************************************
 // * 0x0100 - PsQueryStatistics()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(256) xboxkrnl::NTSTATUS NTAPI xboxkrnl::PsQueryStatistics
+XBSYSAPI EXPORTNUM(256) NTSTATUS NTAPI PsQueryStatistics
 (
 	IN OUT PPS_STATISTICS ProcessStatistics
 )
@@ -393,7 +393,7 @@ XBSYSAPI EXPORTNUM(256) xboxkrnl::NTSTATUS NTAPI xboxkrnl::PsQueryStatistics
 // ******************************************************************
 // * 0x0101 - PsSetCreateThreadNotifyRoutine()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(257) xboxkrnl::NTSTATUS NTAPI xboxkrnl::PsSetCreateThreadNotifyRoutine
+XBSYSAPI EXPORTNUM(257) NTSTATUS NTAPI PsSetCreateThreadNotifyRoutine
 (
 	IN PCREATE_THREAD_NOTIFY_ROUTINE NotifyRoutine
 )
@@ -431,7 +431,7 @@ XBSYSAPI EXPORTNUM(257) xboxkrnl::NTSTATUS NTAPI xboxkrnl::PsSetCreateThreadNoti
 // Exits the current system thread.  Must be called from a system thread.
 //
 // Differences from NT: None.
-XBSYSAPI EXPORTNUM(258) xboxkrnl::VOID NTAPI xboxkrnl::PsTerminateSystemThread
+XBSYSAPI EXPORTNUM(258) VOID NTAPI PsTerminateSystemThread
 (
 	IN NTSTATUS ExitStatus
 )
@@ -463,14 +463,14 @@ XBSYSAPI EXPORTNUM(258) xboxkrnl::VOID NTAPI xboxkrnl::PsTerminateSystemThread
 // ******************************************************************
 // * 0x0103 - PsThreadObjectType
 // ******************************************************************
-XBSYSAPI EXPORTNUM(259) xboxkrnl::OBJECT_TYPE VOLATILE xboxkrnl::PsThreadObjectType =
+XBSYSAPI EXPORTNUM(259) OBJECT_TYPE VOLATILE PsThreadObjectType =
 {
-	xboxkrnl::ExAllocatePoolWithTag,
-	xboxkrnl::ExFreePool,
+	ExAllocatePoolWithTag,
+	ExFreePool,
 	NULL,
 	NULL,
 	NULL,
-	(PVOID)offsetof(xboxkrnl::KTHREAD, Header),
+	(PVOID)offsetof(KTHREAD, Header),
 	'erhT' // = first four characters of "Thread" in reverse
 };
 

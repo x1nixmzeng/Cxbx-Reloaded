@@ -35,11 +35,7 @@
 // ******************************************************************
 #define _XBOXKRNL_DEFEXTRN_
 
-// prevent name collisions
-namespace xboxkrnl
-{
-    #include <xboxkrnl/xboxkrnl.h>
-};
+#include <xboxkrnl/xboxkrnl.h>
 
 #include "CxbxKrnl.h"
 #define COMPILE_MULTIMON_STUBS
@@ -66,7 +62,7 @@ volatile bool    g_bPrintfOn = true;
 bool g_XInputEnabled = false;
 bool g_DisablePixelShaders = false;
 
-// Delta added to host SystemTime, used in xboxkrnl::KeQuerySystemTime and xboxkrnl::NtSetSystemTime
+// Delta added to host SystemTime, used in KeQuerySystemTime and NtSetSystemTime
 LARGE_INTEGER	HostSystemTimeDelta = {};
 
 // Static Function(s)

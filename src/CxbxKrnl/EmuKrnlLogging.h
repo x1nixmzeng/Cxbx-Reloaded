@@ -36,16 +36,15 @@
 
 #pragma once
 
-// prevent name collisions
-namespace xboxkrnl
-{
 #include <xboxkrnl/xboxkrnl.h>
+
+namespace Xbox
+{
 
 // Additional types, exclusively for logging (not really enums) :
 enum  ALLOCATION_TYPE;
 enum  CREATE_DISPOSITION;
 enum  CREATE_OPTION;
-//enum  NTSTATUS;
 enum  KIRQL_TYPE; // fake enum, since KIRQL is an unsigned char, which clashes with BOOLEAN
 enum  PROTECTION_TYPE;
 };
@@ -58,8 +57,7 @@ namespace Native
 #include <sstream> // for std::ostream
 #include "Logging.h"
 
-// prevent name collisions
-namespace xboxkrnl
+namespace Xbox
 {
 
 // Headers for rendering Xbox kernel enum types :
@@ -156,6 +154,6 @@ LOGRENDER_HEADER(UNICODE_STRING)
 // TODO : LOGRENDER_HEADER(XBOX_HARDWARE_INFO)
 // TODO : LOGRENDER_HEADER(XBOX_REFURB_INFO)
 
-}; // end of namespace xboxkrnl
+} // Xbox
 
 #endif _EMU_KERNEL_LOGGING_H

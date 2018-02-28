@@ -53,7 +53,7 @@ namespace xboxkrnl
 // ******************************************************************
 // * 0x0146 - XeImageFileName
 // ******************************************************************
-XBSYSAPI EXPORTNUM(326) xboxkrnl::OBJECT_STRING xboxkrnl::XeImageFileName =
+XBSYSAPI EXPORTNUM(326) OBJECT_STRING XeImageFileName =
 // XeImageFileName.Buffer points to path of XBE
 //
 // Format is like this: \Device\Harddisk0\Partition1\bla.xbe
@@ -70,7 +70,7 @@ XBSYSAPI EXPORTNUM(326) xboxkrnl::OBJECT_STRING xboxkrnl::XeImageFileName =
 // count is now above zero.
 //
 // New to the XBOX.
-XBSYSAPI EXPORTNUM(327) xboxkrnl::NTSTATUS NTAPI xboxkrnl::XeLoadSection
+XBSYSAPI EXPORTNUM(327) NTSTATUS NTAPI XeLoadSection
 (
 	IN PXBEIMAGE_SECTION Section
 )
@@ -141,7 +141,7 @@ XBSYSAPI EXPORTNUM(327) xboxkrnl::NTSTATUS NTAPI xboxkrnl::XeLoadSection
 // if the count is now zero.
 //
 // New to the XBOX.
-XBSYSAPI EXPORTNUM(328) xboxkrnl::NTSTATUS NTAPI xboxkrnl::XeUnloadSection
+XBSYSAPI EXPORTNUM(328) NTSTATUS NTAPI XeUnloadSection
 (
 	IN PXBEIMAGE_SECTION Section
 )
@@ -197,5 +197,5 @@ XBSYSAPI EXPORTNUM(328) xboxkrnl::NTSTATUS NTAPI xboxkrnl::XeUnloadSection
 // * 0x0163 - XePublicKeyData
 // ******************************************************************
 // TODO : What should we initialize this to?
-XBSYSAPI EXPORTNUM(355) xboxkrnl::DWORD xboxkrnl::XePublicKeyData = 0;
+XBSYSAPI EXPORTNUM(355) DWORD XePublicKeyData = 0;
 

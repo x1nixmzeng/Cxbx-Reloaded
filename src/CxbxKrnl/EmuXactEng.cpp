@@ -37,11 +37,7 @@
 
 #define LOG_PREFIX "XACT"
 
-// prevent name collisions
-namespace xboxkrnl
-{
-    #include <xboxkrnl/xboxkrnl.h>
-};
+#include <xboxkrnl/xboxkrnl.h>
 
 #include "CxbxKrnl.h"
 #include "Logging.h"

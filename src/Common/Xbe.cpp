@@ -35,11 +35,7 @@
 // ******************************************************************
 #define _XBOXKRNL_DEFEXTRN_
 
-// prevent name collisions
-namespace xboxkrnl
-{
-	#include <xboxkrnl/xboxkrnl.h>
-};
+#include <xboxkrnl/xboxkrnl.h>
 
 #include "Xbe.h"
 #include "CxbxUtil.h" // For RoundUp
@@ -83,9 +79,9 @@ Xbe::Xbe(const char *x_szFilename, bool bFromGUI)
 
 			ULONG FatalErrorCode = FATAL_ERROR_XBE_DASH_GENERIC;
 
-			if (xboxkrnl::LaunchDataPage && xboxkrnl::LaunchDataPage->Header.dwLaunchDataType == LDT_FROM_DASHBOARD)
+			if (LaunchDataPage && LaunchDataPage->Header.dwLaunchDataType == LDT_FROM_DASHBOARD)
 			{
-				xboxkrnl::PDASH_LAUNCH_DATA pLaunchDashboard = (xboxkrnl::PDASH_LAUNCH_DATA)&(xboxkrnl::LaunchDataPage->LaunchData[0]);
+				PDASH_LAUNCH_DATA pLaunchDashboard = (PDASH_LAUNCH_DATA)&(LaunchDataPage->LaunchData[0]);
 				FatalErrorCode += pLaunchDashboard->dwReason;
 			}
 			SetLEDSequence(0xE1); // green, red, red, red

@@ -34,7 +34,10 @@
 #ifndef EMUXAPI_H
 #define EMUXAPI_H
 
+namespace Native
+{
 #include <dxerr8.h>
+}
 
 namespace Xbox
 {

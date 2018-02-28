@@ -49,26 +49,26 @@ namespace xboxkrnl
 
 //#include "EmuKrnl.h" // For InitializeListHead(), etc.
 
-xboxkrnl::BOOLEAN KiInsertTimerTable(
-	IN xboxkrnl::LARGE_INTEGER Interval,
-	xboxkrnl::ULONGLONG,
-	IN xboxkrnl::PKTIMER Timer
+BOOLEAN KiInsertTimerTable(
+	IN LARGE_INTEGER Interval,
+	ULONGLONG,
+	IN PKTIMER Timer
 )
 {
 	// TODO
 	return TRUE;
 }
 
-xboxkrnl::BOOLEAN KiInsertTreeTimer(
-	IN xboxkrnl::PKTIMER Timer,
-	IN xboxkrnl::LARGE_INTEGER Interval
+BOOLEAN KiInsertTreeTimer(
+	IN PKTIMER Timer,
+	IN LARGE_INTEGER Interval
 )
 {
 	// Is the given time absolute (indicated by a positive number)?
 	if (Interval.u.HighPart >= 0) {
 		// Convert absolute time to a time relative to the system time :
-		xboxkrnl::LARGE_INTEGER SystemTime;
-		xboxkrnl::KeQuerySystemTime(&SystemTime);
+		LARGE_INTEGER SystemTime;
+		KeQuerySystemTime(&SystemTime);
 		Interval.QuadPart = SystemTime.QuadPart - Interval.QuadPart;
 		if (Interval.u.HighPart >= 0) {
 			// If the relative time is already passed, return without inserting :
@@ -87,5 +87,5 @@ xboxkrnl::BOOLEAN KiInsertTreeTimer(
 		Timer->Header.SignalState = FALSE;
 
 	Timer->Header.Inserted = TRUE;
-	return KiInsertTimerTable(Interval, xboxkrnl::KeQueryInterruptTime(), Timer);
+	return KiInsertTimerTable(Interval, KeQueryInterruptTime(), Timer);
 }

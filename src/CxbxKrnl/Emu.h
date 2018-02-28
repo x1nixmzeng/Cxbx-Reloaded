@@ -76,7 +76,7 @@ extern DWORD_PTR g_CPUOthers;
 
 extern HANDLE g_CurrentProcessHandle; // Set in CxbxKrnlMain
 
-// Delta added to host SystemTime, used in xboxkrnl::KeQuerySystemTime and xboxkrnl::NtSetSystemTime
+// Delta added to host SystemTime, used in KeQuerySystemTime and NtSetSystemTime
 extern LARGE_INTEGER HostSystemTimeDelta;
 
 // NOTE: this is an arbitrary latency

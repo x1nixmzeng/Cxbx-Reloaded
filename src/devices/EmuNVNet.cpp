@@ -43,10 +43,7 @@
 
 // prevent name collisions
 
-namespace xboxkrnl
-{
-	#include <xboxkrnl/xboxkrnl.h> // For PKINTERRUPT, etc.
-};
+#include <xboxkrnl/xboxkrnl.h> // For PKINTERRUPT, etc.
 
 #include "CxbxKrnl\CxbxKrnl.h"
 #include "CxbxKrnl\Emu.h"
@@ -393,9 +390,9 @@ void EmuNVNet_UpdateIRQ()
 	if (EmuNVNet_GetRegister(NvRegIrqMask, 4) &&
 		EmuNVNet_GetRegister(NvRegIrqStatus, 4)) {
 		DbgPrintf("EmuNVNet: Asserting IRQ\n");
-		HalSystemInterrupts[4].Assert(true);
+		Xbox::HalSystemInterrupts[4].Assert(true);
 	} else {
-		HalSystemInterrupts[4].Assert(false);
+		Xbox::HalSystemInterrupts[4].Assert(false);
 	}
 }
 

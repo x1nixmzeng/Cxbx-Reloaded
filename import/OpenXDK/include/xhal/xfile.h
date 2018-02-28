@@ -14,11 +14,10 @@
 #ifndef	XFILE_H
 #define	XFILE_H
 
-#ifdef	__cplusplus
-extern "C" {
-#endif
-
 #include "xboxkrnl\xboxkrnl.h"
+
+namespace Xbox
+{
 
 #define	INVALID_HANDLE_VALUE			((HANDLE)-1)
 #define INVALID_FILE_SIZE				((HANDLE)-1)
@@ -143,12 +142,6 @@ char* GetLastErrorMessage( void );
 void SetLastError( u32 ErrorCode );
 
 
-#ifdef	__cplusplus
-};
-#endif
+} // Xbox
 
 #endif
-
-
-
-
