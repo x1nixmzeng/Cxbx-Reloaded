@@ -59,6 +59,9 @@ namespace NtDll
 #include "EmuNtDll.h"
 };
 
+namespace Xbox
+{
+
 // PsCreateSystemThread proxy parameters
 typedef struct _PCSTProxyParam
 {
@@ -470,3 +473,5 @@ XBSYSAPI EXPORTNUM(259) xboxkrnl::OBJECT_TYPE VOLATILE xboxkrnl::PsThreadObjectT
 	(PVOID)offsetof(xboxkrnl::KTHREAD, Header),
 	'erhT' // = first four characters of "Thread" in reverse
 };
+
+} // Xbox

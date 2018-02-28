@@ -36,12 +36,6 @@
 #ifndef EMU_EEPROM_H
 #define EMU_EEPROM_H
 
-#if defined(__cplusplus)
-#pragma once
-extern "C"
-{
-#endif
-
 #define EEPROM_SIZE sizeof(xboxkrnl::XBOX_EEPROM)
 
 typedef struct EEPROMInfo {
@@ -100,9 +94,5 @@ extern xboxkrnl::XBOX_EEPROM *EEPROM;
 extern xboxkrnl::ULONG XboxFactoryGameRegion;
 
 void gen_section_CRCs(xboxkrnl::XBOX_EEPROM*);
-
-#if defined(__cplusplus)
-}
-#endif
 
 #endif // EMU_EEPROM_H

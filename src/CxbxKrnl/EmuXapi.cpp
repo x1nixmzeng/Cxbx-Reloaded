@@ -53,6 +53,7 @@ namespace xboxkrnl
 #include "EmuFS.h"
 #include "EmuShared.h"
 #include "HLEIntercept.h"
+#include "EmuXapi.h"
 
 // XInputSetState status waiters
 extern XInputSetStateStatus g_pXInputSetStateStatus[XINPUT_SETSTATE_SLOTS] = {0};
@@ -61,6 +62,9 @@ extern XInputSetStateStatus g_pXInputSetStateStatus[XINPUT_SETSTATE_SLOTS] = {0}
 extern HANDLE g_hInputHandle[XINPUT_HANDLE_SLOTS] = {0};
 
 bool g_bXInputOpenCalled = false;
+
+namespace Xbox
+{
 
 PXPP_DEVICE_TYPE gDeviceType_Gamepad = nullptr;
 
@@ -516,7 +520,7 @@ DWORD WINAPI EMUPATCH(XInputGetState)
             if(dwPort == 0)
             {
 				if (g_XInputEnabled) {
-					EmuXInputPCPoll(pState);
+					EmuXInput::PCPoll(pState);
 				} else {
 					EmuDInputPoll(pState);
 				}
@@ -1382,3 +1386,6 @@ VOID WINAPI EMUPATCH(OutputDebugStringA)
 	LOG_FUNC_ONE_ARG(lpOutputString);
 	printf("OutputDebugStringA: %s\n", lpOutputString);
 }
+
+} // Xbox
+

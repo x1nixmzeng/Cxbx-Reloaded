@@ -41,10 +41,6 @@
 #include <windows.h>
 #include <multimon.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 // Opcodes
 #define OPCODE_NOP_90 0x90
 #define OPCODE_INT3_CC 0xCC
@@ -248,10 +244,6 @@ extern std::string CxbxKrnl_DebugFileName;
 extern char szFilePath_CxbxReloaded_Exe[MAX_PATH];
 extern char szFolder_CxbxReloadedData[MAX_PATH];
 extern char szFilePath_EEPROM_bin[MAX_PATH];
-
-#ifdef __cplusplus
-}
-#endif
 
 // Returns the last Win32 error, in string format. Returns an empty string if there is no error.
 extern std::string CxbxGetLastErrorString(char * lpszFunction);

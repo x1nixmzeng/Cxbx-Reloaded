@@ -42,10 +42,13 @@
 #include "CxbxKrnl/EmuXTL.h"
 #include "CxbxKrnl/ResourceTracker.h"
 
+#include <ctime>
+
+namespace Xbox
+{
+
 // TODO: Find somewhere to put this that doesn't conflict with 
 extern void EmuUpdateActiveTextureStages();
-
-#include <ctime>
 
 #define HASH_SEED 0
 
@@ -64,7 +67,7 @@ extern DWORD				g_dwPrimPerFrame = 0;
 extern X_D3DVertexBuffer*g_D3DStreams[16];
 extern UINT g_D3DStreamStrides[16];
 void *GetDataFromXboxResource(X_D3DResource *pXboxResource);
-extern IDirect3DVertexBuffer8 *GetHostVertexBuffer(X_D3DResource *pXboxResource, DWORD dwSize);
+extern Native::IDirect3DVertexBuffer8 *GetHostVertexBuffer(X_D3DResource *pXboxResource, DWORD dwSize);
 
 VertexPatcher::VertexPatcher()
 {
@@ -408,7 +411,7 @@ bool VertexPatcher::PatchStream(VertexPatchDesc *pPatchDesc,
     // Do some groovy patchin'
     
     X_D3DVertexBuffer    *pOrigVertexBuffer;
-    IDirect3DVertexBuffer8    *pNewVertexBuffer;
+    Native::IDirect3DVertexBuffer8    *pNewVertexBuffer;
     uint08                    *pOrigData;
     uint08                    *pNewData;
 	UINT                       uiVertexCount;
@@ -434,7 +437,7 @@ bool VertexPatcher::PatchStream(VertexPatchDesc *pPatchDesc,
 		dwNewSize = uiVertexCount * pStreamPatch->ConvertedStride;
 
         pOrigData = (uint08*)GetDataFromXboxResource(pOrigVertexBuffer);
-        g_pD3DDevice8->CreateVertexBuffer(dwNewSize, 0, 0, D3DPOOL_MANAGED, &pNewVertexBuffer);
+        g_pD3DDevice8->CreateVertexBuffer(dwNewSize, 0, 0, Native::D3DPOOL_MANAGED, &pNewVertexBuffer);
         if(FAILED(pNewVertexBuffer->Lock(0, 0, &pNewData, 0)))
         {
             CxbxKrnlCleanup("Couldn't lock the new buffer");
@@ -637,7 +640,7 @@ bool VertexPatcher::NormalizeTexCoords(VertexPatchDesc *pPatchDesc, UINT uiStrea
 		if (pBaseTexture)
 		{ 
 			X_D3DFORMAT XBFormat = (X_D3DFORMAT)((pBaseTexture->Format & X_D3DFORMAT_FORMAT_MASK) >> X_D3DFORMAT_FORMAT_SHIFT);
-			if (EmuXBFormatIsLinear(XBFormat))
+			if (EmuXBFormat::IsLinear(XBFormat))
 			{
 				bHasLinearTex = bTexIsLinear[i] = true;
 				pLinearBaseTexture[i] = pBaseTexture;
@@ -649,7 +652,7 @@ bool VertexPatcher::NormalizeTexCoords(VertexPatchDesc *pPatchDesc, UINT uiStrea
         return false;
 
     X_D3DVertexBuffer *pOrigVertexBuffer;
-    IDirect3DVertexBuffer8 *pNewVertexBuffer;
+	Native::IDirect3DVertexBuffer8 *pNewVertexBuffer;
     PATCHEDSTREAM *pStream;
     uint08 *pData, *pUVData;
     uint uiStride, uiVertexCount;
@@ -674,7 +677,7 @@ bool VertexPatcher::NormalizeTexCoords(VertexPatchDesc *pPatchDesc, UINT uiStrea
 
 		uint08 *pOrigData = (uint08*)GetDataFromXboxResource(pOrigVertexBuffer);
 
-        g_pD3DDevice8->CreateVertexBuffer(uiLength, 0, 0, D3DPOOL_MANAGED, &pNewVertexBuffer);
+        g_pD3DDevice8->CreateVertexBuffer(uiLength, 0, 0, Native::D3DPOOL_MANAGED, &pNewVertexBuffer);
         if(FAILED(pNewVertexBuffer->Lock(0, 0, &pData, 0)))
         {
             CxbxKrnlCleanup("Couldn't lock new FVF buffer.");
@@ -891,7 +894,7 @@ bool VertexPatcher::PatchPrimitive(VertexPatchDesc *pPatchDesc,
             dwNewSizeWR = dwNewSize + dwOriginalSizeWR - dwOriginalSize;
         }
 
-        HRESULT hRet = g_pD3DDevice8->CreateVertexBuffer(dwNewSizeWR, 0, 0, D3DPOOL_MANAGED, &pStream->pPatchedStream);
+        HRESULT hRet = g_pD3DDevice8->CreateVertexBuffer(dwNewSizeWR, 0, 0, Native::D3DPOOL_MANAGED, &pStream->pPatchedStream);
 		if (FAILED(hRet)) {
 			EmuWarning("CreateVertexBuffer Failed. Size: %d", dwNewSizeWR);
 		}
@@ -1240,3 +1243,6 @@ VOID EmuFlushIVB()
 
     return;
 }
+
+} // Xbox
+

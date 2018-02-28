@@ -39,7 +39,11 @@
 #include "DlgControllerConfig.h"
 #include "ResCxbx.h"
 
+namespace Native
+{
 #include <dinput.h>
+}
+
 #include <cstdio>
 
 /*! windows dialog procedure */
@@ -50,7 +54,7 @@ static VOID ConfigureInput(HWND hWndDlg, HWND hWndButton, Xbox::XBCtrlObject obj
 static VOID EnableButtonWindows(HWND hWndDlg, HWND hExclude, BOOL bEnable);
 
 /*! controller configuration */
-static Xbox::XBController g_XBController;
+static XBController g_XBController;
 /*! changes flag */
 static BOOL g_bHasChanges = FALSE;
 

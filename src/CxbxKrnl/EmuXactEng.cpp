@@ -57,6 +57,9 @@ namespace xboxkrnl
 #include <clocale>
 
 
+namespace Xbox
+{
+
 // NOTES: For Xbox, the XACT library is almost like a wrapper for DirectSound.
 //		  It may or may not be necesarry to emulate the entire API because of 
 //		  this, but atm only the functions containing low level code are being
@@ -560,3 +563,6 @@ HRESULT WINAPI EMUPATCH(IXACTEngine_UnRegisterWaveBank)
 
 	RETURN(S_OK);
 }
+
+} // Xbox
+

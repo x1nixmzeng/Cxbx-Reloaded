@@ -1489,25 +1489,25 @@ void WndMain::LoadGameLogo()
 	gameLogoHeight = 0;	
 
 	uint8 *ImageData = NULL;
-	X_D3DPixelContainer XboxPixelContainer = {};
-	X_D3DPixelContainer *pXboxPixelContainer = &XboxPixelContainer;
+	Xbox::X_D3DPixelContainer XboxPixelContainer = {};
+	Xbox::X_D3DPixelContainer *pXboxPixelContainer = &XboxPixelContainer;
 
 	switch (*(DWORD*)pSection) {
 	case MAKEFOURCC('D', 'D', 'S', ' '): {
 		DDS_HEADER *pDDSHeader = (DDS_HEADER *)(pSection + sizeof(DWORD));
-		D3DFORMAT Format = D3DFMT_UNKNOWN;
+		Native::D3DFORMAT Format = Native::D3DFMT_UNKNOWN;
 		if (pDDSHeader->ddspf.dwFlags & DDPF_FOURCC) {
 			switch (pDDSHeader->ddspf.dwFourCC) {
-			case MAKEFOURCC('D', 'X', 'T', '1'): Format = D3DFMT_DXT1; break;
-			case MAKEFOURCC('D', 'X', 'T', '3'): Format = D3DFMT_DXT3; break;
-			case MAKEFOURCC('D', 'X', 'T', '5'): Format = D3DFMT_DXT5; break;
+			case MAKEFOURCC('D', 'X', 'T', '1'): Format = Native::D3DFMT_DXT1; break;
+			case MAKEFOURCC('D', 'X', 'T', '3'): Format = Native::D3DFMT_DXT3; break;
+			case MAKEFOURCC('D', 'X', 'T', '5'): Format = Native::D3DFMT_DXT5; break;
 			}
 		}
 		else {
 			// TODO : Determine D3D format based on pDDSHeader->ddspf.dwABitMask, .dwRBitMask, .dwGBitMask and .dwBBitMask
 		}
 
-		if (Format == D3DFMT_UNKNOWN)
+		if (Format == Native::D3DFMT_UNKNOWN)
 			return;
 
 		ImageData = (uint8 *)(pSection + sizeof(DWORD) + pDDSHeader->dwSize);
@@ -1535,7 +1535,7 @@ void WndMain::LoadGameLogo()
 		uint8 *ResourceHeaders = pSection + sizeof(Xbe::XprHeader);
 		uint8 *ResourceData = ResourceHeaders + SizeOfResourceHeaders;
 
-		pXboxPixelContainer = (X_D3DPixelContainer*)ResourceHeaders;
+		pXboxPixelContainer = (Xbox::X_D3DPixelContainer*)ResourceHeaders;
 		ImageData = ResourceData;
 
 		break;

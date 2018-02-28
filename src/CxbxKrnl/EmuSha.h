@@ -34,11 +34,6 @@
 #ifndef EMUSHA_H
 #define EMUSHA_H
 
-#if defined(__cplusplus)
-extern "C"
-{
-#endif
-
 #include <Windows.h>
 
 #define A_SHA_DIGEST_LEN 20
@@ -77,9 +72,5 @@ extern FPTR_##API                          API
 EXTERN(A_SHAInit);
 EXTERN(A_SHAUpdate);
 EXTERN(A_SHAFinal);
-
-#if defined(__cplusplus)
-}
-#endif
 
 #endif

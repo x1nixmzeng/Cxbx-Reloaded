@@ -37,14 +37,20 @@
 
 #define LOG_PREFIX "XGRP"
 
+namespace Native
+{
 #undef FIELD_OFFSET     // prevent macro redefinition warnings
 #include <windows.h>
+}
 
 #include "Emu.h"
 #include "EmuFS.h"
 #include "Logging.h"
 #include "EmuXTL.h"
 #include "EmuD3D8Logging.h" // for log rendering of X_D3DFORMAT, etc.
+
+namespace Xbox
+{
 
 // ******************************************************************
 // * patch: XGIsSwizzledFormat
@@ -311,3 +317,6 @@ VOID WINAPI EMUPATCH(XGSetTextureHeader)
 //
 //	RETURN(E_FAIL);
 //}
+
+
+} // Xbox

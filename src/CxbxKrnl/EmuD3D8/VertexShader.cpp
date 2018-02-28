@@ -42,6 +42,9 @@
 #include "CxbxKrnl/EmuXTL.h"
 #include "CxbxKrnl/EmuD3D8Types.h" // For X_D3DVSDE_*
 
+namespace Xbox
+{
+
 // ****************************************************************************
 // * Vertex shader function recompiler
 // ****************************************************************************
@@ -1758,7 +1761,10 @@ static void VshConverToken_TESSELATOR(DWORD   *pToken,
 		NewVertexRegister = Xb2PCRegisterType(VertexRegister, IsFixedFunction);
         DbgVshPrintf("),\n");
 
-        *pToken = D3DVSD_TESSUV(NewVertexRegister);
+		{
+			using Native::D3DVSD_TOKEN_TESSELLATOR;
+			*pToken = D3DVSD_TESSUV(NewVertexRegister);
+		}
     }
     // D3DVSD_TESSNORMAL
     else
@@ -1774,7 +1780,11 @@ static void VshConverToken_TESSELATOR(DWORD   *pToken,
         DbgVshPrintf(", ");
         NewVertexRegisterOut = Xb2PCRegisterType(VertexRegisterOut, IsFixedFunction);
         DbgVshPrintf("),\n");
-        *pToken = D3DVSD_TESSNORMAL(NewVertexRegisterIn, NewVertexRegisterOut);
+
+		{
+			using Native::D3DVSD_TOKEN_TESSELLATOR;
+			*pToken = D3DVSD_TESSNORMAL(NewVertexRegisterIn, NewVertexRegisterOut);
+		}
     }
 }
 
@@ -1854,7 +1864,11 @@ static void VshConvertToken_STREAMDATA_SKIPBYTES(DWORD *pToken)
     {
         EmuWarning("D3DVSD_SKIPBYTES can't be converted to D3DVSD_SKIP, not divisble by 4.");
     }
-    *pToken = D3DVSD_SKIP(SkipBytesCount / sizeof(DWORD));
+
+	{
+		using Native::D3DVSD_TOKEN_STREAMDATA;
+		*pToken = D3DVSD_SKIP(SkipBytesCount / sizeof(DWORD));
+	}
 }
 
 static void VshConvertToken_STREAMDATA_REG(DWORD          *pToken,
@@ -1899,7 +1913,7 @@ static void VshConvertToken_STREAMDATA_REG(DWORD          *pToken,
 	case X_D3DVSDT_D3DCOLOR: // 0x40:
         DbgVshPrintf("D3DVSDT_D3DCOLOR");
         NewDataType = D3DVSDT_D3DCOLOR;
-		NewSize = sizeof(D3DCOLOR);
+		NewSize = sizeof(Native::D3DCOLOR);
         break;
 	case X_D3DVSDT_SHORT2: // 0x25:
         DbgVshPrintf("D3DVSDT_SHORT2");
@@ -2001,7 +2015,10 @@ static void VshConvertToken_STREAMDATA_REG(DWORD          *pToken,
 	pPatchData->TypePatchData.NewSizes[pPatchData->TypePatchData.NbrTypes] = NewSize;
 	pPatchData->TypePatchData.NbrTypes++;
 
-    *pToken = D3DVSD_REG(NewVertexRegister, NewDataType);
+	{
+		using Native::D3DVSD_TOKEN_STREAMDATA;
+		*pToken = D3DVSD_REG(NewVertexRegister, NewDataType);
+	}
 
     pPatchData->ConvertedStride += NewSize;
 
@@ -2046,25 +2063,25 @@ static DWORD VshRecompileToken(DWORD          *pToken,
 
     switch(VshGetTokenType(*pToken))
     {
-    case D3DVSD_TOKEN_NOP:
+    case Native::D3DVSD_TOKEN_NOP:
         VshConvertToken_NOP(pToken);
         break;
-    case D3DVSD_TOKEN_STREAM:
+    case Native::D3DVSD_TOKEN_STREAM:
     {
         VshConvertToken_STREAM(pToken, pPatchData);
         break;
     }
-    case D3DVSD_TOKEN_STREAMDATA:
+    case Native::D3DVSD_TOKEN_STREAMDATA:
     {
         VshConvertToken_STREAMDATA(pToken, IsFixedFunction, pPatchData);
         break;
     }
-    case D3DVSD_TOKEN_TESSELLATOR:
+    case Native::D3DVSD_TOKEN_TESSELLATOR:
     {
         VshConverToken_TESSELATOR(pToken, IsFixedFunction);
         break;
     }
-    case D3DVSD_TOKEN_CONSTMEM:
+    case Native::D3DVSD_TOKEN_CONSTMEM:
     {
         Step = VshConvertToken_CONSTMEM(pToken);
         break;
@@ -2133,7 +2150,7 @@ DWORD EmuRecompileVshDeclaration
 extern HRESULT EmuRecompileVshFunction
 (
     DWORD        *pFunction,
-    LPD3DXBUFFER *ppRecompiled,
+	Native::LPD3DXBUFFER *ppRecompiled,
     DWORD        *pOriginalSize,
     boolean      bNoReservedConstants,
 	boolean		 *pbUseDeclarationOnly
@@ -2143,7 +2160,7 @@ extern HRESULT EmuRecompileVshFunction
     DWORD               *pToken;
     boolean             EOI = false;
     VSH_XBOX_SHADER     *pShader = (VSH_XBOX_SHADER*)calloc(1, sizeof(VSH_XBOX_SHADER));
-	LPD3DXBUFFER		pErrors = NULL;
+	Native::LPD3DXBUFFER		pErrors = NULL;
     HRESULT             hRet = 0;
 
     // TODO: support this situation..
@@ -2323,3 +2340,5 @@ extern VERTEX_DYNAMIC_PATCH *VshGetVertexDynamicPatch(DWORD Handle)
     }
     return NULL;
 }
+
+} // Xbox

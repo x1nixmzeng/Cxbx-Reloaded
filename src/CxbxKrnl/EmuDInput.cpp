@@ -41,6 +41,15 @@
 #include "EmuXTL.h"
 #include "EmuShared.h"
 
+namespace Native
+{
+	#define DIRECTINPUT_VERSION 0x0800
+	#include <dinput.h>
+}
+
+namespace Xbox
+{
+
 // ******************************************************************
 // * Static Variable(s)
 // ******************************************************************
@@ -81,3 +90,5 @@ void EmuDInputPoll(PXINPUT_STATE Controller)
 
     return;
 }
+
+} // Xbox

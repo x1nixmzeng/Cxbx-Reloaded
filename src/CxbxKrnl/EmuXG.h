@@ -34,6 +34,9 @@
 #ifndef EMUXG_H
 #define EMUXG_H
 
+namespace Xbox
+{
+
 typedef struct _XGPOINT3D
 {
     DWORD u;
@@ -75,7 +78,7 @@ VOID WINAPI EMUPATCH(XGSwizzleBox)
     LPCVOID          pSource,
     DWORD            RowPitch,
     DWORD            SlicePitch,
-    CONST D3DBOX    *pBox,
+    CONST Native::D3DBOX    *pBox,
     LPVOID           pDest,
     DWORD            Width,
     DWORD            Height,
@@ -104,7 +107,7 @@ VOID	WINAPI EMUPATCH(XGSetTextureHeader)
 	UINT			Levels,
 	DWORD			Usage,
 	X_D3DFORMAT		Format,
-	D3DPOOL			Pool,
+	Native::D3DPOOL			Pool,
 	X_D3DTexture*	pTexture,
 	UINT			Data,
 	UINT			Pitch
@@ -119,5 +122,7 @@ HRESULT WINAPI EMUPATCH(XFONT_OpenBitmapFontFromMemory)
 	unsigned		uFontDataSize,
 	void			**ppFont
 );
+
+} // Xbox
 
 #endif

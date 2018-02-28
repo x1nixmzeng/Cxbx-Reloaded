@@ -50,8 +50,11 @@ enum  KIRQL_TYPE; // fake enum, since KIRQL is an unsigned char, which clashes w
 enum  PROTECTION_TYPE;
 };
 
-
+namespace Native
+{
 #include <windows.h> // for PULONG
+}
+
 #include <sstream> // for std::ostream
 #include "Logging.h"
 

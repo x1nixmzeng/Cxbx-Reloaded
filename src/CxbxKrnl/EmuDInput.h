@@ -34,12 +34,6 @@
 #ifndef EMUDINPUT_H
 #define EMUDINPUT_H
 
-//namespace Native
-//{
-//	#define DIRECTINPUT_VERSION 0x0800
-//	#include <dinput.h>
-//}
-
 namespace Xbox
 {
 

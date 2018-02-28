@@ -40,13 +40,17 @@
 
 #include <cstdio>
 #include <cstring>
-#include <windows.h>
 
 #include "CxbxKrnl/EmuXTL.h"
 
+namespace Native
+{
+#include <windows.h>
+#include <dinput.h>
+}
+
 namespace Xbox
 {
-
 // ******************************************************************
 // * Xbox Controller Object IDs
 // ******************************************************************
@@ -106,6 +110,8 @@ struct XBCtrlObjectCfg
     int dwFlags;    // flags explaining the data format
 };
 
+} // Xbox
+
 // ******************************************************************
 // * class: XBController
 // ******************************************************************
@@ -127,7 +133,7 @@ class XBController : public Error
         // ******************************************************************
         // * Configuration
         // ******************************************************************
-        void ConfigBegin(HWND hwnd, XBCtrlObject object);
+        void ConfigBegin(HWND hwnd, Xbox::XBCtrlObject object);
         bool ConfigPoll(char *szStatus);  // true if polling detected a change
         void ConfigEnd();
 
@@ -135,7 +141,7 @@ class XBController : public Error
         // * Listening
         // ******************************************************************
         void ListenBegin(HWND hwnd);
-        void ListenPoll(XINPUT_STATE *Controller);
+        void ListenPoll(Xbox::XINPUT_STATE *Controller);
         void ListenEnd();
 
         // ******************************************************************
@@ -152,13 +158,13 @@ class XBController : public Error
         // ******************************************************************
         // * Input Device Name Lookup Table
         // ******************************************************************
-        static const char *m_DeviceNameLookup[XBCTRL_OBJECT_COUNT];
+        static const char *m_DeviceNameLookup[Xbox::XBCTRL_OBJECT_COUNT];
 
     private:
         // ******************************************************************
         // * Object Mapping
         // ******************************************************************
-        void Map(XBCtrlObject object, const char *szDeviceName, int dwInfo, int dwFlags);
+        void Map(Xbox::XBCtrlObject object, const char *szDeviceName, int dwInfo, int dwFlags);
 
         // ******************************************************************
         // * Find the look-up value for a DeviceName (creating if needed)
@@ -173,29 +179,29 @@ class XBController : public Error
         // ******************************************************************
         // * Controller and Objects Enumeration
         // ******************************************************************
-        BOOL EnumGameCtrlCallback(LPCDIDEVICEINSTANCE lpddi);
-        BOOL EnumObjectsCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi);
+        BOOL EnumGameCtrlCallback(Native::LPCDIDEVICEINSTANCE lpddi);
+        BOOL EnumObjectsCallback(Native::LPCDIDEVICEOBJECTINSTANCE lpddoi);
 
         // ******************************************************************
         // * Wrapper Function for Enumeration
         // ******************************************************************
-        friend BOOL CALLBACK WrapEnumGameCtrlCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
-        friend BOOL CALLBACK WrapEnumObjectsCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef);
+        friend BOOL CALLBACK WrapEnumGameCtrlCallback(Native::LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
+        friend BOOL CALLBACK WrapEnumObjectsCallback(Native::LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef);
 
         // ******************************************************************
         // * Device Names
         // ******************************************************************
-        char m_DeviceName[XBCTRL_MAX_DEVICES][260];
+        char m_DeviceName[Xbox::XBCTRL_MAX_DEVICES][260];
 
         // ******************************************************************
         // * Object Configuration
         // ******************************************************************
-        XBCtrlObjectCfg m_ObjectConfig[XBCTRL_OBJECT_COUNT];
+		Xbox::XBCtrlObjectCfg m_ObjectConfig[Xbox::XBCTRL_OBJECT_COUNT];
 
         // ******************************************************************
         // * DirectInput
         // ******************************************************************
-        LPDIRECTINPUT8 m_pDirectInput8;
+		Native::LPDIRECTINPUT8 m_pDirectInput8;
 
         // ******************************************************************
         // * DirectInput Devices
@@ -205,7 +211,7 @@ class XBController : public Error
             Native::LPDIRECTINPUTDEVICE8 m_Device;
             int                       m_Flags;
         }
-        m_InputDevice[XBCTRL_MAX_DEVICES];
+        m_InputDevice[Xbox::XBCTRL_MAX_DEVICES];
 
         // ******************************************************************
         // * Current State
@@ -216,7 +222,7 @@ class XBController : public Error
         // * Config State Variables
         // ******************************************************************
         LONG lPrevMouseX, lPrevMouseY, lPrevMouseZ;
-        XBCtrlObject CurConfigObject;
+		Xbox::XBCtrlObject CurConfigObject;
 
         // ******************************************************************
         // * Etc State Variables
@@ -225,6 +231,9 @@ class XBController : public Error
         int m_dwCurObject;
 
 };
+
+namespace Xbox
+{
 
 // ******************************************************************
 // * Device Flags

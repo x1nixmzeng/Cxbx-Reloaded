@@ -39,7 +39,7 @@
 #include "DlgAudioConfig.h"
 #include "ResCxbx.h"
 
-namespace Xbox
+namespace Native
 {
 #include <dsound.h>
 }

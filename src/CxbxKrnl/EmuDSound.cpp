@@ -59,6 +59,9 @@ namespace Native
 #include <process.h>
 #include <clocale>
 
+namespace Xbox
+{
+
 // TODO: Tasks need to do for DirectSound HLE
 // * Need create patches
 //   * Ac97CreateMediaObject (Need OOVPA)
@@ -180,18 +183,10 @@ unsigned int                        g_iDSoundSynchPlaybackCounter = 0;
 
 #include "EmuDSoundInline.hpp"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void CxbxInitAudio()
 {
     g_EmuShared->GetXBAudio(&g_XBAudio);
 }
-
-#ifdef __cplusplus
-}
-#endif
 
 // ******************************************************************
 // * patch: DirectSoundCreate
@@ -4090,3 +4085,5 @@ HRESULT WINAPI EMUPATCH(CDirectSoundStream_GetVoiceProperties)
 
     return DS_OK;
 }
+
+} // Xbox

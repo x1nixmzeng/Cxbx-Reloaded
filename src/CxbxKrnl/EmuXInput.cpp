@@ -44,6 +44,7 @@
 
 namespace Native
 {
+#include <dinput.h>
 #include <xinput.h>
 }
 
