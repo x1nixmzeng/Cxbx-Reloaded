@@ -36,9 +36,12 @@
 
 #include "Common/Xbe.h"
 
+namespace Native
+{
 #undef FIELD_OFFSET     // prevent macro redefinition warnings
-#include <windows.h>
+#include <Windows.h>
 #include <multimon.h>
+}
 
 // print out a warning message to the kernel debug log file
 #ifdef _DEBUG_WARNINGS
@@ -84,7 +87,7 @@ extern LARGE_INTEGER HostSystemTimeDelta;
 #define XINPUT_SETSTATE_SLOTS 16
 
 // XInputSetState status waiters
-extern struct XInputSetStateStatus
+struct XInputSetStateStatus
 {
     HANDLE  hDevice;
     DWORD   dwLatency;

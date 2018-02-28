@@ -37,12 +37,7 @@
 
 #define LOG_PREFIX "KRNL"
 
-// prevent name collisions
-namespace xboxkrnl
-{
-#include <xboxkrnl/xboxkrnl.h>
-};
-
+#include "XDK.h"
 
 #include "Logging.h"
 #include "EmuKrnlLogging.h"

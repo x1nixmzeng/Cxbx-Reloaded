@@ -37,7 +37,7 @@
 #include "xxhash32.h"
 #include <condition_variable>
 
-#include <xboxkrnl/xboxkrnl.h>
+#include "XDK.h"
 
 #include "CxbxUtil.h"
 #include "CxbxVersion.h"

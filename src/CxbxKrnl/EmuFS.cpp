@@ -37,16 +37,22 @@
 
 #define LOG_PREFIX "KRNL"
 
-#include <xboxkrnl/xboxkrnl.h>
+#include "XDK.h"
 
 #include "EmuKrnl.h" // For InitializeListHead(), etc.
 #include "EmuFS.h"
 #include "CxbxKrnl.h"
 #include "VMManager.h"
 
+namespace Native
+{
 #undef FIELD_OFFSET     // prevent macro redefinition warnings
 #include <windows.h>
 #include <cstdio>
+}
+
+namespace Xbox
+{
 
 // NT_TIB (Thread Information Block) offsets - see https://www.microsoft.com/msj/archive/S2CE.aspx
 #define TIB_ExceptionList         offsetof(NT_TIB, ExceptionList)         // = 0x00/0
@@ -116,15 +122,15 @@
 // = 0x104/260 */ LIST_ENTRY ThreadListEntry;
 // = 0x10C/268 */ UCHAR _padding[4];
 
-NT_TIB *GetNtTib()
+XDK::NT_TIB *GetNtTib()
 {
-	return (NT_TIB *)__readfsdword(TIB_LinearSelfAddress);
+	return (XDK::NT_TIB *)__readfsdword(TIB_LinearSelfAddress);
 }
 
 
-KPCR* KeGetPcr();
+XDK::KPCR* KeGetPcr();
 
-void EmuKeSetPcr(KPCR *Pcr)
+void EmuKeSetPcr(XDK::KPCR *Pcr)
 {
 	// Store the Xbox KPCR pointer in FS (See KeGetPcr())
 	// 
@@ -151,7 +157,7 @@ void EmuKeSetPcr(KPCR *Pcr)
 	// the user data-slot of each Windows thread Cxbx uses for an
 	// Xbox thread.
 	//
-	__writefsdword(TIB_ArbitraryDataSlot, (DWORD)Pcr);
+	__writefsdword(TIB_ArbitraryDataSlot, (XDK::DWORD)Pcr);
 }
 
 __declspec(naked) void EmuFS_RefreshKPCR()
@@ -428,7 +434,7 @@ void EmuInitFS()
 	fsInstructions.push_back({ { 0x64, 0xA3, 0x00, 0x00, 0x00, 0x00 }, &EmuFS_MovFs00Eax });					// mov large fs:0, eax
 
 	DbgPrintf("INIT: Patching FS Register Accesses\n");
-	DWORD sizeOfImage = CxbxKrnl_XbeHeader->dwSizeofImage;
+	XDK::DWORD sizeOfImage = CxbxKrnl_XbeHeader->dwSizeofImage;
 	long numberOfInstructions = fsInstructions.size();
 
 	// Iterate through each CODE section
@@ -539,9 +545,9 @@ void EmuGenerateFS(Xbe::TLS *pTLS, void *pTLSData)
 	}
 
 	// Allocate the xbox KPCR structure
-	KPCR *NewPcr = (KPCR*)g_VMManager.AllocateZeroed(sizeof(KPCR));
-	NT_TIB *XbTib = &(NewPcr->NtTib);
-	PKPRCB Prcb = &(NewPcr->PrcbData);
+	XDK::KPCR *NewPcr = (XDK::KPCR*)g_VMManager.AllocateZeroed(sizeof(XDK::KPCR));
+	XDK::NT_TIB *XbTib = &(NewPcr->NtTib);
+	XDK::PKPRCB Prcb = &(NewPcr->PrcbData);
 	// Note : As explained above (at EmuKeSetPcr), Cxbx cannot allocate one NT_TIB and KPRCB
 	// structure per thread, since Cxbx currently doesn't do thread-switching.
 	// Thus, the only way to give each thread it's own PrcbData.CurrentThread, is to put the
@@ -556,7 +562,7 @@ void EmuGenerateFS(Xbe::TLS *pTLS, void *pTLSData)
 
 	// Copy the Nt TIB over to the emulated TIB :
 	{
-		memcpy(XbTib, GetNtTib(), sizeof(NT_TIB));
+		memcpy(XbTib, GetNtTib(), sizeof(XDK::NT_TIB));
 		// Fixup the TIB self pointer :
 		NewPcr->NtTib.Self = XbTib;
 		// Set the stack base - TODO : Verify this, doesn't look right?
@@ -580,12 +586,12 @@ void EmuGenerateFS(Xbe::TLS *pTLS, void *pTLSData)
 
 	// Initialize a fake PrcbData.CurrentThread 
 	{
-		ETHREAD *EThread = (ETHREAD*)g_VMManager.AllocateZeroed(sizeof(ETHREAD)); // Clear, to prevent side-effects on random contents
+		XDK::ETHREAD *EThread = (XDK::ETHREAD*)g_VMManager.AllocateZeroed(sizeof(XDK::ETHREAD)); // Clear, to prevent side-effects on random contents
 
 		EThread->Tcb.TlsData = pNewTLS;
-		EThread->UniqueThread = GetCurrentThreadId();
+		EThread->UniqueThread = Native::GetCurrentThreadId();
 		// Set PrcbData.CurrentThread
-		Prcb->CurrentThread = (KTHREAD*)EThread;
+		Prcb->CurrentThread = (XDK::KTHREAD*)EThread;
 	}
 
 	// Make the KPCR struct available to KeGetPcr()
@@ -593,3 +599,5 @@ void EmuGenerateFS(Xbe::TLS *pTLS, void *pTLSData)
 
 	DbgPrintf("KRNL: Installed KPCR in TIB_ArbitraryDataSlot (with pTLS = 0x%.8X)\n", pTLS);
 }
+
+} // Xbox

@@ -38,17 +38,11 @@
 
 #define LOG_PREFIX "DBG "
 
-#include <xboxkrnl/xboxkrnl.h> // For DbgPrint, etc.
+#include "XDK.h"
 
 #include "Logging.h" // For LOG_FUNC()
 #include "EmuKrnlLogging.h"
-
-// prevent name collisions
-namespace NtDll
-{
 #include "EmuNtDll.h"
-};
-
 
 #include "Emu.h" // For EmuWarning()
 

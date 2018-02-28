@@ -36,14 +36,7 @@
 #define _XBOXKRNL_DEFEXTRN_
 
 #include <windows.h>
-
-// ******************************************************************
-// * prevent name collisions
-// ******************************************************************
-namespace NtDll
-{
-    #include "EmuNtDll.h"
-};
+#include "EmuNtDll.h"
 
 // ******************************************************************
 // * Loaded at run-time to avoid linker conflicts

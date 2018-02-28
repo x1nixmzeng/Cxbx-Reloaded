@@ -34,6 +34,8 @@
 #ifndef EMUDINPUT_H
 #define EMUDINPUT_H
 
+#include "EmuXapi.h"
+
 namespace Xbox
 {
 
@@ -50,7 +52,7 @@ namespace Xbox
 	// ******************************************************************
 	// * patch: DInputPoll
 	// ******************************************************************
-	void EmuDInputPoll(Xbox::PXINPUT_STATE Controller);
+	void EmuDInputPoll(PXINPUT_STATE Controller);
 }
 
 #endif

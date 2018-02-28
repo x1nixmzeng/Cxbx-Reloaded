@@ -1,5 +1,3 @@
-// This is an open source non-commercial project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 // ******************************************************************
 // *
 // *    .,-:::::    .,::      .::::::::.    .,::      .:
@@ -9,7 +7,7 @@
 // *  `88bo,__,o,    oP"``"Yo,  _88o,,od8P   oP"``"Yo,
 // *    "YUMMMMMP",m"       "Mm,""YUMMMP" ,m"       "Mm,
 // *
-// *   Cxbx->Win32->CxbxKrnl->EmuKrnlEx.cpp
+// *   Common->XDK.h
 // *
 // *  This file is part of the Cxbx project.
 // *
@@ -29,24 +27,15 @@
 // *  59 Temple Place - Suite 330, Bostom, MA 02111-1307, USA.
 // *
 // *  (c) 2002-2003 Aaron Robinson <caustik@caustik.com>
-// *  (c) 2016 Patrick van Logchem <pvanlogchem@gmail.com>
 // *
 // *  All rights reserved
 // *
 // ******************************************************************
-#define _XBOXKRNL_DEFEXTRN_
 
-#define LOG_PREFIX "KRNL"
+#pragma once
 
-#include "XDK.h"
+namespace XDK
+{
+#include <xboxkrnl/xboxkrnl.h>
+}
 
-// ******************************************************************
-// * 0x0058 - KdDebuggerEnabled
-// ******************************************************************
-XBSYSAPI EXPORTNUM(88) BOOLEAN KdDebuggerEnabled = false;
-
-// ******************************************************************
-// * 0x0059 - KdDebuggerNotPresent
-// ******************************************************************
-// Source:ReactOS
-XBSYSAPI EXPORTNUM(89) BOOLEAN KdDebuggerNotPresent = true;

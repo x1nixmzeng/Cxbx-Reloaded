@@ -38,22 +38,13 @@
 
 #define LOG_PREFIX "KRNL"
 
-// prevent name collisions
-namespace xboxkrnl
-{
-#include <xboxkrnl/xboxkrnl.h> // For XcSHAInit, etc.
-};
+#include "XDK.h"
 
 #include "Logging.h" // For LOG_FUNC()
 #include "EmuKrnlLogging.h"
 #include "EmuSha.h" // For A_SHAInit, etc.
 #include "LibRc4.h" // For RC4 Functions
-
-// prevent name collisions
-namespace NtDll
-{
 #include "EmuNtDll.h"
-};
 
 // ******************************************************************
 // * 0x014F - XcSHAInit()

@@ -142,7 +142,7 @@ extern volatile bool g_bPrintfOn;
 #ifdef _DEBUG_TRACE
 	#define DbgPrintf(fmt, ...) { \
         CXBX_CHECK_INTEGRITY(); \
-        if(g_bPrintfOn) printf("[0x%.4X] "##fmt, GetCurrentThreadId(), ##__VA_ARGS__); \
+        if(g_bPrintfOn) printf("[0x%.4X] "##fmt, Native::GetCurrentThreadId(), ##__VA_ARGS__); \
      }
 #else
 	inline void null_func(...) { }

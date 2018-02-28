@@ -36,8 +36,15 @@
 
 #include <vector>
 #include "Common/Xbe.h"
+
+namespace Native
+{
 #undef FIELD_OFFSET     // prevent macro redefinition warnings
 #include <windows.h>
+}
+
+namespace Xbox
+{
 
 // initialize fs segment selector emulation
 extern void EmuInitFS();
@@ -50,5 +57,7 @@ typedef struct
 	std::vector<uint08> data;
 	void* functionPtr;
 }fs_instruction_t;
+
+} // Xbox
 
 #endif

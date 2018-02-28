@@ -38,12 +38,7 @@
 
 #define LOG_PREFIX "KRNL"
 
-// prevent name collisions
-namespace xboxkrnl
-{
-#include <xboxkrnl/xboxkrnl.h> // For PsCreateSystemThreadEx, etc.
-};
-
+#include "XDK.h"
 #include <process.h> // For __beginthreadex(), etc.
 
 #include "Logging.h" // For LOG_FUNC()
@@ -53,11 +48,7 @@ namespace xboxkrnl
 #include "EmuFS.h" // For EmuGenerateFS
 #include "EmuXTL.h"
 
-// prevent name collisions
-namespace NtDll
-{
 #include "EmuNtDll.h"
-};
 
 namespace Xbox
 {

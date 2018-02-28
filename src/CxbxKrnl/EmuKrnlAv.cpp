@@ -38,16 +38,11 @@
 
 #define LOG_PREFIX "KRNL"
 
-#include <xboxkrnl/xboxkrnl.h> // For AvGetSavedDataAddress, etc.
+#include "XDK.h"
 
 #include "Logging.h" // For LOG_FUNC()
 #include "EmuKrnlLogging.h"
-
-// prevent name collisions
-namespace NtDll
-{
 #include "EmuNtDll.h"
-};
 
 #include "Emu.h" // For EmuWarning()
 
@@ -55,20 +50,20 @@ namespace Xbox
 {
 
 // Global Variable(s)
-PVOID g_pPersistedData = NULL;
+XDK::PVOID g_pPersistedData = NULL;
 
-ULONG AvQueryAvCapabilities()
+XDK::ULONG AvQueryAvCapabilities()
 {
 	// This is the only AV mode we currently emulate, so we can hardcode the return value
 	// TODO: Once we add the ability to change av pack, read HalSmcVideoMode) and convert it to a AV_PACK_*
-	ULONG avpack = AV_PACK_HDTV;
-	ULONG type;
-	ULONG resultSize;
+	XDK::ULONG avpack = AV_PACK_HDTV;
+	XDK::ULONG type;
+	XDK::ULONG resultSize;
 
 	// First, read the factory AV settings
 	ULONG avRegion;
-	NTSTATUS result = ExQueryNonVolatileSetting(
-		XC_FACTORY_AV_REGION,
+	NTSTATUS result = XDK::ExQueryNonVolatileSetting(
+		XDK::XC_FACTORY_AV_REGION,
 		&type,
 		&avRegion,
 		sizeof(ULONG),
@@ -81,8 +76,8 @@ ULONG AvQueryAvCapabilities()
 
 	// Read the user-configurable (via the dashboard) settings
 	ULONG userSettings;
-	result = ExQueryNonVolatileSetting(
-		XC_VIDEO,
+	result = XDK::ExQueryNonVolatileSetting(
+		XDK::XC_VIDEO,
 		&type,
 		&userSettings,
 		sizeof(ULONG),
@@ -105,7 +100,7 @@ PVOID g_AvSavedDataAddress = NULL;
 // ******************************************************************
 // * 0x0001 - AvGetSavedDataAddress()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(1) PVOID NTAPI AvGetSavedDataAddress(void)
+XBSYSAPI EXPORTNUM(1) XDK::PVOID NTAPI AvGetSavedDataAddress(void)
 {
 	LOG_FUNC();
 
@@ -115,12 +110,12 @@ XBSYSAPI EXPORTNUM(1) PVOID NTAPI AvGetSavedDataAddress(void)
 // ******************************************************************
 // * 0x0002 - AvSendTVEncoderOption()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(2) VOID NTAPI AvSendTVEncoderOption
+XBSYSAPI EXPORTNUM(2) XDK::VOID NTAPI AvSendTVEncoderOption
 (
-	IN  PVOID   RegisterBase,
-	IN  ULONG   Option,
-	IN  ULONG   Param,
-	OUT ULONG   *Result
+	IN  XDK::PVOID   RegisterBase,
+	IN  XDK::ULONG   Option,
+	IN  XDK::ULONG   Param,
+	OUT XDK::ULONG   *Result
 )
 {
 	LOG_FUNC_BEGIN
@@ -194,14 +189,14 @@ XBSYSAPI EXPORTNUM(2) VOID NTAPI AvSendTVEncoderOption
 // ******************************************************************
 // * 0x0003 - AvSetDisplayMode()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(3) ULONG NTAPI AvSetDisplayMode
+XBSYSAPI EXPORTNUM(3) XDK::ULONG NTAPI AvSetDisplayMode
 (
-	IN  PVOID   RegisterBase,
-	IN  ULONG   Step,
-	IN  ULONG   Mode,
-	IN  ULONG   Format,
-	IN  ULONG   Pitch,
-	IN  ULONG   FrameBuffer
+	IN  XDK::PVOID   RegisterBase,
+	IN  XDK::ULONG   Step,
+	IN  XDK::ULONG   Mode,
+	IN  XDK::ULONG   Format,
+	IN  XDK::ULONG   Pitch,
+	IN  XDK::ULONG   FrameBuffer
 )
 {
 	LOG_FUNC_BEGIN
@@ -223,9 +218,9 @@ XBSYSAPI EXPORTNUM(3) ULONG NTAPI AvSetDisplayMode
 // ******************************************************************
 // * 0x0004 - AvSetSavedDataAddress()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(4) VOID NTAPI AvSetSavedDataAddress
+XBSYSAPI EXPORTNUM(4) XDK::VOID NTAPI AvSetSavedDataAddress
 (
-	IN  PVOID   Address
+	IN  XDK::PVOID   Address
 )
 {
 	LOG_FUNC_BEGIN

@@ -14,6 +14,10 @@
 #ifndef	XFILE_H
 #define	XFILE_H
 
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
 #include "xboxkrnl\xboxkrnl.h"
 
 namespace Xbox
@@ -141,7 +145,10 @@ int	SetFilePointerEx(HANDLE hFile, LARGE_INTEGER liDistanceToMove, PLARGE_INTEGE
 char* GetLastErrorMessage( void );
 void SetLastError( u32 ErrorCode );
 
-
-} // Xbox
+#ifdef	__cplusplus
+};
+#endif
 
 #endif
+
+

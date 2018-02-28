@@ -37,7 +37,7 @@
 
 #define LOG_PREFIX "KRNL"
 
-#include <xboxkrnl/xboxkrnl.h>
+#include "XDK.h"
 
 #include <cstdio>
 #include <cctype>
@@ -50,12 +50,7 @@
 #include "EmuKrnlKi.h" // for KiLockDispatcherDatabase
 #include "CxbxKrnl.h"
 #include "EmuXTL.h"
-
-// prevent name collisions
-namespace NtDll
-{
-    #include "EmuNtDll.h"
-};
+#include "EmuNtDll.h"
 
 namespace Xbox
 {

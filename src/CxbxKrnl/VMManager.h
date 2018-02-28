@@ -129,7 +129,7 @@ class VMManager : public PhysicalMemory
 		// maps the virtual memory region used by a device
 		void MapHardwareDevice(VAddr base, size_t size, VMAType vma_type);
 		// retrieves memory statistics
-		void MemoryStatistics(Xbox::PMM_STATISTICS memory_statistics);
+		void MemoryStatistics(XDK::PMM_STATISTICS memory_statistics);
 		// allocates a block of memory
 		VAddr Allocate(size_t size, PageType page_type = PageType::VirtualMemory, PAddr low_addr = 0, PAddr high_addr = MAXULONG_PTR, ULONG alignment = PAGE_SIZE,
 			DWORD protect = PAGE_READWRITE);

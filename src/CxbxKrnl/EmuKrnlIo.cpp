@@ -38,11 +38,7 @@
 
 #define LOG_PREFIX "KRNL"
 
-// prevent name collisions
-namespace xboxkrnl
-{
-#include <xboxkrnl/xboxkrnl.h> // For IoCompletionObjectType, etc.
-};
+#include "XDK.h"
 
 #include "Logging.h" // For LOG_FUNC()
 #include "EmuKrnlLogging.h"

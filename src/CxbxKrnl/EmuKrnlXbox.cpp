@@ -38,11 +38,7 @@
 
 #define LOG_PREFIX "KRNL"
 
-// prevent name collisions
-namespace xboxkrnl
-{
-#include <xboxkrnl/xboxkrnl.h> // For XboxEEPROMKey, etc.
-};
+#include "XDK.h"
 
 // Certificate Key
 // Not exported but used to generate per-title keys

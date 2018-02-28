@@ -3,7 +3,7 @@
 #ifndef __XDVDFS_H__
 #define __XDVDFS_H__
 
-#include <xboxkrnl/xboxkrnl.h>
+#include "XDK.h"
 
 #include "buffered_io.h"
 

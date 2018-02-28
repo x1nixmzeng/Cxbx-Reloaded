@@ -35,14 +35,12 @@
 // ******************************************************************
 #define _XBOXKRNL_DEFEXTRN_
 
-// prevent name collisions
-namespace xboxkrnl
-{
-    #include <xboxkrnl/xboxkrnl.h>
-};
-
+#include "XDK.h"
 #include "Cxbx.h" // For CxbxKrnl_KernelThunkTable
 #include "CxbxKrnl.h" // For UINT
+
+namespace Xbox
+{
 
 //
 // Enable "#define PANIC(numb) numb" if you wish to find out what
@@ -61,9 +59,6 @@ namespace xboxkrnl
 #define DEVKIT // developer kit only functions
 #define PROFILING // private kernel profiling functions
 // A.k.a. _XBOX_ENABLE_PROFILING
-
-namespace Xbox
-{
 
 // kernel thunk table
 // Note : Names that collide with other symbols, use the KRNL() macro.
@@ -450,11 +445,7 @@ uint32 CxbxKrnl_KernelThunkTable[379] =
 	(uint32)PANIC(0x017A),                                        // 0x017A (378) DEVKIT MmDbgWriteCheck
 };
 
-/* prevent name collisions */
-namespace NtDll
-{
-	#include "EmuNtDll.h"
-};
+#include "EmuNtDll.h"
 
 // Virtual memory location of KUSER_SHARED_DATA :
 // See http://research.microsoft.com/en-us/um/redmond/projects/invisible/src/base/md/i386/sim/_pertest2.c.htm
@@ -471,7 +462,7 @@ const UINT USER_SHARED_DATA_TICK_COUNT = 0x320;
 
 // Here we define the addresses of the native Windows timers :
 // Source: Dxbx
-const PKSYSTEM_TIME CxbxNtTickCount = (PKSYSTEM_TIME)(MM_SHARED_USER_DATA_VA + USER_SHARED_DATA_TICK_COUNT);
+const XDK::PKSYSTEM_TIME CxbxNtTickCount = (PKSYSTEM_TIME)(MM_SHARED_USER_DATA_VA + USER_SHARED_DATA_TICK_COUNT);
 
 void ConnectWindowsTimersToThunkTable()
 {

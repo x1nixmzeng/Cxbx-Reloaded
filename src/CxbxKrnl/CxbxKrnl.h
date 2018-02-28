@@ -37,9 +37,15 @@
 #include "Cxbx.h"
 #include "Common/Xbe.h"
 
+namespace Native
+{
 #undef FIELD_OFFSET     // prevent macro redefinition warnings
 #include <windows.h>
 #include <multimon.h>
+}
+
+namespace Xbox
+{
 
 // Opcodes
 #define OPCODE_NOP_90 0x90
@@ -180,7 +186,7 @@ __declspec(noreturn) void CxbxKrnlInit(void *pTLSData, Xbe::TLS *pTLS, Xbe::Libr
 __declspec(noreturn) void CxbxKrnlCleanup(const char *szErrorMessage, ...);
 
 /*! register a thread handle */
-void CxbxKrnlRegisterThread(HANDLE hThread);
+void CxbxKrnlRegisterThread(XDK::HANDLE hThread);
 
 /*! suspend emulation */
 void CxbxKrnlSuspend();
@@ -222,7 +228,7 @@ extern bool g_IsWine;
 extern bool g_CxbxPrintUEM;
 extern ULONG g_CxbxFatalErrorCode;
 
-void InitXboxThread(DWORD_PTR cores);
+void InitXboxThread(XDK::DWORD_PTR cores);
 
 /*! thread local storage structure */
 extern Xbe::TLS *CxbxKrnl_TLS;
@@ -236,7 +242,7 @@ extern Xbe::Header *CxbxKrnl_XbeHeader;
 extern Xbe *CxbxKrnl_Xbe;
 
 /*! parent window handle */
-extern HWND CxbxKrnl_hEmuParent;
+extern XDK::HWND CxbxKrnl_hEmuParent;
 extern DebugMode CxbxKrnl_DebugMode;
 extern std::string CxbxKrnl_DebugFileName;
 
@@ -247,5 +253,7 @@ extern char szFilePath_EEPROM_bin[MAX_PATH];
 
 // Returns the last Win32 error, in string format. Returns an empty string if there is no error.
 extern std::string CxbxGetLastErrorString(char * lpszFunction);
+
+} // Xbox
 
 #endif

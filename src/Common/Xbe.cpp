@@ -35,7 +35,7 @@
 // ******************************************************************
 #define _XBOXKRNL_DEFEXTRN_
 
-#include <xboxkrnl/xboxkrnl.h>
+#include "XDK.h"
 
 #include "Xbe.h"
 #include "CxbxUtil.h" // For RoundUp
@@ -79,9 +79,9 @@ Xbe::Xbe(const char *x_szFilename, bool bFromGUI)
 
 			ULONG FatalErrorCode = FATAL_ERROR_XBE_DASH_GENERIC;
 
-			if (LaunchDataPage && LaunchDataPage->Header.dwLaunchDataType == LDT_FROM_DASHBOARD)
+			if (XDK::LaunchDataPage && XDK::LaunchDataPage->Header.dwLaunchDataType == LDT_FROM_DASHBOARD)
 			{
-				PDASH_LAUNCH_DATA pLaunchDashboard = (PDASH_LAUNCH_DATA)&(LaunchDataPage->LaunchData[0]);
+				XDK::PDASH_LAUNCH_DATA pLaunchDashboard = (XDK::PDASH_LAUNCH_DATA)&(XDK::LaunchDataPage->LaunchData[0]);
 				FatalErrorCode += pLaunchDashboard->dwReason;
 			}
 			SetLEDSequence(0xE1); // green, red, red, red
@@ -103,11 +103,14 @@ Xbe::Xbe(const char *x_szFilename, bool bFromGUI)
     {
         printf("Xbe::Xbe: Storing Xbe Path...");
 
-        strcpy(m_szPath, x_szFilename);
+		std::string strFilename(x_szFilename);
 
-		char * c = strrchr(m_szPath, '\\');
-		if (c != NULL)
-			*(++c) = '\0';
+		size_t tailDir = strFilename.rfind('\\');
+		if (tailDir != std::string::npos) {
+			m_strPath = m_strPath.substr(0, tailDir);
+		} else {
+			m_strPath = m_strPath;
+		}
     }
 
     printf("OK\n");
@@ -583,20 +586,20 @@ static char *BetterTime(uint32 x_timeDate)
 }
 
 // import logo bitmap from raw monochrome data
-void Xbe::ImportLogoBitmap(const uint08 x_Gray[100*17])
+void Xbe::ImportLogoBitmap(const uint08 x_Gray[XbeConstants::LOGO_BMP_SIZE])
 {
     char  *LogoBuffer = new char[4*1024];
     uint32 LogoSize = 0;
 
     // encode logo bitmap
     {
-        for(uint32 v=1;v<100*17;LogoSize++)
+		for (uint32 v = 1; v<XbeConstants::LOGO_BMP_SIZE; LogoSize++)
         {
             char color = x_Gray[v] >> 4;
 
             uint32 len = 1;
 
-            while(++v<100*17-1 && len < 1024 && color == x_Gray[v] >> 4)
+            while(++v<(XbeConstants::LOGO_BMP_SIZE-1) && len < 1024 && color == x_Gray[v] >> 4)
                 len++;
 
             LogoRLE *cur = (LogoRLE *)&LogoBuffer[LogoSize];
@@ -653,9 +656,9 @@ void Xbe::ImportLogoBitmap(const uint08 x_Gray[100*17])
 // * a toss up, but i've choosen a simple bit shift left.
 // *
 // ******************************************************************
-void Xbe::ExportLogoBitmap(uint08 x_Gray[100*17])
+void Xbe::ExportLogoBitmap(uint08 x_Gray[XbeConstants::LOGO_BMP_SIZE])
 {
-    memset(x_Gray, 0, 100*17);
+    memset(x_Gray, 0, XbeConstants::LOGO_BMP_SIZE);
 
     uint32 dwLength = m_Header.dwSizeofLogoBitmap;
 
@@ -691,7 +694,7 @@ void Xbe::ExportLogoBitmap(uint08 x_Gray[100*17])
         {
             o++;
 
-            if(o < 100*17)
+            if(o < XbeConstants::LOGO_BMP_SIZE)
                 x_Gray[o] = (char)(data << 4); // could use (int)(data * 15.0 + .5);
         }
     }

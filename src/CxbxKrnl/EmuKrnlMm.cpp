@@ -39,11 +39,7 @@
 
 #define LOG_PREFIX "KRNL"
 
-// prevent name collisions
-namespace xboxkrnl
-{
-#include <xboxkrnl/xboxkrnl.h> // For MmGlobalData, etc.
-};
+#include "XDK.h"
 
 #include "Logging.h" // For LOG_FUNC()
 #include "EmuKrnl.h" // For DefaultLaunchDataPage
@@ -52,12 +48,7 @@ namespace xboxkrnl
 #include "Emu.h" // For EmuWarning()
 #include "VMManager.h"
 #include "EmuShared.h"
-
-// prevent name collisions
-namespace NtDll
-{
 #include "EmuNtDll.h" // For NtAllocateVirtualMemory(), etc.
-};
 
 // ******************************************************************
 // * 0x0066 - MmGlobalData

@@ -43,7 +43,7 @@
 
 // prevent name collisions
 
-#include <xboxkrnl/xboxkrnl.h> // For PKINTERRUPT, etc.
+#include "XDK.h"
 
 #include "CxbxKrnl\CxbxKrnl.h"
 #include "CxbxKrnl\Emu.h"

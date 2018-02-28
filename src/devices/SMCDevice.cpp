@@ -35,7 +35,7 @@
 // ******************************************************************
 #define _XBOXKRNL_DEFEXTRN_
 
-#include <xboxkrnl/xboxkrnl.h> // For xbox.h:AV_PACK_HDTV
+#include "XDK.h"
 
 #include "CxbxKrnl\CxbxKrnl.h"
 #include "CxbxKrnl\EmuShared.h"

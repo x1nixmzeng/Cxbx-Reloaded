@@ -37,7 +37,7 @@
 
 #define LOG_PREFIX "XACT"
 
-#include <xboxkrnl/xboxkrnl.h>
+#include "XDK.h"
 
 #include "CxbxKrnl.h"
 #include "Logging.h"

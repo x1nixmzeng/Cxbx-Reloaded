@@ -38,18 +38,13 @@
 
 #define LOG_PREFIX "KRNL"
 
-#include <xboxkrnl/xboxkrnl.h> // For ExAllocatePool, etc.
+#include "XDK.h"
 
 #include "Logging.h" // For LOG_FUNC()
 #include "EmuEEPROM.h" // For EmuFindEEPROMInfo, EEPROM, XboxFactoryGameRegion
 #include "EmuKrnlLogging.h"
 #include "VMManager.h"
-
-// prevent name collisions
-namespace NtDll
-{
 #include "EmuNtDll.h" // For NtDelayExecution(), etc.
-};
 
 #include "CxbxKrnl.h" // For CxbxKrnlCleanup
 #include "Emu.h" // For EmuWarning()
@@ -60,6 +55,8 @@ namespace NtDll
 #include <ntstatus.h> // For STATUS_BUFFER_TOO_SMALL
 #pragma warning(default:4005)
 
+namespace Xbox
+{
 static RTL_CRITICAL_SECTION eeprom_crit_section;
 
 static PRTL_CRITICAL_SECTION get_eeprom_crit_section()
@@ -769,3 +766,5 @@ XBSYSAPI EXPORTNUM(34) PLIST_ENTRY FASTCALL ExfInterlockedRemoveHeadList
 	RETURN(ListEntry);
 
 }
+
+} // Xbox

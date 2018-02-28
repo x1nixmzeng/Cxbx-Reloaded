@@ -37,8 +37,8 @@
 
 #define LOG_PREFIX "XAPI"
 
-#undef FIELD_OFFSET     // prevent macro redefinition warnings
-#include <xboxkrnl/xboxkrnl.h>
+//#undef FIELD_OFFSET     // prevent macro redefinition warnings
+#include "XDK.h"
 
 #include <Shlwapi.h>
 #include "CxbxKrnl.h"

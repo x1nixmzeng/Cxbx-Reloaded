@@ -53,7 +53,7 @@ namespace Xbox
 {
 	extern Native::LPDIRECT3DDEVICE8   g_pD3DDevice8;
 	extern DWORD                    g_CurrentVertexShader;
-	extern Xbox::PIXEL_SHADER *		g_CurrentPixelShader;
+	extern PIXEL_SHADER *		g_CurrentPixelShader;
 	extern BOOL                     g_bFakePixelShaderLoaded;
 	extern BOOL                     g_bIsFauxFullscreen;
 

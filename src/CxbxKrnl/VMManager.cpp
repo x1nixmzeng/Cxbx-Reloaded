@@ -236,7 +236,7 @@ void VMManager::MapHardwareDevice(VAddr base, size_t size, VMAType vma_type)
 	Unlock();
 }
 
-void VMManager::MemoryStatistics(Xbox::PMM_STATISTICS memory_statistics)
+void VMManager::MemoryStatistics(XDK::PMM_STATISTICS memory_statistics)
 {
 	Lock();
 	memory_statistics->TotalPhysicalPages = m_MaxPhysicalMemory / PAGE_SIZE;
@@ -461,11 +461,7 @@ size_t VMManager::QuerySize(VAddr addr)
 	RETURN(size);
 }
 
-// prevent name collisions
-namespace NtDll
-{
 #include "EmuNtDll.h" // TODO : Remove dependancy once NtDll::NtAllocateVirtualMemory is gone again
-};
 
 NTSTATUS VMManager::XbAllocateVirtualMemory(VAddr* addr, ULONG zero_bits, size_t* size, DWORD allocation_type,
 	DWORD protect, bool bStub)

@@ -36,10 +36,14 @@
 #ifndef EMU_EEPROM_H
 #define EMU_EEPROM_H
 
+#include "XDK.h"
+
+namespace Xbox
+{
 #define EEPROM_SIZE sizeof(XBOX_EEPROM)
 
 typedef struct EEPROMInfo {
-	XC_VALUE_INDEX index;
+	XDK::XC_VALUE_INDEX index;
 	int value_offset;
 	int value_type;
 	int value_length;
@@ -51,26 +55,26 @@ typedef struct EEPROMInfo {
 	{ ##XC, offsetof(XBOX_EEPROM, Member), REG_Type, sizeof(((XBOX_EEPROM *)0)->Member) }
 
 static const EEPROMInfo EEPROMInfos[] = {
-	EEPROM_INFO_ENTRY(XC_TIMEZONE_BIAS,         UserSettings.TimeZoneBias,                REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_TZ_STD_NAME,           UserSettings.TimeZoneStdName,             REG_BINARY),
-	EEPROM_INFO_ENTRY(XC_TZ_STD_DATE,           UserSettings.TimeZoneStdDate,             REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_TZ_STD_BIAS,           UserSettings.TimeZoneStdBias,             REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_TZ_DLT_NAME,           UserSettings.TimeZoneDltName,             REG_BINARY),
-	EEPROM_INFO_ENTRY(XC_TZ_DLT_DATE,           UserSettings.TimeZoneDltDate,             REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_TZ_DLT_BIAS,           UserSettings.TimeZoneDltBias,             REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_LANGUAGE,              UserSettings.Language,                    REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_VIDEO,                 UserSettings.VideoFlags,                  REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_AUDIO,                 UserSettings.AudioFlags,                  REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_P_CONTROL_GAMES,       UserSettings.ParentalControlGames,        REG_DWORD), // Zapper queries this. TODO : Should this be REG_NONE?
-	EEPROM_INFO_ENTRY(XC_P_CONTROL_PASSWORD,    UserSettings.ParentalControlPassword,     REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_P_CONTROL_MOVIES,      UserSettings.ParentalControlMovies,       REG_DWORD), // Xbox Dashboard queries this.
-	EEPROM_INFO_ENTRY(XC_ONLINE_IP_ADDRESS,     UserSettings.OnlineIpAddress,             REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_ONLINE_DNS_ADDRESS,    UserSettings.OnlineDnsAddress,            REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_ONLINE_DEFAULT_GATEWAY_ADDRESS, UserSettings.OnlineDefaultGatewayAddress, REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_ONLINE_SUBNET_ADDRESS, UserSettings.OnlineSubnetMask,            REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_MISC,                  UserSettings.MiscFlags,                   REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_DVD_REGION,            UserSettings.DvdRegion,                   REG_DWORD),
-	EEPROM_INFO_ENTRY(XC_MAX_OS,                UserSettings,                             REG_BINARY),
+	EEPROM_INFO_ENTRY(XDK::XC_TIMEZONE_BIAS,         UserSettings.TimeZoneBias,           XDK::REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_TZ_STD_NAME,           UserSettings.TimeZoneStdName,             REG_BINARY),
+	EEPROM_INFO_ENTRY(XDK::XC_TZ_STD_DATE,           UserSettings.TimeZoneStdDate,             REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_TZ_STD_BIAS,           UserSettings.TimeZoneStdBias,             REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_TZ_DLT_NAME,           UserSettings.TimeZoneDltName,             REG_BINARY),
+	EEPROM_INFO_ENTRY(XDK::XC_TZ_DLT_DATE,           UserSettings.TimeZoneDltDate,             REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_TZ_DLT_BIAS,           UserSettings.TimeZoneDltBias,             REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_LANGUAGE,              UserSettings.Language,                    REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_VIDEO,                 UserSettings.VideoFlags,                  REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_AUDIO,                 UserSettings.AudioFlags,                  REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_P_CONTROL_GAMES,       UserSettings.ParentalControlGames,        REG_DWORD), // Zapper queries this. TODO : Should this be REG_NONE?
+	EEPROM_INFO_ENTRY(XDK::XC_P_CONTROL_PASSWORD,    UserSettings.ParentalControlPassword,     REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_P_CONTROL_MOVIES,      UserSettings.ParentalControlMovies,       REG_DWORD), // Xbox Dashboard queries this.
+	EEPROM_INFO_ENTRY(XDK::XC_ONLINE_IP_ADDRESS,     UserSettings.OnlineIpAddress,             REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_ONLINE_DNS_ADDRESS,    UserSettings.OnlineDnsAddress,            REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_ONLINE_DEFAULT_GATEWAY_ADDRESS, UserSettings.OnlineDefaultGatewayAddress, REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_ONLINE_SUBNET_ADDRESS, UserSettings.OnlineSubnetMask,            REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_MISC,                  UserSettings.MiscFlags,                   REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_DVD_REGION,            UserSettings.DvdRegion,                   REG_DWORD),
+	EEPROM_INFO_ENTRY(XDK::XC_MAX_OS,                UserSettings,                             REG_BINARY),
 	// XC_MAX_OS is called to return a complete XBOX_USER_SETTINGS structure
 	//
 	// One example is from XapipQueryTimeZoneInformation(, REG_DWORD, sizeof(DWORD), where it is used to
@@ -94,5 +98,7 @@ extern XBOX_EEPROM *EEPROM;
 extern ULONG XboxFactoryGameRegion;
 
 void gen_section_CRCs(XBOX_EEPROM*);
+
+} // Xbox
 
 #endif // EMU_EEPROM_H

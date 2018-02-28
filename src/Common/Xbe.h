@@ -35,21 +35,20 @@
 #define XBE_H
 
 #include "Common/Error.h"
-
 #include <cstdio>
 
-
-//#include <windef.h> // For MAX_PATH
-// The above leads to 55 compile errors, so until we've sorted out why that happens, declare MAX_PATH ourselves for now :
-#define MAX_PATH 260
-#define XPR_IMAGE_WH 128
-#define XPR_IMAGE_DATA_SIZE (XPR_IMAGE_WH * XPR_IMAGE_WH) / 2
-#define XPR_IMAGE_HDR_SIZE 2048
+namespace XbeConstants
+{
+	const int XPR_IMAGE_WH = 128;
+	const int XPR_IMAGE_DATA_SIZE = (XPR_IMAGE_WH * XPR_IMAGE_WH) / 2;
+	const int XPR_IMAGE_HDR_SIZE = 2048;
+	const int LOGO_BMP_SIZE = 100 * 17;
+}
 
 // Xbe (Xbox Executable) file object
 class Xbe : public Error
 {
-    public:
+public:
         // construct via Xbe file
         Xbe(const char *x_szFilename, bool bFromGUI);
 		
@@ -62,13 +61,11 @@ class Xbe : public Error
         // export to Xbe file
         void Export(const char *x_szXbeFilename);
 
-        std::string DumpInformation();
-
-        // import logo bitmap from raw monochrome data
-        void ImportLogoBitmap(const uint08 x_Gray[100*17]);
+		// import logo bitmap from raw monochrome data
+        void ImportLogoBitmap(const uint08 x_Gray[XbeConstants::LOGO_BMP_SIZE]);
 
         // export logo bitmap to raw monochrome data
-        void ExportLogoBitmap(uint08 x_Gray[100*17]);
+        void ExportLogoBitmap(uint08 x_Gray[XbeConstants::LOGO_BMP_SIZE]);
 
 		// purge illegal characters in Windows filenames or other OS's
 		void PurgeBadChar(std::string& s, const std::string& illegalChars = "\\/:?\"<>|");
@@ -244,7 +241,7 @@ class Xbe : public Error
         uint08 **m_bzSection;
 
         // Xbe original path
-        char m_szPath[MAX_PATH];
+		std::string m_strPath;
 
         // Xbe ascii title, translated from certificate title
         char m_szAsciiTitle[40];
@@ -339,7 +336,7 @@ class Xbe : public Error
 		struct XprImage
 		{
 			XprImageHeader xprImageHeader;
-			char strPad[XPR_IMAGE_HDR_SIZE - sizeof(XprImageHeader)];
+			char strPad[XbeConstants::XPR_IMAGE_HDR_SIZE - sizeof(XprImageHeader)];
 			unsigned char pBits;
 		}
 		#include "AlignPosfix1.h"

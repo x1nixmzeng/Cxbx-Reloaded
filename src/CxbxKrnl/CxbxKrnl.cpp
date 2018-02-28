@@ -36,7 +36,7 @@
 
 #define _XBOXKRNL_DEFEXTRN_
 
-#include <xboxkrnl/xboxkrnl.h>
+#include "XDK.h"
 
 #include "CxbxKrnl.h"
 #include "CxbxVersion.h"
@@ -64,6 +64,9 @@
 #include "devices\Xbox.h" // For InitXboxHardware()
 #include "devices\LED.h" // For LED::Sequence
 
+namespace Xbox
+{
+
 /*! thread local storage */
 Xbe::TLS *CxbxKrnl_TLS = NULL;
 /*! thread local storage data */
@@ -75,7 +78,7 @@ Xbe::Header *CxbxKrnl_XbeHeader = NULL;
 /*! indicates a debug kernel */
 bool g_bIsDebugKernel = false;
 
-HWND CxbxKrnl_hEmuParent = NULL;
+Native::HWND CxbxKrnl_hEmuParent = NULL;
 DebugMode CxbxKrnl_DebugMode = DebugMode::DM_NONE;
 std::string CxbxKrnl_DebugFileName = "";
 Xbe::Certificate *g_pCertificate = NULL;
@@ -94,8 +97,8 @@ Xbe* CxbxKrnl_Xbe = NULL;
 XbeType g_XbeType = xtRetail;
 bool g_bIsChihiro = false;
 bool g_bIsDebug = false;
-DWORD_PTR g_CPUXbox = 0;
-DWORD_PTR g_CPUOthers = 0;
+Native::DWORD_PTR g_CPUXbox = 0;
+Native::DWORD_PTR g_CPUOthers = 0;
 
 HANDLE g_CurrentProcessHandle = 0; // Set in CxbxKrnlMain
 bool g_IsWine = false;
@@ -159,23 +162,25 @@ void SetupPerTitleKeys()
 	UCHAR Digest[20] = {};
 
 	// Set the LAN Key
-	XcHMAC(XboxCertificateKey, XBOX_KEY_LENGTH, g_pCertificate->bzLanKey, XBOX_KEY_LENGTH, NULL, 0, Digest);
-	memcpy(XboxLANKey, Digest, XBOX_KEY_LENGTH);
+	XDK::XcHMAC(XDK::XboxCertificateKey, XDK::XBOX_KEY_LENGTH, g_pCertificate->bzLanKey, XDK::XBOX_KEY_LENGTH, NULL, 0, Digest);
+	memcpy(XDK::XboxLANKey, Digest, XDK::XBOX_KEY_LENGTH);
 
 	// Signature Key
-	XcHMAC(XboxCertificateKey, XBOX_KEY_LENGTH, g_pCertificate->bzSignatureKey, XBOX_KEY_LENGTH, NULL, 0, Digest);
-	memcpy(XboxSignatureKey, Digest, XBOX_KEY_LENGTH);
+	XDK::XcHMAC(XDK::XboxCertificateKey, XDK::XBOX_KEY_LENGTH, g_pCertificate->bzSignatureKey, XDK::XBOX_KEY_LENGTH, NULL, 0, Digest);
+	memcpy(XDK::XboxSignatureKey, Digest, XDK::XBOX_KEY_LENGTH);
 
 	// Alternate Signature Keys
-	for (int i = 0; i < ALTERNATE_SIGNATURE_COUNT; i++) {
-		XcHMAC(XboxCertificateKey, XBOX_KEY_LENGTH, g_pCertificate->bzTitleAlternateSignatureKey[i], XBOX_KEY_LENGTH, NULL, 0, Digest);
-		memcpy(XboxAlternateSignatureKeys[i], Digest, XBOX_KEY_LENGTH);
+	for (int i = 0; i < XDK::ALTERNATE_SIGNATURE_COUNT; i++) {
+		XDK::XcHMAC(XDK::XboxCertificateKey, XDK::XBOX_KEY_LENGTH, g_pCertificate->bzTitleAlternateSignatureKey[i], XDK::XBOX_KEY_LENGTH, NULL, 0, Digest);
+		memcpy(XDK::XboxAlternateSignatureKeys[i], Digest, XDK::XBOX_KEY_LENGTH);
 	}
 
 }
 
 void CxbxLaunchXbe(void(*Entry)())
 {
+	using Native::_EXCEPTION_POINTERS;
+
 	__try
 	{
 		Entry();
@@ -194,19 +199,19 @@ const DWORD XOR_KT_KEY[3] = { XOR_KT_RETAIL, XOR_KT_DEBUG, XOR_KT_CHIHIRO };
 // Executable image header pointers (it's contents can be switched between
 // Exe-compatibility and Xbe-identical mode, using RestoreExeImageHeader
 // vs RestoreXbeImageHeader) :
-const PIMAGE_DOS_HEADER ExeDosHeader = (PIMAGE_DOS_HEADER)XBE_IMAGE_BASE;
-PIMAGE_NT_HEADERS ExeNtHeader = nullptr;
-PIMAGE_OPTIONAL_HEADER ExeOptionalHeader = nullptr;
+const Native::PIMAGE_DOS_HEADER ExeDosHeader = (Native::PIMAGE_DOS_HEADER)XBE_IMAGE_BASE;
+Native::PIMAGE_NT_HEADERS ExeNtHeader = nullptr;
+Native::PIMAGE_OPTIONAL_HEADER ExeOptionalHeader = nullptr;
 
 // Copy of original executable image headers, used both as backup and valid replacement structure :
-PIMAGE_DOS_HEADER NewDosHeader = nullptr;
-PIMAGE_NT_HEADERS NewNtHeader = nullptr;
-PIMAGE_OPTIONAL_HEADER NewOptionalHeader = nullptr;
+Native::PIMAGE_DOS_HEADER NewDosHeader = nullptr;
+Native::PIMAGE_NT_HEADERS NewNtHeader = nullptr;
+Native::PIMAGE_OPTIONAL_HEADER NewOptionalHeader = nullptr;
 
 // Xbe backup values. RestoreXbeImageHeader place these into ExeHeader to restore loaded Xbe contents.
 WORD Xbe_magic = 0;
 LONG Xbe_lfanew = 0;
-IMAGE_DATA_DIRECTORY Xbe_TLS = { };
+Native::IMAGE_DATA_DIRECTORY Xbe_TLS = { };
 
 // Remember the current XBE contents of the executable image
 // header fields that RestoreExeImageHeader needs to restore.
@@ -240,32 +245,32 @@ typedef const char* (CDECL *LPFN_WINEGETVERSION)(void);
 LPFN_WINEGETVERSION wine_get_version;
 
 // Returns the Win32 error in string format. Returns an empty string if there is no error.
-std::string CxbxGetErrorCodeAsString(DWORD errorCode)
+std::string CxbxGetErrorCodeAsString(Native::DWORD errorCode)
 {
 	std::string result;
-	LPSTR lpMessageBuffer = nullptr;
-	DWORD dwLength = FormatMessageA(
+	Native::LPSTR lpMessageBuffer = nullptr;
+	Native::DWORD dwLength = Native::FormatMessageA(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER |
 		FORMAT_MESSAGE_FROM_SYSTEM |
 		FORMAT_MESSAGE_IGNORE_INSERTS,
 		NULL, // lpSource
 		errorCode,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPSTR)&lpMessageBuffer,
+		(Native::LPSTR)&lpMessageBuffer,
 		0, // nSize
 		NULL); // Arguments
 	if (dwLength > 0) {
 		result = std::string(lpMessageBuffer, dwLength);
 	}
 
-	LocalFree(lpMessageBuffer);
+	Native::LocalFree(lpMessageBuffer);
 	return result;
 }
 
 // Returns the last Win32 error, in string format. Returns an empty string if there is no error.
 std::string CxbxGetLastErrorString(char * lpszFunction)
 {
-	DWORD errorCode = ::GetLastError(); // Do this first, before any following code changes it
+	Native::DWORD errorCode = Native::GetLastError(); // Do this first, before any following code changes it
 	std::string result = "No error";
 	if (errorCode > 0) {
 		std::ostringstream stringStream;
@@ -997,14 +1002,14 @@ __declspec(noreturn) void CxbxKrnlInit
 		if (fileName.rfind('\\') != std::string::npos)
 			fileName = fileName.substr(fileName.rfind('\\') + 1);
 
-		if (XeImageFileName.Buffer != NULL)
-			free(XeImageFileName.Buffer);
+		if (XDK::XeImageFileName.Buffer != NULL)
+			free(XDK::XeImageFileName.Buffer);
 
 		// Assign the running Xbe path, so it can be accessed via the kernel thunk 'XeImageFileName' :
-		XeImageFileName.MaximumLength = MAX_PATH;
-		XeImageFileName.Buffer = (PCHAR)g_VMManager.Allocate(MAX_PATH);
-		sprintf(XeImageFileName.Buffer, "%c:\\%s", CxbxDefaultXbeDriveLetter, fileName.c_str());
-		XeImageFileName.Length = (USHORT)strlen(XeImageFileName.Buffer);
+		XDK::XeImageFileName.MaximumLength = MAX_PATH;
+		XDK::XeImageFileName.Buffer = (PCHAR)g_VMManager.Allocate(MAX_PATH);
+		sprintf(XDK::XeImageFileName.Buffer, "%c:\\%s", CxbxDefaultXbeDriveLetter, fileName.c_str());
+		XDK::XeImageFileName.Length = (USHORT)strlen(XDK::XeImageFileName.Buffer);
 		printf("[0x%.4X] INIT: XeImageFileName = %s\n", GetCurrentThreadId(), XeImageFileName.Buffer);
 	}
 
@@ -1037,7 +1042,7 @@ __declspec(noreturn) void CxbxKrnlInit
 	// this will better aproximate the environment with regard to multi-threading) :
 	DbgPrintf("INIT: Determining CPU affinity.\n");
 	{
-		if (!GetProcessAffinityMask(g_CurrentProcessHandle, &g_CPUXbox, &g_CPUOthers))
+		if (!Native::GetProcessAffinityMask(g_CurrentProcessHandle, &g_CPUXbox, &g_CPUOthers))
 			CxbxKrnlCleanup("INIT: GetProcessAffinityMask failed.");
 
 		// For the other threads, remove one bit from the processor mask:
@@ -1122,7 +1127,7 @@ __declspec(noreturn) void CxbxKrnlInit
 	CxbxLaunchXbe(Entry);
 
 	// FIXME: Wait for Cxbx to exit or error fatally
-	Sleep(INFINITE);
+	Native::Sleep(INFINITE);
 
 	DbgPrintf("INIT: XBE entry point returned\n");
 	fflush(stdout);
@@ -1153,7 +1158,7 @@ void CxbxInitFilePaths()
 	snprintf(szFilePath_EEPROM_bin, MAX_PATH, "%s\\EEPROM.bin", szFolder_CxbxReloadedData);
 	snprintf(szFilePath_memory_bin, MAX_PATH, "%s\\memory.bin", szFolder_CxbxReloadedData);
 
-	GetModuleFileName(GetModuleHandle(NULL), szFilePath_CxbxReloaded_Exe, MAX_PATH);
+	Native::GetModuleFileName(Native::GetModuleHandle(NULL), szFilePath_CxbxReloaded_Exe, MAX_PATH);
 }
 
 // REMARK: the following is useless, but PatrickvL has asked to keep it for documentation purposes
@@ -1174,9 +1179,9 @@ void CxbxRestoreLaunchDataPage()
 
 	if (LaunchDataPAddr)
 	{
-		LaunchDataPage = (LAUNCH_DATA_PAGE*)(CONTIGUOUS_MEMORY_BASE + LaunchDataPAddr);
+		XDK::LaunchDataPage = (XDK::LAUNCH_DATA_PAGE*)(CONTIGUOUS_MEMORY_BASE + LaunchDataPAddr);
 		// Mark the launch page as allocated to prevent other allocations from overwriting it
-		MmAllocateContiguousMemoryEx(PAGE_SIZE, LaunchDataPAddr, LaunchDataPAddr + PAGE_SIZE - 1, PAGE_SIZE, PAGE_READWRITE);
+		XDK::MmAllocateContiguousMemoryEx(PAGE_SIZE, LaunchDataPAddr, LaunchDataPAddr + PAGE_SIZE - 1, PAGE_SIZE, PAGE_READWRITE);
 		LaunchDataPAddr = NULL;
 		g_EmuShared->SetLaunchDataPAddress(&LaunchDataPAddr);
 
@@ -1214,28 +1219,28 @@ __declspec(noreturn) void CxbxKrnlCleanup(const char *szErrorMessage, ...)
 
     // cleanup debug output
     {
-        FreeConsole();
+		Native::FreeConsole();
 
         char buffer[16];
 
-        if(GetConsoleTitle(buffer, 16) != NULL)
+        if(Native::GetConsoleTitle(buffer, 16) != NULL)
             freopen("nul", "w", stdout);
     }
 
     if(CxbxKrnl_hEmuParent != NULL)
-        SendMessage(CxbxKrnl_hEmuParent, WM_PARENTNOTIFY, WM_DESTROY, 0);
+		Native::SendMessage(CxbxKrnl_hEmuParent, WM_PARENTNOTIFY, WM_DESTROY, 0);
 
 	EmuShared::Cleanup();
     TerminateProcess(g_CurrentProcessHandle, 0);
 }
 
-void CxbxKrnlRegisterThread(HANDLE hThread)
+void CxbxKrnlRegisterThread(XDK::HANDLE hThread)
 {
 	// we must duplicate this handle in order to retain Suspend/Resume thread rights from a remote thread
 	{
 		HANDLE hDupHandle = NULL;
 
-		if (DuplicateHandle(g_CurrentProcessHandle, hThread, g_CurrentProcessHandle, &hDupHandle, 0, FALSE, DUPLICATE_SAME_ACCESS)) {
+		if (Native::DuplicateHandle(g_CurrentProcessHandle, hThread, g_CurrentProcessHandle, &hDupHandle, 0, FALSE, DUPLICATE_SAME_ACCESS)) {
 			hThread = hDupHandle; // Thread handle was duplicated, continue registration with the duplicate
 		}
 		else {
@@ -1289,12 +1294,12 @@ void CxbxKrnlSuspend()
     {
         char szBuffer[256];
 
-        HWND hWnd = (CxbxKrnl_hEmuParent != NULL) ? CxbxKrnl_hEmuParent : g_hEmuWindow;
+        Native::HWND hWnd = (CxbxKrnl_hEmuParent != NULL) ? CxbxKrnl_hEmuParent : g_hEmuWindow;
 
-        GetWindowText(hWnd, szBuffer, 255 - 10);
+		Native::GetWindowText(hWnd, szBuffer, 255 - 10);
 
         strcat(szBuffer, " (paused)");
-        SetWindowText(hWnd, szBuffer);
+		Native::SetWindowText(hWnd, szBuffer);
     }
 
     g_bEmuSuspended = true;
@@ -1309,13 +1314,13 @@ void CxbxKrnlResume()
     {
         char szBuffer[256];
 
-        HWND hWnd = (CxbxKrnl_hEmuParent != NULL) ? CxbxKrnl_hEmuParent : g_hEmuWindow;
+        Native::HWND hWnd = (CxbxKrnl_hEmuParent != NULL) ? CxbxKrnl_hEmuParent : g_hEmuWindow;
 
-        GetWindowText(hWnd, szBuffer, 255);
+		Native::GetWindowText(hWnd, szBuffer, 255);
 
         szBuffer[strlen(szBuffer)-9] = '\0';
 
-        SetWindowText(hWnd, szBuffer);
+        Native::SetWindowText(hWnd, szBuffer);
     }
 
     for(int v=0;v<MAXIMUM_XBOX_THREADS;v++)
@@ -1343,7 +1348,7 @@ void CxbxKrnlResume()
 void CxbxKrnlShutDown()
 {
 	if (CxbxKrnl_hEmuParent != NULL)
-		SendMessage(CxbxKrnl_hEmuParent, WM_PARENTNOTIFY, WM_DESTROY, 0);
+		Native::SendMessage(CxbxKrnl_hEmuParent, WM_PARENTNOTIFY, WM_DESTROY, 0);
 
 	EmuShared::Cleanup();
 	TerminateProcess(g_CurrentProcessHandle, 0);
@@ -1352,7 +1357,7 @@ void CxbxKrnlShutDown()
 void CxbxKrnlPrintUEM(ULONG ErrorCode)
 {
 	ULONG Type;
-	XBOX_EEPROM Eeprom;
+	XDK::XBOX_EEPROM Eeprom;
 	ULONG ResultSize;
 
 	int BootFlags;
@@ -1360,11 +1365,11 @@ void CxbxKrnlPrintUEM(ULONG ErrorCode)
 	BootFlags &= ~BOOT_FATAL_ERROR;         // clear the fatal error flag to avoid looping here endlessly
 	g_EmuShared->SetBootFlags(&BootFlags);
 
-	NTSTATUS status = ExQueryNonVolatileSetting(XC_MAX_ALL, &Type, &Eeprom, sizeof(Eeprom), &ResultSize);
+	XDK::NTSTATUS status = XDK::ExQueryNonVolatileSetting(XC_MAX_ALL, &Type, &Eeprom, sizeof(Eeprom), &ResultSize);
 
 	if (status == STATUS_SUCCESS)
 	{
-		XBOX_UEM_INFO* UEMInfo = (XBOX_UEM_INFO*)&(Eeprom.UEMInfo[0]);
+		XDK::XBOX_UEM_INFO* UEMInfo = (XDK::XBOX_UEM_INFO*)&(Eeprom.UEMInfo[0]);
 
 		if (UEMInfo->ErrorCode == FATAL_ERROR_NONE)
 		{
@@ -1378,7 +1383,7 @@ void CxbxKrnlPrintUEM(ULONG ErrorCode)
 		else {
 			UEMInfo->ErrorCode = FATAL_ERROR_NONE;
 		}
-		ExSaveNonVolatileSetting(XC_MAX_ALL, Type, &Eeprom, sizeof(Eeprom));
+		XDK::ExSaveNonVolatileSetting(XC_MAX_ALL, Type, &Eeprom, sizeof(Eeprom));
 	}
 	else {
 		CxbxKrnlCleanup("Could not display the fatal error screen");
@@ -1396,7 +1401,7 @@ void CxbxKrnlPrintUEM(ULONG ErrorCode)
 	CxbxPrintUEMInfo(ErrorCode);
 
 	// Sleep forever to prevent continuing the initialization
-	Sleep(INFINITE);
+	Native::Sleep(INFINITE);
 }
 
 void CxbxPrintUEMInfo(ULONG ErrorCode)
@@ -1437,10 +1442,12 @@ void CxbxPrintUEMInfo(ULONG ErrorCode)
 
 __declspec(noreturn) void CxbxKrnlTerminateThread()
 {
-    TerminateThread(GetCurrentThread(), 0);
+    Native::TerminateThread(Native::GetCurrentThread(), 0);
 }
 
 void CxbxKrnlPanic()
 {
     CxbxKrnlCleanup("Kernel Panic!");
 }
+
+} // Xbox

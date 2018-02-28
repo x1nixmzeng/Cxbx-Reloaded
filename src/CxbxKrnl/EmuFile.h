@@ -33,20 +33,14 @@
 #ifndef EMUFILE_H
 #define EMUFILE_H
 
-#include <xboxkrnl/xboxkrnl.h>
+#include "XDK.h"
 
 #include <vector>
 #include <cstdio>
 #include <string>
 #include <memory>
 
-// ******************************************************************
-// * prevent name collisions
-// ******************************************************************
-namespace NtDll
-{
-    #include "EmuNtDll.h"
-};
+#include "EmuNtDll.h"
 
 #include "Emu.h"
 

@@ -42,7 +42,7 @@
 
 #define LOG_PREFIX "NV2A"
 
-#include <xboxkrnl/xboxkrnl.h> // For PKINTERRUPT, etc.
+#include "XDK.h"
 
 #ifdef _MSC_VER                         // Check if MS Visual C compiler
 #  pragma comment(lib, "opengl32.lib")  // Compiler-specific directive to avoid manually configuration

@@ -34,8 +34,7 @@
 #ifndef EMUKRNL_H
 #define EMUKRNL_H
 
-#include <openxdk.h>
-
+#include "XDK.h"
 #include "CxbxKrnl.h"
 #include "Emu.h"
 
@@ -61,8 +60,8 @@ void RemoveEntryList(PLIST_ENTRY pEntry);
 PLIST_ENTRY RemoveHeadList(PLIST_ENTRY pListHead);
 PLIST_ENTRY RemoveTailList(PLIST_ENTRY pListHead);
 
-extern LAUNCH_DATA_PAGE DefaultLaunchDataPage;
-extern PKINTERRUPT EmuInterruptList[MAX_BUS_INTERRUPT_LEVEL + 1];
+extern XDK::LAUNCH_DATA_PAGE DefaultLaunchDataPage;
+extern XDK::PKINTERRUPT EmuInterruptList[MAX_BUS_INTERRUPT_LEVEL + 1];
 
 class HalSystemInterrupt {
 public:
@@ -91,19 +90,19 @@ public:
 		return m_Asserted && m_Pending;
 	}
 
-	void SetInterruptMode(KINTERRUPT_MODE InterruptMode) {
+	void SetInterruptMode(XDK::KINTERRUPT_MODE InterruptMode) {
 		m_InterruptMode = InterruptMode;
 	}
 
-	void Trigger(PKINTERRUPT Interrupt) {
+	void Trigger(XDK::PKINTERRUPT Interrupt) {
 		// If interrupt was level sensitive, we clear the pending flag, preventing the interrupt from being triggered 
 		// until it is deasserted then asserted again. Latched interrupts are triggered until the line is Deasserted!
-		if (m_InterruptMode == KINTERRUPT_MODE::LevelSensitive) {
+		if (m_InterruptMode == XDK::KINTERRUPT_MODE::LevelSensitive) {
 			m_Pending = false;
 		}
 
 		__try {
-			BOOLEAN(__stdcall *ServiceRoutine)(PKINTERRUPT, void*) = (BOOLEAN(__stdcall *)(PKINTERRUPT, void*))Interrupt->ServiceRoutine;
+			BOOLEAN(__stdcall *ServiceRoutine)(XDK::PKINTERRUPT, void*) = (BOOLEAN(__stdcall *)(XDK::PKINTERRUPT, void*))Interrupt->ServiceRoutine;
 			BOOLEAN result = ServiceRoutine(Interrupt, Interrupt->ServiceContext);
 		}
 		__except (EmuException(GetExceptionInformation()))
@@ -114,7 +113,7 @@ public:
 private:
 	bool m_Asserted = false;
 	bool m_Enabled = false;
-	KINTERRUPT_MODE m_InterruptMode;
+	XDK::KINTERRUPT_MODE m_InterruptMode;
 	bool m_Pending = false;
 };
 
@@ -122,7 +121,7 @@ extern HalSystemInterrupt HalSystemInterrupts[MAX_BUS_INTERRUPT_LEVEL + 1];
 
 extern bool DisableInterrupts();
 extern void RestoreInterruptMode(bool value);
-extern void CallSoftwareInterrupt(const KIRQL SoftwareIrql);
+extern void CallSoftwareInterrupt(const XDK::KIRQL SoftwareIrql);
 
 } // Xbox
 

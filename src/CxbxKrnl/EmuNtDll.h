@@ -34,11 +34,14 @@
 #ifndef EMUNTDLL_H
 #define EMUNTDLL_H
 
+namespace NtDll
+{
+
 #include <ctype.h>  // winnt ntndis
 
 // ******************************************************************
 // * fixes some compiler errors and warnings
-// ******************************************************************
+//// ******************************************************************
 #ifdef VOID
 #undef VOID
 #endif
@@ -2013,5 +2016,7 @@ EXTERN(RtlUpcaseUnicodeString);
 EXTERN(RtlUpcaseUnicodeToMultiByteN);
 EXTERN(RtlUpperString);
 EXTERN(RtlUshortByteSwap);
+
+} // NativeTypes
 
 #endif

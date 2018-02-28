@@ -38,7 +38,7 @@
 
 #define LOG_PREFIX "KRNL"
 
-#include <xboxkrnl/xboxkrnl.h> // For HalReadSMCTrayState, etc.
+#include "XDK.h"
 
 #include <Shlwapi.h> // For PathRemoveFileSpec()
 #include "Logging.h" // For LOG_FUNC()

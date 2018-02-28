@@ -35,21 +35,22 @@
 // ******************************************************************
 #define _XBOXKRNL_DEFEXTRN_
 
-#include <xboxkrnl/xboxkrnl.h> // For XC_VALUE_INDEX and XBOX_EEPROM
-
 #include <stdio.h> // For printf
 #include <shlobj.h> // For HANDLE, CreateFile, CreateFileMapping, MapViewOfFile
 
 #include "Cxbx.h" // For DbgPrintf
 #include "EmuEEPROM.h" // For EEPROMInfo, EEPROMInfos
 
-Xbox::XBOX_EEPROM *EEPROM = nullptr; // Set using CxbxRestoreEEPROM()
+namespace Xbox
+{
+
+XDK::XBOX_EEPROM *EEPROM = nullptr; // Set using CxbxRestoreEEPROM()
 
 ULONG XboxFactoryGameRegion = 1; // = North America
 
-const EEPROMInfo* EmuFindEEPROMInfo(Xbox::XC_VALUE_INDEX index)
+const EEPROMInfo* EmuFindEEPROMInfo(XC_VALUE_INDEX index)
 {
-	using Xbox::XC_VALUE_INDEX;
+	using XC_VALUE_INDEX;
 
 	for (int i = 0; EEPROMInfos[i].index != XC_END_MARKER; i++)
 		if (EEPROMInfos[i].index == index)
@@ -81,7 +82,7 @@ static void EepromCRC(unsigned char *crc, unsigned char *data, long dataLen) {
     free(CRC_Data);
 }
 
-void gen_section_CRCs(Xbox::XBOX_EEPROM* eeprom) {
+void gen_section_CRCs(XBOX_EEPROM* eeprom) {
     const long Factory_size = sizeof(eeprom->FactorySettings) - sizeof(eeprom->FactorySettings.Checksum);
     const long User_size = sizeof(eeprom->UserSettings) - sizeof(eeprom->UserSettings.Checksum);
     EepromCRC(
@@ -96,9 +97,9 @@ void gen_section_CRCs(Xbox::XBOX_EEPROM* eeprom) {
     );
 }
 
-Xbox::XBOX_EEPROM *CxbxRestoreEEPROM(char *szFilePath_EEPROM_bin)
+XBOX_EEPROM *CxbxRestoreEEPROM(char *szFilePath_EEPROM_bin)
 {
-	Xbox::XBOX_EEPROM *pEEPROM;
+	XBOX_EEPROM *pEEPROM;
 
 	// First, try to open an existing EEPROM.bin file :
 	HANDLE hFileEEPROM = CreateFile(szFilePath_EEPROM_bin,
@@ -128,9 +129,7 @@ Xbox::XBOX_EEPROM *CxbxRestoreEEPROM(char *szFilePath_EEPROM_bin)
 	}
 
 	// TODO : Make sure EEPROM.bin is at least 256 bytes in size - FileSeek(hFileEEPROM, EEPROM_SIZE, soFromBeginning);
-
-	using Xbox::XBOX_EEPROM;
-
+	
 	HANDLE hFileMappingEEPROM = CreateFileMapping(
 		hFileEEPROM,
 		/* lpFileMappingAttributes */nullptr,
@@ -145,7 +144,7 @@ Xbox::XBOX_EEPROM *CxbxRestoreEEPROM(char *szFilePath_EEPROM_bin)
 	}
 
 	// Map EEPROM.bin contents into memory :
-	pEEPROM = (Xbox::XBOX_EEPROM *)MapViewOfFile(
+	pEEPROM = (XBOX_EEPROM *)MapViewOfFile(
 		hFileMappingEEPROM,
 		FILE_MAP_READ | FILE_MAP_WRITE,
 		/* dwFileOffsetHigh */0,
@@ -197,3 +196,5 @@ Xbox::XBOX_EEPROM *CxbxRestoreEEPROM(char *szFilePath_EEPROM_bin)
 
 	return pEEPROM;
 }
+
+} // Xbox

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\src\Cxbx\DlgControllerConfig.cpp">
@@ -527,6 +527,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\devices\video\queue.h">
       <Filter>Hardware\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Common\XDK.h">
+      <Filter>Shared</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

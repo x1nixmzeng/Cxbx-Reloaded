@@ -35,7 +35,7 @@
 // ******************************************************************
 #define _XBOXKRNL_DEFEXTRN_
 
-#include <xboxkrnl/xboxkrnl.h>
+#include "XDK.h"
 
 #include "CxbxKrnl.h"
 #define COMPILE_MULTIMON_STUBS
@@ -50,12 +50,12 @@
 
 #ifdef _DEBUG
 #include <Dbghelp.h>
-CRITICAL_SECTION dbgCritical;
+Native::CRITICAL_SECTION dbgCritical;
 #endif
 
 // Global Variable(s)
-HANDLE           g_hCurDir    = NULL;
-CHAR            *g_strCurDrive= NULL;
+Native::HANDLE           g_hCurDir    = NULL;
+Native::CHAR            *g_strCurDrive= NULL;
 volatile thread_local  bool    g_bEmuException = false;
 volatile bool    g_bEmuSuspended = false;
 volatile bool    g_bPrintfOn = true;
@@ -63,10 +63,10 @@ bool g_XInputEnabled = false;
 bool g_DisablePixelShaders = false;
 
 // Delta added to host SystemTime, used in KeQuerySystemTime and NtSetSystemTime
-LARGE_INTEGER	HostSystemTimeDelta = {};
+Native::LARGE_INTEGER	HostSystemTimeDelta = {};
 
 // Static Function(s)
-static int ExitException(LPEXCEPTION_POINTERS e);
+static int ExitException(Native::LPEXCEPTION_POINTERS e);
 
 // print out a warning message to the kernel debug log file
 #ifdef _DEBUG_WARNINGS
@@ -80,7 +80,7 @@ void NTAPI EmuWarning(const char *szWarningMessage, ...)
 
     va_list argp;
 
-    sprintf(szBuffer1, "[0x%.4X] WARN: ", GetCurrentThreadId());
+    sprintf(szBuffer1, "[0x%.4X] WARN: ", Native::GetCurrentThreadId());
 
     va_start(argp, szWarningMessage);
 
@@ -118,14 +118,14 @@ std::string EIPToString(xbaddr EIP)
 	return result;
 }
 
-void EmuExceptionPrintDebugInformation(LPEXCEPTION_POINTERS e, bool IsBreakpointException)
+void EmuExceptionPrintDebugInformation(Native::LPEXCEPTION_POINTERS e, bool IsBreakpointException)
 {
 	// print debug information
 	{
 		if (IsBreakpointException)
-			printf("[0x%.4X] MAIN: Received Breakpoint Exception (int 3)\n", GetCurrentThreadId());
+			printf("[0x%.4X] MAIN: Received Breakpoint Exception (int 3)\n", Native::GetCurrentThreadId());
 		else
-			printf("[0x%.4X] MAIN: Received Exception (Code := 0x%.8X)\n", GetCurrentThreadId(), e->ExceptionRecord->ExceptionCode);
+			printf("[0x%.4X] MAIN: Received Exception (Code := 0x%.8X)\n", Native::GetCurrentThreadId(), e->ExceptionRecord->ExceptionCode);
 
 		printf("\n"
 			" EIP := %s\n"
@@ -141,7 +141,7 @@ void EmuExceptionPrintDebugInformation(LPEXCEPTION_POINTERS e, bool IsBreakpoint
 			e->ContextRecord->Dr2);
 
 #ifdef _DEBUG
-		CONTEXT Context = *(e->ContextRecord);
+		Native::CONTEXT Context = *(e->ContextRecord);
 		EmuPrintStackTrace(&Context);
 #endif
 	}
@@ -151,17 +151,17 @@ void EmuExceptionPrintDebugInformation(LPEXCEPTION_POINTERS e, bool IsBreakpoint
 
 void EmuExceptionExitProcess()
 {
-	printf("[0x%.4X] MAIN: Aborting Emulation\n", GetCurrentThreadId());
+	printf("[0x%.4X] MAIN: Aborting Emulation\n", Native::GetCurrentThreadId());
 	fflush(stdout);
 
 	if (CxbxKrnl_hEmuParent != NULL)
-		SendMessage(CxbxKrnl_hEmuParent, WM_PARENTNOTIFY, WM_DESTROY, 0);
+		Native::SendMessage(CxbxKrnl_hEmuParent, WM_PARENTNOTIFY, WM_DESTROY, 0);
 
 	EmuShared::Cleanup();
-	ExitProcess(1);
+	Native::ExitProcess(1);
 }
 
-bool EmuExceptionBreakpointAsk(LPEXCEPTION_POINTERS e)
+bool EmuExceptionBreakpointAsk(Native::LPEXCEPTION_POINTERS e)
 {
 	EmuExceptionPrintDebugInformation(e, /*IsBreakpointException=*/true);
 
@@ -174,14 +174,14 @@ bool EmuExceptionBreakpointAsk(LPEXCEPTION_POINTERS e)
 		"  Press Ignore to continue emulation.",
 		EIPToString(e->ContextRecord->Eip).c_str());
 
-	int ret = MessageBox(g_hEmuWindow, buffer, "Cxbx-Reloaded", MB_ICONSTOP | MB_ABORTRETRYIGNORE);
+	int ret = Native::MessageBox(g_hEmuWindow, buffer, "Cxbx-Reloaded", MB_ICONSTOP | MB_ABORTRETRYIGNORE);
 	if (ret == IDABORT)
 	{
 		EmuExceptionExitProcess();
 	}
 	else if (ret == IDIGNORE)
 	{
-		printf("[0x%.4X] MAIN: Ignored Breakpoint Exception\n", GetCurrentThreadId());
+		printf("[0x%.4X] MAIN: Ignored Breakpoint Exception\n", Native::GetCurrentThreadId());
 		fflush(stdout);
 
 		e->ContextRecord->Eip += EmuX86_OpcodeSize((uint8_t*)e->ContextRecord->Eip); // Skip instruction size bytes
@@ -192,7 +192,7 @@ bool EmuExceptionBreakpointAsk(LPEXCEPTION_POINTERS e)
 	return false;
 }
 
-void EmuExceptionNonBreakpointUnhandledShow(LPEXCEPTION_POINTERS e)
+void EmuExceptionNonBreakpointUnhandledShow(Native::LPEXCEPTION_POINTERS e)
 {
 	EmuExceptionPrintDebugInformation(e, /*IsBreakpointException=*/false);
 
@@ -204,17 +204,17 @@ void EmuExceptionNonBreakpointUnhandledShow(LPEXCEPTION_POINTERS e)
 		"  Press \"Cancel\" to debug.",
 		e->ExceptionRecord->ExceptionCode, EIPToString(e->ContextRecord->Eip).c_str());
 
-	if (MessageBox(g_hEmuWindow, buffer, "Cxbx-Reloaded", MB_ICONSTOP | MB_OKCANCEL) == IDOK)
+	if (Native::MessageBox(g_hEmuWindow, buffer, "Cxbx-Reloaded", MB_ICONSTOP | MB_OKCANCEL) == IDOK)
 	{
 		EmuExceptionExitProcess();
 	}
 }
 
 // exception handler
-extern int EmuException(LPEXCEPTION_POINTERS e)
+extern int EmuException(Native::LPEXCEPTION_POINTERS e)
 {
     g_bEmuException = true;
-	if (e->ExceptionRecord->ExceptionCode == STATUS_BREAKPOINT)
+	if (e->ExceptionRecord->ExceptionCode == Native::STATUS_BREAKPOINT)
 	{
 		// notify user
 		if (EmuExceptionBreakpointAsk(e))

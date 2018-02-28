@@ -38,20 +38,11 @@
 
 #define LOG_PREFIX "KRNL"
 
-// prevent name collisions
-namespace xboxkrnl
-{
-#include <xboxkrnl/xboxkrnl.h> // For KeBugCheck, etc.
-};
+#include "XDK.h"
 
 #include "Logging.h" // For LOG_FUNC()
 #include "EmuKrnlLogging.h"
-
-// prevent name collisions
-namespace NtDll
-{
-	#include "EmuNtDll.h" // For NtDelayExecution(), etc.
-};
+#include "EmuNtDll.h" // For NtDelayExecution(), etc.
 
 #include "CxbxKrnl.h" // For CxbxKrnlCleanup
 #include "Emu.h" // For EmuWarning()

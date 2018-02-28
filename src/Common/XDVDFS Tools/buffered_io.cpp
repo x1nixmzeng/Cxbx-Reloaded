@@ -5,7 +5,7 @@
 // prevent name collisions
 namespace xboxkrnl
 {
-#include <xboxkrnl/xboxkrnl.h> //#include <stdtypes.h>
+#include "XDK.h"
 
 #include "buffered_io.h"
 

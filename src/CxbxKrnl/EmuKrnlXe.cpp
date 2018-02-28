@@ -38,11 +38,7 @@
 
 #define LOG_PREFIX "KRNL"
 
-// prevent name collisions
-namespace xboxkrnl
-{
-#include <xboxkrnl/xboxkrnl.h> // For XeImageFileName, etc.
-};
+#include "XDK.h"
 
 #include "CxbxKrnl.h" // For CxbxKrnl_Xbe
 #include "Logging.h" // For LOG_FUNC()

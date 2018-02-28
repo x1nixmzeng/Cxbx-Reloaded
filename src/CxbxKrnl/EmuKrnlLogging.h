@@ -36,11 +36,10 @@
 
 #pragma once
 
-#include <xboxkrnl/xboxkrnl.h>
-
 namespace Xbox
 {
-
+#include "XDK.h"
+	
 // Additional types, exclusively for logging (not really enums) :
 enum  ALLOCATION_TYPE;
 enum  CREATE_DISPOSITION;

@@ -37,7 +37,7 @@
 // ******************************************************************
 #define _XBOXKRNL_DEFEXTRN_
 
-#include <xboxkrnl/xboxkrnl.h>
+#include "XDK.h"
 
 namespace Native
 {

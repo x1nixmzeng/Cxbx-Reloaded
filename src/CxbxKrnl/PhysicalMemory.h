@@ -39,7 +39,7 @@
 
 #define _XBOXKRNL_DEFEXTRN_
 
-#include <xboxkrnl/xboxkrnl.h>
+#include "XDK.h"
 
 #include "Emu.h"
 #include "CxbxKrnl.h"

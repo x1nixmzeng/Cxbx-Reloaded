@@ -2045,7 +2045,7 @@ void WndMain::StartEmulation(HWND hwndParent, DebuggerState LocalDebuggerState /
     char szBuffer[MAX_PATH];
 
     // register xbe path with emulator process
-    g_EmuShared->SetXbePath(m_Xbe->m_szPath);
+    g_EmuShared->SetXbePath(m_Xbe->m_strPath.c_str());
 
 	// register LLE flags with emulator process
 	g_EmuShared->SetFlagsLLE(&m_FlagsLLE);
