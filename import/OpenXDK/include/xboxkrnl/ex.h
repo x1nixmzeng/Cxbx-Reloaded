@@ -12,6 +12,8 @@
 #ifndef XBOXKRNL_EX_H
 #define XBOXKRNL_EX_H
 
+#include "xboxkrnl.h"
+
 XBSYSAPI EXPORTNUM(12) NTSTATUS NTAPI ExAcquireReadWriteLockExclusive
 (
 	IN PERWLOCK ReadWriteLock

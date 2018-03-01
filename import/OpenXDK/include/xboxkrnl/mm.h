@@ -12,6 +12,8 @@
 #ifndef XBOXKRNL_MM_H
 #define XBOXKRNL_MM_H
 
+#include "xboxkrnl.h"
+
 XBSYSAPI EXPORTNUM(102) PVOID MmGlobalData[8];
 
 // ******************************************************************

@@ -12,6 +12,8 @@
 #ifndef XBOXKRNL_DBG_H
 #define XBOXKRNL_DBG_H
 
+#include "xboxkrnl.h"
+
 XBSYSAPI EXPORTNUM(5) VOID NTAPI DbgBreakPoint();
 XBSYSAPI EXPORTNUM(6) VOID NTAPI DbgBreakPointWithStatus
 (

@@ -12,6 +12,8 @@
 #ifndef XBOXKRNL_NT_H
 #define XBOXKRNL_NT_H
 
+#include "xboxkrnl.h"
+
 // ******************************************************************
 // * NtAllocateVirtualMemory
 // ******************************************************************

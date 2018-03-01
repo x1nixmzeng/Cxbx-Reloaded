@@ -12,6 +12,8 @@
 #ifndef XBOX_H
 #define XBOX_H
 
+#include "xboxkrnl.h"
+
 #define AV_PACK_NONE                      0x00000000
 #define AV_PACK_STANDARD                  0x00000001
 #define AV_PACK_RFU                       0x00000002

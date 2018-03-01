@@ -12,6 +12,8 @@
 #ifndef XBOXKRNL_RTL_H
 #define XBOXKRNL_RTL_H
 
+#include "xboxkrnl.h"
+
 // ******************************************************************
 // * RtlAnsiStringToUnicodeString
 // ******************************************************************
