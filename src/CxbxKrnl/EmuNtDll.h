@@ -34,122 +34,19 @@
 #ifndef EMUNTDLL_H
 #define EMUNTDLL_H
 
-namespace NtDll
+#include "XDK.h"
+
+namespace Xbox
 {
-
-#include <ctype.h>  // winnt ntndis
-
-//// ******************************************************************
-//// * fixes some compiler errors and warnings
-////// ******************************************************************
-//#ifdef VOID
-//#undef VOID
-//#endif
-
-// ******************************************************************
-// * dll import/export
-// ******************************************************************
-#define DECLSPEC_IMPORT __declspec(dllimport)
-#define DECLSPEC_EXPORT __declspec(dllexport)
-
-// ******************************************************************
-// * cxbx_krnl exports, others import
-// ******************************************************************
-#define NTSYSAPI     DECLSPEC_IMPORT
-
-//// ******************************************************************
-//// * CONST
-//// ******************************************************************
-//#define CONST               const
-//
-//// ******************************************************************
-//// * Basic types
-//// ******************************************************************
-//typedef char                CHAR, CCHAR;
-//typedef short               SHORT;
-//typedef long                LONG;
-//typedef unsigned char       UCHAR;
-//typedef unsigned char       BYTE;
-//typedef unsigned char       BOOLEAN;
-//typedef unsigned short      USHORT;
-//typedef unsigned short      WORD;
-//typedef unsigned long       ULONG;
-//typedef unsigned long       DWORD;
-//typedef unsigned long       SIZE_T, *PSIZE_T;
-//typedef unsigned long       ACCESS_MASK;
-//typedef unsigned long       PHYSICAL_ADDRESS;
-//typedef long                INT_PTR;
-//typedef int                 BOOL;
-//
-//
-//typedef unsigned long       UINT32;
-//
-//// ******************************************************************
-//// * Pointer types
-//// ******************************************************************
-//typedef CHAR               *PCHAR;
-//typedef CHAR               *PCSZ;
-//typedef BYTE               *PBYTE;
-//typedef BOOLEAN            *PBOOLEAN;
-//typedef UCHAR              *PUCHAR;
-//typedef USHORT             *PUSHORT;
-//typedef ULONG              *PULONG;
-//typedef ULONG              *ULONG_PTR;
-//typedef ACCESS_MASK        *PACCESS_MASK;
-//typedef LONG               *PLONG, *LONG_PTR;
-//typedef INT_PTR            *PINT_PTR;
-//typedef void                VOID;
-//typedef VOID               *PVOID;
-//typedef void               *HANDLE;
-//typedef HANDLE             *PHANDLE;
-//typedef wchar_t             WCHAR, *PWCHAR;
-//typedef WCHAR              *LPWCH, *PWCH;
-//typedef CONST WCHAR        *LPCWCH, *PCWCH;
-//typedef WCHAR              *NWPSTR;
-//typedef WCHAR              *LPWSTR, *PWSTR;
-//typedef CONST WCHAR        *LPCWSTR, *PCWSTR;
-
-// ******************************************************************
-// * NTSTATUS
-// ******************************************************************
-typedef long                            NTSTATUS;
-typedef __int64							LONGLONG;
-typedef unsigned __int64                ULONGLONG;
-
-#define NT_SUCCESS(Status)              ((NTSTATUS) (Status) >= 0)
-
 #define DIRECTORY_QUERY 1
 #define DIRECTORY_TRAVERSE 2
 #define DIRECTORY_CREATE_OBJECT 4
 #define DIRECTORY_CREATE_SUBDIRECTORY 8
 
-
-// ******************************************************************
-// * calling conventions
-// ******************************************************************
-#define NTAPI               __stdcall
-#ifndef CDECL
-#define CDECL               __cdecl
-#endif
-#define FASTCALL            __fastcall
-#define INLINE              __inline
-#define DECLSPEC_NORETURN   __declspec(noreturn)
-
-#define VOLATILE            volatile
-
-// ******************************************************************
-// * documentation purposes only
-// ******************************************************************
-#define EXPORTNUM(a)
-#define UNALIGNED
-#define OPTIONAL
-#define IN
-#define OUT
-
 // ******************************************************************
 // * KPROCESSOR_MODE
 // ******************************************************************
-typedef CCHAR KPROCESSOR_MODE;
+typedef XDK::CCHAR KPROCESSOR_MODE;
 
 // ******************************************************************
 // * KWAIT_REASON
@@ -212,14 +109,14 @@ MODE;
 typedef union _LARGE_INTEGER
 {
 	struct {
-		DWORD LowPart;
-		LONG  HighPart;
+		XDK::DWORD LowPart;
+		XDK::LONG  HighPart;
 	};
 	struct {
-		DWORD LowPart;
-		LONG  HighPart;
+		XDK::DWORD LowPart;
+		XDK::LONG  HighPart;
 	} u;
-	LONGLONG QuadPart;
+	XDK::LONGLONG QuadPart;
 }
 LARGE_INTEGER, *PLARGE_INTEGER;
 
@@ -228,32 +125,32 @@ LARGE_INTEGER, *PLARGE_INTEGER;
 // ******************************************************************
 typedef struct _LDT_ENTRY
 {
-    WORD    LimitLow;
-    WORD    BaseLow;
+    XDK::WORD    LimitLow;
+    XDK::WORD    BaseLow;
 
     union
     {
         struct
         {
-            BYTE    BaseMid;
-            BYTE    Flags1;     // Declare as bytes to avoid alignment
-            BYTE    Flags2;     // Problems.
-            BYTE    BaseHi;
+            XDK::BYTE    BaseMid;
+            XDK::BYTE    Flags1;     // Declare as bytes to avoid alignment
+            XDK::BYTE    Flags2;     // Problems.
+            XDK::BYTE    BaseHi;
         }
         Bytes;
 
         struct
         {
-            DWORD   BaseMid : 8;
-            DWORD   Type : 5;
-            DWORD   Dpl : 2;
-            DWORD   Pres : 1;
-            DWORD   LimitHi : 4;
-            DWORD   Sys : 1;
-            DWORD   Reserved_0 : 1;
-            DWORD   Default_Big : 1;
-            DWORD   Granularity : 1;
-            DWORD   BaseHi : 8;
+            XDK::DWORD   BaseMid : 8;
+            XDK::DWORD   Type : 5;
+            XDK::DWORD   Dpl : 2;
+            XDK::DWORD   Pres : 1;
+            XDK::DWORD   LimitHi : 4;
+            XDK::DWORD   Sys : 1;
+            XDK::DWORD   Reserved_0 : 1;
+            XDK::DWORD   Default_Big : 1;
+            XDK::DWORD   Granularity : 1;
+            XDK::DWORD   BaseHi : 8;
         }
         Bits;
 
@@ -267,9 +164,9 @@ LDT_ENTRY, *PLDT_ENTRY;
 // ******************************************************************
 typedef struct _STRING
 {
-    USHORT  Length;
-    USHORT  MaximumLength;
-    PCHAR   Buffer;
+	XDK::USHORT  Length;
+    XDK::USHORT  MaximumLength;
+    XDK::PCHAR   Buffer;
 }
 STRING, ANSI_STRING, *PSTRING, *PANSI_STRING;
 
@@ -278,18 +175,18 @@ STRING, ANSI_STRING, *PSTRING, *PANSI_STRING;
 // ******************************************************************
 typedef struct _RTL_HEAP_DEFINITION
 {
-    ULONG   Length;
-    ULONG   Unknown1;
-    ULONG   Unknown2;
-    ULONG   Unknown3;
-    ULONG   Unknown4;
-    ULONG   Unknown5;
-    ULONG   Unknown6;
-    ULONG   Unknown7;
-    ULONG   Unknown8;
-    ULONG   Unknown9;
-    ULONG   Unknown10;
-    ULONG   Unknown11;
+    XDK::ULONG   Length;
+    XDK::ULONG   Unknown1;
+    XDK::ULONG   Unknown2;
+    XDK::ULONG   Unknown3;
+    XDK::ULONG   Unknown4;
+    XDK::ULONG   Unknown5;
+    XDK::ULONG   Unknown6;
+    XDK::ULONG   Unknown7;
+    XDK::ULONG   Unknown8;
+    XDK::ULONG   Unknown9;
+    XDK::ULONG   Unknown10;
+    XDK::ULONG   Unknown11;
 }
 RTL_HEAP_DEFINITION, *PRTL_HEAP_DEFINITION;
 
@@ -298,12 +195,12 @@ RTL_HEAP_DEFINITION, *PRTL_HEAP_DEFINITION;
 // ******************************************************************
 typedef struct _RTL_CRITICAL_SECTION
 {
-    DWORD               Unknown[4];                                     // 0x00
-    LONG                LockCount;                                      // 0x10
-    LONG                RecursionCount;                                 // 0x14
-    HANDLE              OwningThread;                                   // 0x18
-    HANDLE              LockSemaphore;
-    DWORD               Reserved;
+    XDK::DWORD               Unknown[4];                                     // 0x00
+    XDK::LONG                LockCount;                                      // 0x10
+    XDK::LONG                RecursionCount;                                 // 0x14
+    XDK::HANDLE              OwningThread;                                   // 0x18
+    XDK::HANDLE              LockSemaphore;
+    XDK::DWORD               Reserved;
 }
 RTL_CRITICAL_SECTION, *PRTL_CRITICAL_SECTION;
 
@@ -324,12 +221,12 @@ RTL_CRITICAL_SECTION, *PRTL_CRITICAL_SECTION;
 // ******************************************************************
 typedef struct _UNICODE_STRING
 {
-    USHORT Length;
-    USHORT MaximumLength;
+	XDK::USHORT Length;
+	XDK::USHORT MaximumLength;
 #ifdef MIDL_PASS
     [size_is(MaximumLength / 2), length_is((Length) / 2) ] USHORT * Buffer;
 #else // MIDL_PASS
-    PWSTR  Buffer;
+	XDK::PWSTR  Buffer;
 #endif // MIDL_PASS
 }
 UNICODE_STRING, *PUNICODE_STRING;
@@ -343,12 +240,12 @@ typedef const UNICODE_STRING *PCUNICODE_STRING;
 // ******************************************************************
 typedef struct _OBJECT_ATTRIBUTES
 {
-    ULONG           Length;
-    HANDLE          RootDirectory;
-    PUNICODE_STRING ObjectName;
-    ULONG           Attributes;
-    PVOID           SecurityDescriptor;        // Points to type SECURITY_DESCRIPTOR
-    PVOID           SecurityQualityOfService;  // Points to type SECURITY_QUALITY_OF_SERVICE
+    XDK::ULONG           Length;
+    XDK::HANDLE          RootDirectory;
+    XDK::PUNICODE_STRING ObjectName;
+    XDK::ULONG           Attributes;
+    XDK::PVOID           SecurityDescriptor;        // Points to type SECURITY_DESCRIPTOR
+    XDK::PVOID           SecurityQualityOfService;  // Points to type SECURITY_QUALITY_OF_SERVICE
 }
 OBJECT_ATTRIBUTES, *POBJECT_ATTRIBUTES;
 
@@ -359,15 +256,15 @@ OBJECT_ATTRIBUTES, *POBJECT_ATTRIBUTES;
 // * InitializeObjectAttributes(
 // *     OUT POBJECT_ATTRIBUTES p,
 // *     IN PUNICODE_STRING n,
-// *     IN ULONG a,
-// *     IN HANDLE r,
+// *     IN XDK::ULONG a,
+// *     IN XDK::HANDLE r,
 // *     IN PSECURITY_DESCRIPTOR s
 // *     )
 // *
 // ******************************************************************
 #define InitializeObjectAttributes( p, n, a, r, s )     \
 {                                                       \
-    (p)->Length = sizeof( NtDll::OBJECT_ATTRIBUTES );   \
+    (p)->Length = sizeof( XDK::OBJECT_ATTRIBUTES );   \
     (p)->RootDirectory = r;                             \
     (p)->Attributes = a;                                \
     (p)->ObjectName = n;                                \
@@ -382,12 +279,12 @@ typedef struct _IO_STATUS_BLOCK
 {
     union
     {
-        NTSTATUS Status;
-        PVOID    Pointer;
+        XDK::NTSTATUS Status;
+        XDK::PVOID    Pointer;
     }
     u1;
 
-    ULONG_PTR Information;
+	XDK::ULONG_PTR Information;
 }
 IO_STATUS_BLOCK, *PIO_STATUS_BLOCK;
 
@@ -396,9 +293,9 @@ IO_STATUS_BLOCK, *PIO_STATUS_BLOCK;
 // ******************************************************************
 typedef VOID (NTAPI *PIO_APC_ROUTINE)
 (
-    IN PVOID            ApcContext,
+    IN XDK::PVOID            ApcContext,
     IN PIO_STATUS_BLOCK IoStatusBlock,
-    IN ULONG            Reserved
+    IN XDK::ULONG            Reserved
 );
 
 // ******************************************************************
@@ -406,13 +303,13 @@ typedef VOID (NTAPI *PIO_APC_ROUTINE)
 // ******************************************************************
 typedef struct _MEMORY_BASIC_INFORMATION
 {
-    PVOID   BaseAddress;
-    PVOID   AllocationBase;
-    DWORD   AllocationProtect;
-    SIZE_T  RegionSize;
-    DWORD   State;
-    DWORD   Protect;
-    DWORD   Type;
+    XDK::PVOID   BaseAddress;
+    XDK::PVOID   AllocationBase;
+    XDK::DWORD   AllocationProtect;
+    XDK::SIZE_T  RegionSize;
+    XDK::DWORD   State;
+    XDK::DWORD   Protect;
+    XDK::DWORD   Type;
 }
 MEMORY_BASIC_INFORMATION, *PMEMORY_BASIC_INFORMATION;
 
@@ -480,8 +377,8 @@ TIMER_INFORMATION_CLASS, *PTIMER_INFORMATION_CLASS;
 // ******************************************************************
 typedef struct _TIMER_BASIC_INFORMATION
 {
-	LARGE_INTEGER TimeRemaining;
-	BOOLEAN SignalState;
+	XDK::LARGE_INTEGER TimeRemaining;
+	XDK::BOOLEAN SignalState;
 }
 TIMER_BASIC_INFORMATION, *PTIMER_BASIC_INFORMATION;
 
@@ -490,9 +387,9 @@ TIMER_BASIC_INFORMATION, *PTIMER_BASIC_INFORMATION;
 // ******************************************************************
 typedef VOID(NTAPI * PTIMER_APC_ROUTINE)
 (
-	IN PVOID TimerContext,
-	IN ULONG TimerLowValue,
-	IN LONG TimerHighValue
+	IN XDK::PVOID TimerContext,
+	IN XDK::ULONG TimerLowValue,
+	IN XDK::LONG TimerHighValue
 );
 
 // ******************************************************************
@@ -517,48 +414,48 @@ typedef enum _CREATE_FILE_TYPE
 CREATE_FILE_TYPE;
 
 typedef struct _FILE_FS_LABEL_INFORMATION {
-	ULONG VolumeLabelLength;
-	WCHAR VolumeLabel[1];
+	XDK::ULONG VolumeLabelLength;
+	XDK::WCHAR VolumeLabel[1];
 } FILE_FS_LABEL_INFORMATION, *PFILE_FS_LABEL_INFORMATION;
 
 typedef struct _FILE_FS_VOLUME_INFORMATION {
-	LARGE_INTEGER VolumeCreationTime;
-	ULONG VolumeSerialNumber;
-	ULONG VolumeLabelLength;
-	BOOLEAN SupportsObjects;
-	WCHAR VolumeLabel[1];
+	XDK::LARGE_INTEGER VolumeCreationTime;
+	XDK::ULONG VolumeSerialNumber;
+	XDK::ULONG VolumeLabelLength;
+	XDK::BOOLEAN SupportsObjects;
+	XDK::WCHAR VolumeLabel[1];
 } FILE_FS_VOLUME_INFORMATION, *PFILE_FS_VOLUME_INFORMATION;
 
 typedef struct _FILE_FS_SIZE_INFORMATION {
-	LARGE_INTEGER TotalAllocationUnits;
-	LARGE_INTEGER AvailableAllocationUnits;
-	ULONG SectorsPerAllocationUnit;
-	ULONG BytesPerSector;
+	XDK::LARGE_INTEGER TotalAllocationUnits;
+	XDK::LARGE_INTEGER AvailableAllocationUnits;
+	XDK::ULONG SectorsPerAllocationUnit;
+	XDK::ULONG BytesPerSector;
 } FILE_FS_SIZE_INFORMATION, *PFILE_FS_SIZE_INFORMATION;
 
 typedef struct _FILE_FS_FULL_SIZE_INFORMATION {
-	LARGE_INTEGER TotalAllocationUnits;
-	LARGE_INTEGER CallerAvailableAllocationUnits;
-	LARGE_INTEGER ActualAvailableAllocationUnits;
-	ULONG SectorsPerAllocationUnit;
-	ULONG BytesPerSector;
+	XDK::LARGE_INTEGER TotalAllocationUnits;
+	XDK::LARGE_INTEGER CallerAvailableAllocationUnits;
+	XDK::LARGE_INTEGER ActualAvailableAllocationUnits;
+	XDK::ULONG SectorsPerAllocationUnit;
+	XDK::ULONG BytesPerSector;
 } FILE_FS_FULL_SIZE_INFORMATION, *PFILE_FS_FULL_SIZE_INFORMATION;
 
 typedef struct _FILE_FS_OBJECTID_INFORMATION {
-	UCHAR ObjectId[16];
-	UCHAR ExtendedInfo[48];
+	XDK::UCHAR ObjectId[16];
+	XDK::UCHAR ExtendedInfo[48];
 } FILE_FS_OBJECTID_INFORMATION, *PFILE_FS_OBJECTID_INFORMATION;
 
 typedef struct _FILE_FS_DEVICE_INFORMATION {                    
-	DWORD DeviceType;                                     
-	ULONG Characteristics;                                      
+	XDK::DWORD DeviceType;                                     
+	XDK::ULONG Characteristics;                                      
 } FILE_FS_DEVICE_INFORMATION, *PFILE_FS_DEVICE_INFORMATION;     
 															
 typedef struct _FILE_FS_ATTRIBUTE_INFORMATION {
-	ULONG FileSystemAttributes;
-	LONG MaximumComponentNameLength;
-	ULONG FileSystemNameLength;
-	WCHAR FileSystemName[1];
+	XDK::ULONG FileSystemAttributes;
+	XDK::LONG MaximumComponentNameLength;
+	XDK::ULONG FileSystemNameLength;
+	XDK::WCHAR FileSystemName[1];
 } FILE_FS_ATTRIBUTE_INFORMATION, *PFILE_FS_ATTRIBUTE_INFORMATION;
 
 // ******************************************************************
@@ -632,17 +529,17 @@ FS_INFORMATION_CLASS, *PFS_INFORMATION_CLASS;
 // ******************************************************************
 typedef struct _FILE_DIRECTORY_INFORMATION
 {
-	ULONG           NextEntryOffset;
-	ULONG           FileIndex;
-	LARGE_INTEGER   CreationTime;
-	LARGE_INTEGER   LastAccessTime;
-	LARGE_INTEGER   LastWriteTime;
-	LARGE_INTEGER   ChangeTime;
-	LARGE_INTEGER   EndOfFile;
-	LARGE_INTEGER   AllocationSize;
-	ULONG           FileAttributes;
-	ULONG           FileNameLength;
-	WCHAR           FileName[1];        // Offset: 0x40
+	XDK::ULONG           NextEntryOffset;
+	XDK::ULONG           FileIndex;
+	XDK::LARGE_INTEGER   CreationTime;
+	XDK::LARGE_INTEGER   LastAccessTime;
+	XDK::LARGE_INTEGER   LastWriteTime;
+	XDK::LARGE_INTEGER   ChangeTime;
+	XDK::LARGE_INTEGER   EndOfFile;
+	XDK::LARGE_INTEGER   AllocationSize;
+	XDK::ULONG           FileAttributes;
+	XDK::ULONG           FileNameLength;
+	XDK::WCHAR           FileName[1];        // Offset: 0x40
 }
 FILE_DIRECTORY_INFORMATION;
 
@@ -651,10 +548,10 @@ FILE_DIRECTORY_INFORMATION;
 // ******************************************************************
 typedef struct _FILE_RENAME_INFORMATION
 {
-	BOOLEAN         ReplaceIfExists;
-	HANDLE          RootDirectory;
-	ULONG           FileNameLength;
-	WCHAR           FileName[1];
+	XDK::BOOLEAN         ReplaceIfExists;
+	XDK::HANDLE          RootDirectory;
+	XDK::ULONG           FileNameLength;
+	XDK::WCHAR           FileName[1];
 }
 FILE_RENAME_INFORMATION, *PFILE_RENAME_INFORMATION;
 
@@ -662,111 +559,111 @@ FILE_RENAME_INFORMATION, *PFILE_RENAME_INFORMATION;
 // * FILE_LINK_INFORMATION
 // ******************************************************************
 typedef struct _FILE_LINK_INFORMATION {
-	BOOLEAN         ReplaceIfExists;
-	HANDLE          RootDirectory;
-	ULONG           FileNameLength;
-	WCHAR           FileName[1];
+	XDK::BOOLEAN         ReplaceIfExists;
+	XDK::HANDLE          RootDirectory;
+	XDK::ULONG           FileNameLength;
+	XDK::WCHAR           FileName[1];
 } FILE_LINK_INFORMATION, *PFILE_LINK_INFORMATION;
 
 // ******************************************************************
 // * FILE_NETWORK_OPEN_INFORMATION
 // ******************************************************************
 typedef struct _FILE_NETWORK_OPEN_INFORMATION {
-	LARGE_INTEGER   CreationTime;
-	LARGE_INTEGER   LastAccessTime;
-	LARGE_INTEGER   LastWriteTime;
-	LARGE_INTEGER   ChangeTime;
-	LARGE_INTEGER   AllocationSize;
-	LARGE_INTEGER   EndOfFile;
-	ULONG           FileAttributes;
-	ULONG           Reserved;
+	XDK::LARGE_INTEGER   CreationTime;
+	XDK::LARGE_INTEGER   LastAccessTime;
+	XDK::LARGE_INTEGER   LastWriteTime;
+	XDK::LARGE_INTEGER   ChangeTime;
+	XDK::LARGE_INTEGER   AllocationSize;
+	XDK::LARGE_INTEGER   EndOfFile;
+	XDK::ULONG           FileAttributes;
+	XDK::ULONG           Reserved;
 } FILE_NETWORK_OPEN_INFORMATION, *PFILE_NETWORK_OPEN_INFORMATION;
 
 // ******************************************************************
 // * FILE_BASIC_INFORMATION
 // ******************************************************************
 typedef struct _FILE_BASIC_INFORMATION {
-	LARGE_INTEGER   CreationTime;
-	LARGE_INTEGER   LastAccessTime;
-	LARGE_INTEGER   LastWriteTime;
-	LARGE_INTEGER   ChangeTime;
-	ULONG           FileAttributes;
+	XDK::LARGE_INTEGER   CreationTime;
+	XDK::LARGE_INTEGER   LastAccessTime;
+	XDK::LARGE_INTEGER   LastWriteTime;
+	XDK::LARGE_INTEGER   ChangeTime;
+	XDK::ULONG           FileAttributes;
 } FILE_BASIC_INFORMATION, *PFILE_BASIC_INFORMATION;
 
 // ******************************************************************
 // * FILE_STANDARD_INFORMATION
 // ******************************************************************
 typedef struct _FILE_STANDARD_INFORMATION {
-	LARGE_INTEGER   AllocationSize;
-	LARGE_INTEGER   EndOfFile;
-	ULONG           NumberOfLinks;
-	BOOLEAN         DeletePending;
-	BOOLEAN         Directory;
+	XDK::LARGE_INTEGER   AllocationSize;
+	XDK::LARGE_INTEGER   EndOfFile;
+	XDK::ULONG           NumberOfLinks;
+	XDK::BOOLEAN         DeletePending;
+	XDK::BOOLEAN         Directory;
 } FILE_STANDARD_INFORMATION, *PFILE_STANDARD_INFORMATION;
 
 // ******************************************************************
 // * FILE_INTERNAL_INFORMATION
 // ******************************************************************
 typedef struct _FILE_INTERNAL_INFORMATION {
-	LARGE_INTEGER   IndexNumber;
+	XDK::LARGE_INTEGER   IndexNumber;
 } FILE_INTERNAL_INFORMATION, *PFILE_INTERNAL_INFORMATION;
 
 // ******************************************************************
 // * FILE_EA_INFORMATION
 // ******************************************************************
 typedef struct _FILE_EA_INFORMATION {
-	ULONG           EaSize;
+	XDK::ULONG           EaSize;
 } FILE_EA_INFORMATION, *PFILE_EA_INFORMATION;
 
 // ******************************************************************
 // * FILE_ACCESS_INFORMATION
 // ******************************************************************
 typedef struct _FILE_ACCESS_INFORMATION {
-	ACCESS_MASK     AccessFlags;
+	XDK::ACCESS_MASK     AccessFlags;
 } FILE_ACCESS_INFORMATION, *PFILE_ACCESS_INFORMATION;
 
 // ******************************************************************
 // * FILE_POSITION_INFORMATION
 // ******************************************************************
 typedef struct _FILE_POSITION_INFORMATION {
-	LARGE_INTEGER   CurrentByteOffset;
+	XDK::LARGE_INTEGER   CurrentByteOffset;
 } FILE_POSITION_INFORMATION, *PFILE_POSITION_INFORMATION;
 
 // ******************************************************************
 // * FILE_MODE_INFORMATION
 // ******************************************************************
 typedef struct _FILE_MODE_INFORMATION {
-	ULONG           Mode;
+	XDK::ULONG           Mode;
 } FILE_MODE_INFORMATION, *PFILE_MODE_INFORMATION;
 
 // ******************************************************************
 // * FILE_ALIGNMENT_INFORMATION
 // ******************************************************************
 typedef struct _FILE_ALIGNMENT_INFORMATION {
-	ULONG           AlignmentRequirement;
+	XDK::ULONG           AlignmentRequirement;
 } FILE_ALIGNMENT_INFORMATION, *PFILE_ALIGNMENT_INFORMATION;
 
 // ******************************************************************
 // * FILE_NAME_INFORMATION
 // ******************************************************************
 typedef struct _FILE_NAME_INFORMATION {
-	ULONG           FileNameLength;
-	WCHAR           FileName[1];
+	XDK::ULONG           FileNameLength;
+	XDK::WCHAR           FileName[1];
 } FILE_NAME_INFORMATION, *PFILE_NAME_INFORMATION;
 
 // ******************************************************************
 // * FILE_ALL_INFORMATION
 // ******************************************************************
 typedef struct _FILE_ALL_INFORMATION {
-	FILE_BASIC_INFORMATION     BasicInformation;
-	FILE_STANDARD_INFORMATION  StandardInformation;
-	FILE_INTERNAL_INFORMATION  InternalInformation;
-	FILE_EA_INFORMATION        EaInformation;
-	FILE_ACCESS_INFORMATION    AccessInformation;
-	FILE_POSITION_INFORMATION  PositionInformation;
-	FILE_MODE_INFORMATION      ModeInformation;
-	FILE_ALIGNMENT_INFORMATION AlignmentInformation;
-	FILE_NAME_INFORMATION      NameInformation;
+	XDK::FILE_BASIC_INFORMATION     BasicInformation;
+	XDK::FILE_STANDARD_INFORMATION  StandardInformation;
+	XDK::FILE_INTERNAL_INFORMATION  InternalInformation;
+	XDK::FILE_EA_INFORMATION        EaInformation;
+	XDK::FILE_ACCESS_INFORMATION    AccessInformation;
+	XDK::FILE_POSITION_INFORMATION  PositionInformation;
+	XDK::FILE_MODE_INFORMATION      ModeInformation;
+	XDK::FILE_ALIGNMENT_INFORMATION AlignmentInformation;
+	XDK::FILE_NAME_INFORMATION      NameInformation;
 } FILE_ALL_INFORMATION, *PFILE_ALL_INFORMATION;
 
 // ******************************************************************
@@ -774,14 +671,14 @@ typedef struct _FILE_ALL_INFORMATION {
 // ******************************************************************
 typedef struct _TIME_FIELDS
 {
-    USHORT  Year;
-    USHORT  Month;
-    USHORT  Day;
-    USHORT  Hour;
-    USHORT  Minute;
-    USHORT  Second;
-    USHORT  Millisecond;
-    USHORT  Weekday;
+    XDK::USHORT  Year;
+    XDK::USHORT  Month;
+    XDK::USHORT  Day;
+    XDK::USHORT  Hour;
+    XDK::USHORT  Minute;
+    XDK::USHORT  Second;
+    XDK::USHORT  Millisecond;
+    XDK::USHORT  Weekday;
 }
 TIME_FIELDS, *PTIME_FIELDS;
 
@@ -789,9 +686,9 @@ TIME_FIELDS, *PTIME_FIELDS;
 // * KSYSTEM_TIME
 // ******************************************************************
 typedef struct _KSYSTEM_TIME {
-	ULONG LowPart;
-	LONG High1Time;
-	LONG High2Time;
+	XDK::ULONG LowPart;
+	XDK::LONG High1Time;
+	XDK::LONG High2Time;
 } KSYSTEM_TIME, *PKSYSTEM_TIME;
 
 // ******************************************************************
@@ -802,17 +699,17 @@ typedef struct _KUSER_SHARED_DATA
 	/* Current low 32-bit of tick count and tick count multiplier.
 	* N.B. The tick count is updated each time the clock ticks.
 	*/
-	ULONG VOLATILE TickCountLow;
-	UINT32 TickCountMultiplier;
+	XDK::ULONG VOLATILE TickCountLow;
+	Native::UINT32 TickCountMultiplier;
 
 	/* Current 64-bit interrupt time in 100ns units. */
-	KSYSTEM_TIME VOLATILE InterruptTime;
+	XDK::KSYSTEM_TIME VOLATILE InterruptTime;
 
 	/* Current 64-bit system time in 100ns units. */
-	KSYSTEM_TIME VOLATILE SystemTime;
+	XDK::KSYSTEM_TIME VOLATILE SystemTime;
 
 	/* Current 64-bit time zone bias. */
-	KSYSTEM_TIME VOLATILE TimeZoneBias;
+	XDK::KSYSTEM_TIME VOLATILE TimeZoneBias;
 }
 KUSER_SHARED_DATA, *PKUSER_SHARED_DATA;
 // This is only the top of the actual definition. For the complete version,
@@ -823,21 +720,21 @@ KUSER_SHARED_DATA, *PKUSER_SHARED_DATA;
 // ******************************************************************
 typedef struct _GENERIC_MAPPING
 {
-	ACCESS_MASK GenericRead;
-	ACCESS_MASK GenericWrite;
-	ACCESS_MASK GenericExecute;
-	ACCESS_MASK GenericAll;
+	XDK::ACCESS_MASK GenericRead;
+	XDK::ACCESS_MASK GenericWrite;
+	XDK::ACCESS_MASK GenericExecute;
+	XDK::ACCESS_MASK GenericAll;
 }
 GENERIC_MAPPING, *PGENERIC_MAPPING;
 
 // ******************************************************************
 // * KeDelayExecutionThread
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_KeDelayExecutionThread)
+typedef XDK::NTSTATUS (NTAPI *FPTR_KeDelayExecutionThread)
 (
-    IN KPROCESSOR_MODE  WaitMode,
-    IN BOOLEAN          Alertable,
-    IN PLARGE_INTEGER   Interval
+    IN XDK::KPROCESSOR_MODE  WaitMode,
+    IN XDK::BOOLEAN          Alertable,
+    IN XDK::PLARGE_INTEGER   Interval
 );
 
 // ******************************************************************
@@ -845,61 +742,61 @@ typedef NTSTATUS (NTAPI *FPTR_KeDelayExecutionThread)
 // ******************************************************************
 typedef VOID (NTAPI *FPTR_KeQuerySystemTime)
 (
-    PLARGE_INTEGER CurrentTime
+	XDK::PLARGE_INTEGER CurrentTime
 );
 
 // ******************************************************************
 // * RtlCreateHeap
 // ******************************************************************
-typedef PVOID (NTAPI *FPTR_RtlCreateHeap)
+typedef XDK::PVOID (NTAPI *FPTR_RtlCreateHeap)
 (
-    IN ULONG   Flags,
-    IN PVOID   Base OPTIONAL,
-    IN ULONG   Reserve OPTIONAL,
-    IN ULONG   Commit,
-    IN PVOID   Lock OPTIONAL,
-    IN PVOID   RtlHeapParams OPTIONAL
+    IN XDK::ULONG   Flags,
+    IN XDK::PVOID   Base OPTIONAL,
+    IN XDK::ULONG   Reserve OPTIONAL,
+    IN XDK::ULONG   Commit,
+    IN XDK::PVOID   Lock OPTIONAL,
+    IN XDK::PVOID   RtlHeapParams OPTIONAL
 );
 
 // ******************************************************************
 // * RtlAllocateHeap
 // ******************************************************************
-typedef PVOID (NTAPI *FPTR_RtlAllocateHeap)
+typedef XDK::PVOID (NTAPI *FPTR_RtlAllocateHeap)
 (
-    IN HANDLE hHeap,
-    IN DWORD  dwFlags,
-    IN SIZE_T dwBytes
+    IN XDK::HANDLE hHeap,
+    IN XDK::DWORD  dwFlags,
+    IN XDK::SIZE_T dwBytes
 );
 
 // ******************************************************************
 // * RtlFreeHeap
 // ******************************************************************
-typedef BOOL (NTAPI *FPTR_RtlFreeHeap)
+typedef XDK::BOOL (NTAPI *FPTR_RtlFreeHeap)
 (
-    IN HANDLE hHeap,
-    IN DWORD  dwFlags,
-    IN PVOID  lpMem
+    IN XDK::HANDLE hHeap,
+    IN XDK::DWORD  dwFlags,
+    IN XDK::PVOID  lpMem
 );
 
 // ******************************************************************
 // * RtlReAllocateHeap
 // ******************************************************************
-typedef PVOID (NTAPI *FPTR_RtlReAllocateHeap)
+typedef XDK::PVOID (NTAPI *FPTR_RtlReAllocateHeap)
 (
-    IN HANDLE hHeap,
-    IN DWORD  dwFlags,
-    IN PVOID  lpMem,
-    IN DWORD  dwBytes
+    IN XDK::HANDLE hHeap,
+    IN XDK::DWORD  dwFlags,
+    IN XDK::PVOID  lpMem,
+    IN XDK::DWORD  dwBytes
 );
 
 // ******************************************************************
 // * RtlSizeHeap
 // ******************************************************************
-typedef SIZE_T (NTAPI *FPTR_RtlSizeHeap)
+typedef XDK::SIZE_T (NTAPI *FPTR_RtlSizeHeap)
 (
-    IN HANDLE hHeap,
-    IN DWORD  dwFlags,
-    IN PVOID  lpMem
+    IN XDK::HANDLE hHeap,
+    IN XDK::DWORD  dwFlags,
+    IN XDK::PVOID  lpMem
 );
 
 // ******************************************************************
@@ -907,25 +804,25 @@ typedef SIZE_T (NTAPI *FPTR_RtlSizeHeap)
 // ******************************************************************
 typedef VOID (NTAPI *FPTR_RtlMapGenericMask)
 (
-	IN OUT PACCESS_MASK     AccessMask,
-	IN     PGENERIC_MAPPING GenericMapping
+	IN OUT XDK::PACCESS_MASK     AccessMask,
+	IN     XDK::PGENERIC_MAPPING GenericMapping
 );
 
 // ******************************************************************
 // * RtlNtStatusToDosError
 // ******************************************************************
-typedef ULONG (NTAPI *FPTR_RtlNtStatusToDosError)
+typedef XDK::ULONG (NTAPI *FPTR_RtlNtStatusToDosError)
 (
-    IN NTSTATUS Status
+    IN XDK::NTSTATUS Status
 );
 
 // ******************************************************************
 // * RtlTimeToTimeFields
 // ******************************************************************
-typedef BOOLEAN (NTAPI *FPTR_RtlTimeFieldsToTime)
+typedef XDK::BOOLEAN (NTAPI *FPTR_RtlTimeFieldsToTime)
 (
-    IN  PTIME_FIELDS    TimeFields,
-    OUT PLARGE_INTEGER  Time
+    IN  XDK::PTIME_FIELDS    TimeFields,
+    OUT XDK::PLARGE_INTEGER  Time
 );
 
 // ******************************************************************
@@ -933,86 +830,86 @@ typedef BOOLEAN (NTAPI *FPTR_RtlTimeFieldsToTime)
 // ******************************************************************
 typedef VOID (NTAPI *FPTR_RtlTimeToTimeFields)
 (
-    IN  PLARGE_INTEGER  Time,
+    IN  XDK::PLARGE_INTEGER  Time,
     OUT PTIME_FIELDS    TimeFields
 );
 
 // ******************************************************************
 // * RtlTryEnterCriticalSection
 // ******************************************************************
-typedef BOOL (NTAPI *FPTR_RtlTryEnterCriticalSection)
+typedef XDK::BOOL (NTAPI *FPTR_RtlTryEnterCriticalSection)
 (
-    IN PRTL_CRITICAL_SECTION CriticalSection
+    IN XDK::PRTL_CRITICAL_SECTION CriticalSection
 );
 
 // ******************************************************************
 // * RtlUlongByteSwap
 // ******************************************************************
-typedef ULONG (FASTCALL *FPTR_RtlUlongByteSwap)
+typedef XDK::ULONG (FASTCALL *FPTR_RtlUlongByteSwap)
 (
-	IN ULONG Source
+	IN XDK::ULONG Source
 );
 
 // ******************************************************************
 // * RtlUnicodeStringToInteger
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_RtlUnicodeStringToInteger)
+typedef XDK::NTSTATUS (NTAPI *FPTR_RtlUnicodeStringToInteger)
 (
 	IN  PCUNICODE_STRING String,
-	IN  ULONG            Base OPTIONAL,
-	OUT PULONG           Value
+	IN  XDK::ULONG            Base OPTIONAL,
+	OUT XDK::PULONG           Value
 );
 
 // ******************************************************************
 // * RtlUnicodeToMultiByteN
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_RtlUnicodeToMultiByteN)
+typedef XDK::NTSTATUS (NTAPI *FPTR_RtlUnicodeToMultiByteN)
 (
-	OUT PCHAR  MultiByteString,
-	IN  ULONG  MaxBytesInMultiByteString,
-	OUT PULONG BytesInMultiByteString OPTIONAL,
-	IN  PCWCH  UnicodeString,
-	IN  ULONG  BytesInUnicodeString
+	OUT XDK::PCHAR  MultiByteString,
+	IN  XDK::ULONG  MaxBytesInMultiByteString,
+	OUT XDK::PULONG BytesInMultiByteString OPTIONAL,
+	IN  Native::PCWCH  UnicodeString,
+	IN  XDK::ULONG  BytesInUnicodeString
 );
 
 // ******************************************************************
 // * RtlUnicodeToMultiByteSize
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_RtlUnicodeToMultiByteSize)
+typedef XDK::NTSTATUS (NTAPI *FPTR_RtlUnicodeToMultiByteSize)
 (
-	OUT PULONG BytesInMultiByteString,
-	IN  PWCH   UnicodeString,
-	IN  ULONG  BytesInUnicodeString
+	OUT XDK::PULONG BytesInMultiByteString,
+	IN  Native::PWCH   UnicodeString,
+	IN  XDK::ULONG  BytesInUnicodeString
 );
 
 // ******************************************************************
 // * RtlUpcaseUnicodeChar
 // ******************************************************************
-typedef WCHAR (NTAPI *FPTR_RtlUpcaseUnicodeChar)
+typedef XDK::WCHAR (NTAPI *FPTR_RtlUpcaseUnicodeChar)
 (
-	IN WCHAR    SourceCharacter
+	IN XDK::WCHAR    SourceCharacter
 );
 
 // ******************************************************************
 // * RtlUpcaseUnicodeString
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_RtlUpcaseUnicodeString)
+typedef XDK::NTSTATUS (NTAPI *FPTR_RtlUpcaseUnicodeString)
 (
-	OUT PUNICODE_STRING DestinationString,
-	IN PUNICODE_STRING SourceString,
-	IN BOOLEAN AllocateDestinationString
+	OUT XDK::PUNICODE_STRING DestinationString,
+	IN XDK::PUNICODE_STRING SourceString,
+	IN XDK::BOOLEAN AllocateDestinationString
 );
 
 // ******************************************************************
 // * RtlUpcaseUnicodeToMultiByteN
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_RtlUpcaseUnicodeToMultiByteN)
+typedef XDK::NTSTATUS (NTAPI *FPTR_RtlUpcaseUnicodeToMultiByteN)
 (
-	OUT PCHAR  MultiByteString,
-	IN  ULONG  MaxBytesInMultiByteString,
-	OUT PULONG BytesInMultiByteString OPTIONAL,
-	IN  PCWCH  UnicodeString,
-	IN  ULONG  BytesInUnicodeString
+	OUT XDK::PCHAR  MultiByteString,
+	IN  XDK::ULONG  MaxBytesInMultiByteString,
+	OUT XDK::PULONG BytesInMultiByteString OPTIONAL,
+	IN  Native::PCWCH  UnicodeString,
+	IN  XDK::ULONG  BytesInUnicodeString
 );
 
 // ******************************************************************
@@ -1027,29 +924,29 @@ typedef VOID (NTAPI *FPTR_RtlUpperString)
 // ******************************************************************
 // * RtlUshortByteSwap
 // ******************************************************************
-typedef USHORT (FASTCALL *FPTR_RtlUshortByteSwap)
+typedef XDK::USHORT (FASTCALL *FPTR_RtlUshortByteSwap)
 (
-	IN USHORT Source
+	IN XDK::USHORT Source
 );
 
 // ******************************************************************
 // * RtlCompareMemory
 // ******************************************************************
-typedef BOOL (NTAPI *FPTR_RtlCompareMemory)
+typedef XDK::BOOL (NTAPI *FPTR_RtlCompareMemory)
 (
 	IN const VOID   *Source1,
 	IN const VOID   *Source2,
-	IN       SIZE_T Length
+	IN       XDK::SIZE_T Length
 );
 
 // ******************************************************************
 // * RtlCompareMemoryUlong
 // ******************************************************************
-typedef BOOL(NTAPI *FPTR_RtlCompareMemoryUlong)
+typedef XDK::BOOL(NTAPI *FPTR_RtlCompareMemoryUlong)
 (
-	IN 	PVOID Source,
-	IN SIZE_T Length,
-	IN ULONG Pattern
+	IN 	VOID *Source,
+	IN XDK::SIZE_T Length,
+	IN XDK::ULONG Pattern
 );
 
 // ******************************************************************
@@ -1058,7 +955,7 @@ typedef BOOL(NTAPI *FPTR_RtlCompareMemoryUlong)
 typedef VOID (NTAPI *FPTR_RtlInitAnsiString)
 (
   IN OUT PANSI_STRING   DestinationString,
-  IN     PCSZ           SourceString
+  IN     XDK::PCSZ           SourceString
 );
 
 // ******************************************************************
@@ -1067,23 +964,23 @@ typedef VOID (NTAPI *FPTR_RtlInitAnsiString)
 typedef VOID (NTAPI *FPTR_RtlInitUnicodeString)
 (
   IN OUT PUNICODE_STRING DestinationString,
-  IN     PCWSTR          SourceString
+  IN     XDK::PCWSTR          SourceString
 );
 
 // ******************************************************************
 // * RtlAnsiStringToUnicodeString
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_RtlAnsiStringToUnicodeString)
+typedef XDK::NTSTATUS (NTAPI *FPTR_RtlAnsiStringToUnicodeString)
 (
     IN OUT PUNICODE_STRING DestinationString,
     IN     PANSI_STRING    SourceString,
-    IN     BOOLEAN         AllocateDestinationString
+    IN     XDK::BOOLEAN         AllocateDestinationString
 );
 
 // ******************************************************************
 // * RtlAppendStringToString
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_RtlAppendStringToString)
+typedef XDK::NTSTATUS(NTAPI *FPTR_RtlAppendStringToString)
 (
 	IN OUT PSTRING    Destination,
 	IN     PSTRING    Source
@@ -1092,7 +989,7 @@ typedef NTSTATUS(NTAPI *FPTR_RtlAppendStringToString)
 // ******************************************************************
 // * RtlAppendUnicodeStringToString
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_RtlAppendUnicodeStringToString)
+typedef XDK::NTSTATUS(NTAPI *FPTR_RtlAppendUnicodeStringToString)
 (
 	IN OUT PUNICODE_STRING  Destination,
 	IN     PUNICODE_STRING  Source
@@ -1101,46 +998,46 @@ typedef NTSTATUS(NTAPI *FPTR_RtlAppendUnicodeStringToString)
 // ******************************************************************
 // * RtlAppendUnicodeToString
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_RtlAppendUnicodeToString)
+typedef XDK::NTSTATUS(NTAPI *FPTR_RtlAppendUnicodeToString)
 (
 	IN OUT PUNICODE_STRING  Destination,
-	IN     PCWSTR  Source
+	IN     XDK::PCWSTR  Source
 );
 
 // ******************************************************************
 // * RtlCharToInteger
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_RtlCharToInteger)
+typedef XDK::NTSTATUS(NTAPI *FPTR_RtlCharToInteger)
 (
-	IN     PCSZ   String,
-	IN     ULONG  Base OPTIONAL,
-	OUT    PULONG Value
+	IN     XDK::PCSZ   String,
+	IN     XDK::ULONG  Base OPTIONAL,
+	OUT    XDK::PULONG Value
 );
 
 // ******************************************************************
 // * RtlCompareString
 // ******************************************************************
-typedef LONG (NTAPI *FPTR_RtlCompareString)
+typedef XDK::LONG (NTAPI *FPTR_RtlCompareString)
 (
 	IN	const STRING  *String1,
 	IN	const STRING  *String2,
-	IN	      BOOLEAN CaseInSensitive
+	IN	      XDK::BOOLEAN CaseInSensitive
 );
 
 // ******************************************************************
 // * RtlCompareUnicodeString
 // ******************************************************************
-typedef LONG (NTAPI *FPTR_RtlCompareUnicodeString)
+typedef XDK::LONG (NTAPI *FPTR_RtlCompareUnicodeString)
 (
 	IN	PCUNICODE_STRING  String1,
 	IN	PCUNICODE_STRING  String2,
-	IN	BOOLEAN CaseInSensitive
+	IN	XDK::BOOLEAN CaseInSensitive
 );
 
 // ******************************************************************
 // * RtlCopyString
 // ******************************************************************
-typedef LONG (NTAPI *FPTR_RtlCopyString)
+typedef XDK::LONG (NTAPI *FPTR_RtlCopyString)
 (
 	OUT PSTRING DestinationString,
 	IN const STRING  *SourceString OPTIONAL
@@ -1149,7 +1046,7 @@ typedef LONG (NTAPI *FPTR_RtlCopyString)
 // ******************************************************************
 // * RtlCopyUnicodeString
 // ******************************************************************
-typedef LONG (NTAPI *FPTR_RtlCopyUnicodeString)
+typedef XDK::LONG (NTAPI *FPTR_RtlCopyUnicodeString)
 (
 	OUT PUNICODE_STRING DestinationString,
 	IN PUNICODE_STRING SourceString OPTIONAL
@@ -1158,38 +1055,38 @@ typedef LONG (NTAPI *FPTR_RtlCopyUnicodeString)
 // ******************************************************************
 // * RtlCreateUnicodeString
 // ******************************************************************
-typedef BOOLEAN (NTAPI *FPTR_RtlCreateUnicodeString)
+typedef XDK::BOOLEAN (NTAPI *FPTR_RtlCreateUnicodeString)
 (
 	OUT PUNICODE_STRING DestinationString,
-	IN PCWSTR           SourceString
+	IN XDK::PCWSTR           SourceString
 );
 
 // ******************************************************************
 // * RtlDowncaseUnicodeChar
 // ******************************************************************
-typedef WCHAR (NTAPI *FPTR_RtlDowncaseUnicodeChar)
+typedef XDK::WCHAR (NTAPI *FPTR_RtlDowncaseUnicodeChar)
 (
-	IN WCHAR    SourceCharacter
+	IN XDK::WCHAR    SourceCharacter
 );
 
 // ******************************************************************
 // * RtlDowncaseUnicodeString
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_RtlDowncaseUnicodeString)
+typedef XDK::NTSTATUS (NTAPI *FPTR_RtlDowncaseUnicodeString)
 (
 	OUT PUNICODE_STRING DestinationString,
 	IN PUNICODE_STRING SourceString,
-	IN BOOLEAN AllocateDestinationString
+	IN XDK::BOOLEAN AllocateDestinationString
 );
 
 // ******************************************************************
 // * RtlUnicodeStringToAnsiString
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_RtlUnicodeStringToAnsiString)
+typedef XDK::NTSTATUS (NTAPI *FPTR_RtlUnicodeStringToAnsiString)
 (
     IN OUT PANSI_STRING    DestinationString,
     IN     PUNICODE_STRING SourceString,
-    IN     BOOLEAN         AllocateDestinationString
+    IN     XDK::BOOLEAN         AllocateDestinationString
 );
 
 // ******************************************************************
@@ -1211,50 +1108,50 @@ typedef VOID(NTAPI *FPTR_RtlFreeUnicodeString)
 // ******************************************************************
 // * RtlEqualString
 // ******************************************************************
-typedef BOOLEAN (NTAPI *FPTR_RtlEqualString)
+typedef XDK::BOOLEAN (NTAPI *FPTR_RtlEqualString)
 (
 	IN PSTRING			String1,
 	IN PSTRING			String2,
-	IN BOOLEAN			CaseSensitive
+	IN XDK::BOOLEAN			CaseSensitive
 );
 
 // ******************************************************************
 // * RtlEqualUnicodeString
 // ******************************************************************
-typedef BOOLEAN (NTAPI *FPTR_RtlEqualUnicodeString)
+typedef XDK::BOOLEAN (NTAPI *FPTR_RtlEqualUnicodeString)
 (
 	IN PUNICODE_STRING String1,
 	IN PUNICODE_STRING String2,
-	IN BOOLEAN CaseSensitive
+	IN XDK::BOOLEAN CaseSensitive
 );
 
 // ******************************************************************
 // * RtlExtendedIntegerMultiply
 // ******************************************************************
-typedef LARGE_INTEGER (NTAPI *FPTR_RtlExtendedIntegerMultiply)
+typedef XDK::LARGE_INTEGER (NTAPI *FPTR_RtlExtendedIntegerMultiply)
 (
-	IN LARGE_INTEGER Multiplicand,
-	IN LONG          Multiplier
-	);
+	IN XDK::LARGE_INTEGER Multiplicand,
+	IN XDK::LONG          Multiplier
+);
 
 // ******************************************************************
 // * RtlExtendedLargeIntegerDivide
 // ******************************************************************
-typedef LARGE_INTEGER (NTAPI *FPTR_RtlExtendedLargeIntegerDivide)
+typedef XDK::LARGE_INTEGER (NTAPI *FPTR_RtlExtendedLargeIntegerDivide)
 (
-	IN LARGE_INTEGER Dividend,
-	IN ULONG         Divisor,
-	OUT PULONG		 Remainder
+	IN XDK::LARGE_INTEGER Dividend,
+	IN XDK::ULONG         Divisor,
+	OUT XDK::PULONG		 Remainder
 );
 
 // ******************************************************************
 // * RtlExtendedMagicDivide
 // ******************************************************************
-typedef LARGE_INTEGER (NTAPI *FPTR_RtlExtendedMagicDivide)
+typedef XDK::LARGE_INTEGER (NTAPI *FPTR_RtlExtendedMagicDivide)
 (
-	IN LARGE_INTEGER Dividend,
-	IN LARGE_INTEGER MagicDivisor,
-	IN CCHAR		 ShiftCount
+	IN XDK::LARGE_INTEGER Dividend,
+	IN XDK::LARGE_INTEGER MagicDivisor,
+	IN XDK::CCHAR		 ShiftCount
 );
 
 // ******************************************************************
@@ -1263,8 +1160,8 @@ typedef LARGE_INTEGER (NTAPI *FPTR_RtlExtendedMagicDivide)
 typedef VOID (NTAPI *FPTR_RtlFillMemory)
 (
 	OUT VOID UNALIGNED *Destination,
-	IN  SIZE_T         Length,
-	IN	UCHAR          Fill
+	IN  XDK::SIZE_T         Length,
+	IN	XDK::UCHAR          Fill
 );
 
 // ******************************************************************
@@ -1272,75 +1169,75 @@ typedef VOID (NTAPI *FPTR_RtlFillMemory)
 // ******************************************************************
 typedef VOID (NTAPI *FPTR_RtlFillMemoryUlong)
 (
-	OUT PVOID  Destination,
-	IN  SIZE_T Length,
-	IN	ULONG  Pattern
+	OUT XDK::PVOID  Destination,
+	IN  XDK::SIZE_T Length,
+	IN	XDK::ULONG  Pattern
 ); 
 
 // ******************************************************************
 // * RtlIntegerToChar
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_RtlIntegerToChar)
+typedef XDK::NTSTATUS (NTAPI *FPTR_RtlIntegerToChar)
 (
-	IN ULONG Value,
-	IN ULONG Base,
-	IN ULONG Length,
-	IN PCHAR Str
+	IN XDK::ULONG Value,
+	IN XDK::ULONG Base,
+	IN XDK::ULONG Length,
+	IN XDK::PCHAR Str
 );
 
 // ******************************************************************
 // * RtlIntegerToUnicodeString
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_RtlIntegerToUnicodeString)
+typedef XDK::NTSTATUS (NTAPI *FPTR_RtlIntegerToUnicodeString)
 (
-	IN	ULONG           Value,
-	IN	ULONG           Base OPTIONAL,
+	IN	XDK::ULONG           Value,
+	IN	XDK::ULONG           Base OPTIONAL,
 	IN OUT	PUNICODE_STRING String
 );
 
 // ******************************************************************
 // * RtlMultiByteToUnicodeN
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_RtlMultiByteToUnicodeN)
+typedef XDK::NTSTATUS (NTAPI *FPTR_RtlMultiByteToUnicodeN)
 (
-	OUT PWCH   UnicodeString,
-	IN  ULONG  MaxBytesInUnicodeString,
-	OUT PULONG BytesInUnicodeString OPTIONAL,
-	IN  const CHAR   *MultiByteString,
-	IN  ULONG  BytesInMultiByteString
+	OUT Native::PWCH   UnicodeString,
+	IN  XDK::ULONG  MaxBytesInUnicodeString,
+	OUT XDK::PULONG BytesInUnicodeString OPTIONAL,
+	IN  const XDK::CHAR   *MultiByteString,
+	IN  XDK::ULONG  BytesInMultiByteString
 );
 
 // ******************************************************************
 // * RtlMultiByteToUnicodeSize
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_RtlMultiByteToUnicodeSize)
+typedef XDK::NTSTATUS (NTAPI *FPTR_RtlMultiByteToUnicodeSize)
 (
-	OUT       PULONG BytesInUnicodeString,
-	IN  const CHAR   *MultiByteString,
-	IN        ULONG  BytesInMultiByteString
+	OUT       XDK::PULONG BytesInUnicodeString,
+	IN  const XDK::CHAR   *MultiByteString,
+	IN        XDK::ULONG  BytesInMultiByteString
 );
 
 // ******************************************************************
 // * NtDelayExecution
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtDelayExecution)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtDelayExecution)
 (
-    IN BOOLEAN          Alertable,
-    IN PLARGE_INTEGER   DelayInterval
+    IN XDK::BOOLEAN          Alertable,
+    IN XDK::PLARGE_INTEGER   DelayInterval
 );
 
 // ******************************************************************
 // * NtDuplicateObject
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtDuplicateObject)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtDuplicateObject)
 (
-    IN  HANDLE          SourceProcessHandle,
-    IN  HANDLE          SourceHandle,
-    IN  HANDLE          TargetProcessHandle,
-    OUT PHANDLE         TargetHandle,
-    IN  ACCESS_MASK     DesiredAccess OPTIONAL,
-    IN  ULONG           Attributes,
-    IN  ULONG           Options
+    IN  XDK::HANDLE          SourceProcessHandle,
+    IN  XDK::HANDLE          SourceHandle,
+    IN  XDK::HANDLE          TargetProcessHandle,
+    OUT XDK::PHANDLE         TargetHandle,
+    IN  XDK::ACCESS_MASK     DesiredAccess OPTIONAL,
+    IN  XDK::ULONG           Attributes,
+    IN  XDK::ULONG           Options
 );
 
 #define DUPLICATE_SAME_ATTRIBUTES   0x00000004
@@ -1348,58 +1245,58 @@ typedef NTSTATUS (NTAPI *FPTR_NtDuplicateObject)
 // ******************************************************************
 // * NtFlushBuffersFile
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtFlushBuffersFile)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtFlushBuffersFile)
 (
-    IN  HANDLE              FileHandle,
-    OUT PIO_STATUS_BLOCK    IoStatusBlock
+    IN  XDK::HANDLE              FileHandle,
+    OUT XDK::PIO_STATUS_BLOCK    IoStatusBlock
 );
 
 // ******************************************************************
 // * NtSetLdtEntries
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtSetLdtEntries)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtSetLdtEntries)
 (
-    IN USHORT       Selector1,
+    IN XDK::USHORT       Selector1,
     IN LDT_ENTRY    Descriptor1,
-    IN USHORT       Selector2,
+    IN XDK::USHORT       Selector2,
     IN LDT_ENTRY    Descriptor2
 );
 
 // ******************************************************************
 // * NtAllocateVirtualMemory
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtAllocateVirtualMemory)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtAllocateVirtualMemory)
 (
-    IN HANDLE               ProcessHandle,
-    IN OUT PVOID            *BaseAddress,
-    IN ULONG                ZeroBits,
-    IN OUT PULONG           RegionSize,
-    IN ULONG                AllocationType,
-    IN ULONG                Protect
+    IN XDK::HANDLE               ProcessHandle,
+    IN OUT XDK::PVOID            *BaseAddress,
+    IN XDK::ULONG                ZeroBits,
+    IN OUT XDK::PULONG           RegionSize,
+    IN XDK::ULONG                AllocationType,
+    IN XDK::ULONG                Protect
 );
 
 // ******************************************************************
 // * NtFreeVirtualMemory
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtFreeVirtualMemory)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtFreeVirtualMemory)
 (
-    IN HANDLE               ProcessHandle,
-    IN PVOID               *BaseAddress,
-    IN OUT PULONG           RegionSize,
-    IN ULONG                FreeType
+    IN XDK::HANDLE               ProcessHandle,
+    IN XDK::PVOID               *BaseAddress,
+    IN OUT XDK::PULONG           RegionSize,
+    IN XDK::ULONG                FreeType
 );
 
 // ******************************************************************
 // * NtQueryVirtualMemory
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtQueryVirtualMemory)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtQueryVirtualMemory)
 (
-    IN  HANDLE                      ProcessHandle,
-    IN  PVOID                       BaseAddress,
+    IN  XDK::HANDLE                      ProcessHandle,
+    IN  XDK::PVOID                       BaseAddress,
     IN  MEMORY_INFORMATION_CLASS    MemoryInformationClass,
-    OUT PVOID                       Buffer,
-    IN  ULONG                       Length,
-    OUT PULONG                      ResultLength OPTIONAL
+    OUT XDK::PVOID                       Buffer,
+    IN  XDK::ULONG                       Length,
+    OUT XDK::PULONG                      ResultLength OPTIONAL
 );
 
 // ******************************************************************
@@ -1429,131 +1326,131 @@ typedef VOID (NTAPI *FPTR_RtlLeaveCriticalSection)
 // ******************************************************************
 // * NtWaitForSingleObject
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtWaitForSingleObject)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtWaitForSingleObject)
 (
-    IN HANDLE               ObjectHandle,
-    IN BOOLEAN              Alertable,
-    IN PLARGE_INTEGER       TimeOut
+    IN XDK::HANDLE               ObjectHandle,
+    IN XDK::BOOLEAN              Alertable,
+    IN XDK::PLARGE_INTEGER       TimeOut
 );
 
 // ******************************************************************
 // * NtWaitForMultipleObjects
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtWaitForMultipleObjects)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtWaitForMultipleObjects)
 (
-    IN ULONG                ObjectCount,
-    IN PHANDLE              ObjectsArray,
+    IN XDK::ULONG                ObjectCount,
+    IN XDK::PHANDLE              ObjectsArray,
     IN OBJECT_WAIT_TYPE     WaitType,
-    IN BOOLEAN              Alertable,
-    IN PLARGE_INTEGER       TimeOut OPTIONAL
+    IN XDK::BOOLEAN              Alertable,
+    IN XDK::PLARGE_INTEGER       TimeOut OPTIONAL
 );
 
 // ******************************************************************
 // * NtCreateEvent
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtCreateEvent)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtCreateEvent)
 (
-    OUT PHANDLE             EventHandle,
-    IN  ACCESS_MASK         DesiredAccess,
-    IN  POBJECT_ATTRIBUTES  ObjectAttributes OPTIONAL,
-    IN  EVENT_TYPE          EventType,
-    IN  BOOLEAN             InitialState
+    OUT XDK::PHANDLE             EventHandle,
+    IN  XDK::ACCESS_MASK         DesiredAccess,
+	IN  XDK::POBJECT_ATTRIBUTES  ObjectAttributes OPTIONAL,
+    IN  XDK::EVENT_TYPE          EventType,
+    IN  XDK::BOOLEAN             InitialState
 );
 
 // ******************************************************************
 // * NtQueryEvent
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtQueryEvent)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtQueryEvent)
 (
-	IN HANDLE EventHandle,
+	IN XDK::HANDLE EventHandle,
 	IN EVENT_INFORMATION_CLASS EventInformationClass,
-	OUT PVOID EventInformation,
-	IN ULONG EventInformationLength,
-	OUT PULONG ReturnLength OPTIONAL
+	OUT XDK::PVOID EventInformation,
+	IN XDK::ULONG EventInformationLength,
+	OUT XDK::PULONG ReturnLength OPTIONAL
 );
 
 // ******************************************************************
 // * NtPulseEvent
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_NtPulseEvent)
+typedef XDK::NTSTATUS(NTAPI *FPTR_NtPulseEvent)
 (
-	IN HANDLE	EventHandle,
-	OUT PLONG	PreviousState OPTIONAL
+	IN XDK::HANDLE	EventHandle,
+	OUT XDK::PLONG	PreviousState OPTIONAL
 );
 
 // ******************************************************************
 // * NtCreateMutant
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtCreateMutant)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtCreateMutant)
 (
-    OUT PHANDLE             MutantHandle,
-    IN  ACCESS_MASK         DesiredAccess,
-    IN  POBJECT_ATTRIBUTES  ObjectAttributes OPTIONAL,
-    IN  BOOLEAN             InitialOwner
+    OUT XDK::PHANDLE             MutantHandle,
+    IN  XDK::ACCESS_MASK         DesiredAccess,
+    IN  XDK::POBJECT_ATTRIBUTES  ObjectAttributes OPTIONAL,
+    IN  XDK::BOOLEAN             InitialOwner
 );
 
 // ******************************************************************
 // * NtQueryMutant
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtQueryMutant)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtQueryMutant)
 (
-	IN HANDLE MutantHandle,
+	IN XDK::HANDLE MutantHandle,
 	IN MUTANT_INFORMATION_CLASS MutantInformationClass,
-	OUT PVOID MutantInformation,
-	IN ULONG MutantInformationLength,
-	OUT PULONG ReturnLength OPTIONAL
+	OUT XDK::PVOID MutantInformation,
+	IN XDK::ULONG MutantInformationLength,
+	OUT XDK::PULONG ReturnLength OPTIONAL
 );
 
 // ******************************************************************
 // * NtReleaseMutant
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtReleaseMutant)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtReleaseMutant)
 (
-    IN  HANDLE              MutantHandle,
-    OUT PLONG               PreviousCount OPTIONAL
+    IN  XDK::HANDLE              MutantHandle,
+    OUT XDK::PLONG               PreviousCount OPTIONAL
 );
 
 // ******************************************************************
 // * NtCreateSemaphore
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtCreateSemaphore)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtCreateSemaphore)
 (
-    OUT PHANDLE             SemaphoreHandle,
-    IN  ACCESS_MASK         DesiredAccess,
+    OUT XDK::PHANDLE             SemaphoreHandle,
+    IN  XDK::ACCESS_MASK         DesiredAccess,
     IN  POBJECT_ATTRIBUTES  ObjectAttributes OPTIONAL,
-    IN  ULONG               InitialCount,
-    IN  ULONG               MaximumCount
+    IN  XDK::ULONG               InitialCount,
+    IN  XDK::ULONG               MaximumCount
 );
 
 // ******************************************************************
 // * NtQuerySemaphore
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_NtQuerySemaphore)
+typedef XDK::NTSTATUS(NTAPI *FPTR_NtQuerySemaphore)
 (
-	IN HANDLE SemaphoreHandle,
+	IN XDK::HANDLE SemaphoreHandle,
 	IN SEMAPHORE_INFORMATION_CLASS SemaphoreInformationClass,
-	OUT PVOID SemaphoreInformation,
-	IN ULONG SemaphoreInformationLength,
-	OUT PULONG ReturnLength OPTIONAL
+	OUT XDK::PVOID SemaphoreInformation,
+	IN XDK::ULONG SemaphoreInformationLength,
+	OUT XDK::PULONG ReturnLength OPTIONAL
 );
 
 // ******************************************************************
 // * NtReleaseSemaphore
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtReleaseSemaphore)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtReleaseSemaphore)
 (
-    IN  HANDLE              SemaphoreHandle,
-    IN  ULONG               ReleaseCount,
-    OUT PULONG              PreviousCount OPTIONAL
+    IN  XDK::HANDLE              SemaphoreHandle,
+    IN  XDK::ULONG               ReleaseCount,
+    OUT XDK::PULONG              PreviousCount OPTIONAL
 );
 
 // ******************************************************************
 // * NtCreateTimer
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_NtCreateTimer)
+typedef XDK::NTSTATUS(NTAPI *FPTR_NtCreateTimer)
 (
-	OUT PHANDLE             TimerHandle,
-	IN  ACCESS_MASK         DesiredAccess,
+	OUT XDK::PHANDLE             TimerHandle,
+	IN  XDK::ACCESS_MASK         DesiredAccess,
 	IN  POBJECT_ATTRIBUTES  ObjectAttributes OPTIONAL,
 	IN  TIMER_TYPE          TimerType
 );
@@ -1561,60 +1458,60 @@ typedef NTSTATUS(NTAPI *FPTR_NtCreateTimer)
 // ******************************************************************
 // * SetTimer
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_NtSetTimer)
+typedef XDK::NTSTATUS(NTAPI *FPTR_NtSetTimer)
 (
-	IN HANDLE 	TimerHandle,
-	IN PLARGE_INTEGER 	DueTime,
+	IN XDK::HANDLE 	TimerHandle,
+	IN XDK::PLARGE_INTEGER 	DueTime,
 	IN PTIMER_APC_ROUTINE TimerApcRoutine 	OPTIONAL,
-	IN PVOID TimerContext 	OPTIONAL,
-	IN BOOLEAN 	WakeTimer,
-	IN LONG Period 	OPTIONAL,
-	OUT PBOOLEAN PreviousState 	OPTIONAL
+	IN XDK::PVOID TimerContext 	OPTIONAL,
+	IN XDK::BOOLEAN 	WakeTimer,
+	IN XDK::LONG Period 	OPTIONAL,
+	OUT XDK::PBOOLEAN PreviousState 	OPTIONAL
 );
 
 // ******************************************************************
 // * QueryTimer
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_NtQueryTimer)
+typedef XDK::NTSTATUS(NTAPI *FPTR_NtQueryTimer)
 (
-	IN HANDLE 	TimerHandle,
+	IN XDK::HANDLE 	TimerHandle,
 	IN TIMER_INFORMATION_CLASS 	TimerInformationClass,
-	OUT PVOID 	TimerInformation,
-	IN ULONG 	TimerInformationLength,
-	OUT PULONG ReturnLength 	OPTIONAL
+	OUT XDK::PVOID 	TimerInformation,
+	IN XDK::ULONG 	TimerInformationLength,
+	OUT XDK::PULONG ReturnLength 	OPTIONAL
 );
 
 // ******************************************************************
 // * NtCancelTimer
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_NtCancelTimer)
+typedef XDK::NTSTATUS(NTAPI *FPTR_NtCancelTimer)
 (
-	IN HANDLE TimerHandle,
-	OUT PBOOLEAN CurrentState OPTIONAL
+	IN XDK::HANDLE TimerHandle,
+	OUT XDK::PBOOLEAN CurrentState OPTIONAL
 );
 
 // ******************************************************************
 // * NtCreateFile
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtCreateFile)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtCreateFile)
 (
-    OUT PHANDLE             FileHandle,
-    IN  ACCESS_MASK         DesiredAccess,
+    OUT XDK::PHANDLE             FileHandle,
+    IN  XDK::ACCESS_MASK         DesiredAccess,
     IN  POBJECT_ATTRIBUTES  ObjectAttributes,
     OUT PIO_STATUS_BLOCK    IoStatusBlock,
-    IN  PLARGE_INTEGER      AllocationSize OPTIONAL,
-    IN  ULONG               FileAttributes,
-    IN  ULONG               ShareAccess,
-    IN  ULONG               CreateDisposition,
-    IN  ULONG               CreateOptions,
-    IN  PVOID               EaBuffer OPTIONAL,
-    IN  ULONG               EaLength
+    IN  XDK::PLARGE_INTEGER      AllocationSize OPTIONAL,
+    IN  XDK::ULONG               FileAttributes,
+    IN  XDK::ULONG               ShareAccess,
+    IN  XDK::ULONG               CreateDisposition,
+    IN  XDK::ULONG               CreateOptions,
+    IN  XDK::PVOID               EaBuffer OPTIONAL,
+    IN  XDK::ULONG               EaLength
 );
 
 // ******************************************************************
 // * NtDeleteFile
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_NtDeleteFile)
+typedef XDK::NTSTATUS(NTAPI *FPTR_NtDeleteFile)
 (
 	IN  POBJECT_ATTRIBUTES  ObjectAttributes
 );
@@ -1622,10 +1519,10 @@ typedef NTSTATUS(NTAPI *FPTR_NtDeleteFile)
 // ******************************************************************
 // * NtCreateDirectoryObject
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_NtCreateDirectoryObject)
+typedef XDK::NTSTATUS(NTAPI *FPTR_NtCreateDirectoryObject)
 (
-	OUT PHANDLE            DirectoryHandle,
-	IN  ACCESS_MASK        DesiredAccess,
+	OUT XDK::PHANDLE            DirectoryHandle,
+	IN  XDK::ACCESS_MASK        DesiredAccess,
 	IN  POBJECT_ATTRIBUTES ObjectAttributes
 );
 
@@ -1633,62 +1530,62 @@ typedef NTSTATUS(NTAPI *FPTR_NtCreateDirectoryObject)
 // ******************************************************************
 // * NtClearEvent
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtClearEvent)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtClearEvent)
 (
-    IN HANDLE               EventHandle
+    IN XDK::HANDLE               EventHandle
 );
 
 // ******************************************************************
 // * NtClose
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtClose)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtClose)
 (
-    IN HANDLE               Handle
+    IN XDK::HANDLE               Handle
 );
 
 // ******************************************************************
 // * NtOpenFile
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtOpenFile)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtOpenFile)
 (
-    OUT PHANDLE             FileHandle,
-    IN  ACCESS_MASK         DesiredAccess,
+    OUT XDK::PHANDLE             FileHandle,
+    IN  XDK::ACCESS_MASK         DesiredAccess,
     IN  POBJECT_ATTRIBUTES  ObjectAttributes,
     OUT PIO_STATUS_BLOCK    IoStatusBlock,
-    IN  ULONG               ShareAccess,
-    IN  ULONG               OpenOptions
+    IN  XDK::ULONG               ShareAccess,
+    IN  XDK::ULONG               OpenOptions
 );
 
 // ******************************************************************
 // * NtReadFile
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtReadFile)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtReadFile)
 (
-    IN  HANDLE          FileHandle,            // TODO: correct paramters
-    IN  HANDLE          Event OPTIONAL,
-    IN  PVOID           ApcRoutine OPTIONAL,
-    IN  PVOID           ApcContext,
-    OUT PVOID           IoStatusBlock,
-    OUT PVOID           Buffer,
-    IN  ULONG           Length,
-    IN  PLARGE_INTEGER  ByteOffset OPTIONAL,
-    IN  PULONG          Key OPTIONAL
+    IN  XDK::HANDLE          FileHandle,            // TODO: correct paramters
+    IN  XDK::HANDLE          Event OPTIONAL,
+    IN  XDK::PVOID           ApcRoutine OPTIONAL,
+    IN  XDK::PVOID           ApcContext,
+    OUT XDK::PVOID           IoStatusBlock,
+    OUT XDK::PVOID           Buffer,
+    IN  XDK::ULONG           Length,
+    IN  XDK::PLARGE_INTEGER  ByteOffset OPTIONAL,
+    IN  XDK::PULONG          Key OPTIONAL
 );
 
 // ******************************************************************
 // * NtWriteFile
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtWriteFile)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtWriteFile)
 (
-    IN  HANDLE          FileHandle,            // TODO: correct paramters
-    IN  HANDLE          Event OPTIONAL,
-    IN  PVOID           ApcRoutine OPTIONAL,
-    IN  PVOID           ApcContext,
-    OUT PVOID           IoStatusBlock,
-    OUT PVOID           Buffer,
-    IN  ULONG           Length,
-    IN  PLARGE_INTEGER  ByteOffset OPTIONAL,
-    IN  PULONG          Key OPTIONAL
+    IN  XDK::HANDLE          FileHandle,            // TODO: correct paramters
+    IN  XDK::HANDLE          Event OPTIONAL,
+    IN  XDK::PVOID           ApcRoutine OPTIONAL,
+    IN  XDK::PVOID           ApcContext,
+    OUT XDK::PVOID           IoStatusBlock,
+    OUT XDK::PVOID           Buffer,
+    IN  XDK::ULONG           Length,
+    IN  XDK::PLARGE_INTEGER  ByteOffset OPTIONAL,
+    IN  XDK::PULONG          Key OPTIONAL
 );
 
 // ******************************************************************
@@ -1699,64 +1596,64 @@ typedef VOID (NTAPI *FPTR_NtYieldExecution)();
 // ******************************************************************
 // * NtSetInformationFile
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtSetInformationFile)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtSetInformationFile)
 (
-    IN  HANDLE  FileHandle,            // TODO: correct paramters
-    OUT PVOID   IoStatusBlock,
-    IN  PVOID   FileInformation,
-    IN  ULONG   Length,
-    IN  ULONG   FileInformationClass
+    IN  XDK::HANDLE  FileHandle,            // TODO: correct paramters
+    OUT XDK::PVOID   IoStatusBlock,
+    IN  XDK::PVOID   FileInformation,
+    IN  XDK::ULONG   Length,
+    IN  XDK::ULONG   FileInformationClass
 );
 
 // ******************************************************************
 // * NtSuspendThread
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtSuspendThread)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtSuspendThread)
 (
-    IN  HANDLE  ThreadHandle,
-    OUT PULONG  PreviousSuspendCount OPTIONAL
+    IN  XDK::HANDLE  ThreadHandle,
+    OUT XDK::PULONG  PreviousSuspendCount OPTIONAL
 );
 
 // ******************************************************************
 // * NtResumeThread
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtResumeThread)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtResumeThread)
 (
-    IN  HANDLE  ThreadHandle,
-    OUT PULONG  SuspendCount OPTIONAL
+    IN  XDK::HANDLE  ThreadHandle,
+    OUT XDK::PULONG  SuspendCount OPTIONAL
 );
 
 // ******************************************************************
 // * NtSetEvent
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtSetEvent)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtSetEvent)
 (
-    IN  HANDLE  EventHandle,
-    OUT PLONG   PreviousState OPTIONAL
+    IN  XDK::HANDLE  EventHandle,
+    OUT XDK::PLONG   PreviousState OPTIONAL
 );
 
 // ******************************************************************
 // * NtQueryDirectoryFile
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtQueryDirectoryFile)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtQueryDirectoryFile)
 (
-    IN  HANDLE                  FileHandle,
-    IN  HANDLE                  Event OPTIONAL,
+    IN  XDK::HANDLE                  FileHandle,
+    IN  XDK::HANDLE                  Event OPTIONAL,
     IN  PIO_APC_ROUTINE         ApcRoutine OPTIONAL,
-    IN  PVOID                   ApcContext OPTIONAL,
+    IN  XDK::PVOID                   ApcContext OPTIONAL,
     OUT PIO_STATUS_BLOCK        IoStatusBlock,
-    OUT PVOID                   FileInformation,
-    IN  ULONG                   Length,
+    OUT XDK::PVOID                   FileInformation,
+    IN  XDK::ULONG                   Length,
     IN  FILE_INFORMATION_CLASS  FileInformationClass,
-    IN  BOOLEAN                 ReturnSingleEntry,
+    IN  XDK::BOOLEAN                 ReturnSingleEntry,
     IN  PUNICODE_STRING         FileMask OPTIONAL,
-    IN  BOOLEAN                 RestartScan
+    IN  XDK::BOOLEAN                 RestartScan
 );
 
 // ******************************************************************
 // * NtQueryFullAttributesFile
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtQueryFullAttributesFile)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtQueryFullAttributesFile)
 (
     IN  POBJECT_ATTRIBUTES          ObjectAttributes,
     OUT PFILE_NETWORK_OPEN_INFORMATION  Attributes
@@ -1765,144 +1662,144 @@ typedef NTSTATUS (NTAPI *FPTR_NtQueryFullAttributesFile)
 // ******************************************************************
 // * NtQueryInformationFile
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtQueryInformationFile)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtQueryInformationFile)
 (
-    IN  HANDLE                      FileHandle,
-    OUT PIO_STATUS_BLOCK            IoStatusBlock,
-    OUT PVOID                       FileInformation,
-    IN  ULONG                       Length,
-    IN  FILE_INFORMATION_CLASS      FileInfo
+    IN  XDK::HANDLE                      FileHandle,
+    OUT XDK::PIO_STATUS_BLOCK            IoStatusBlock,
+    OUT XDK::PVOID                       FileInformation,
+    IN  XDK::ULONG                       Length,
+    IN  XDK::FILE_INFORMATION_CLASS      FileInfo
 );
 
 // ******************************************************************
 // * NtQueryVolumeInformationFile
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtQueryVolumeInformationFile)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtQueryVolumeInformationFile)
 (
-    IN  HANDLE                      FileHandle,
+    IN  XDK::HANDLE                      FileHandle,
     OUT PIO_STATUS_BLOCK            IoStatusBlock,
     OUT PFILE_FS_SIZE_INFORMATION   FileInformation,
-    IN  ULONG                       Length,
+    IN  XDK::ULONG                       Length,
     IN  FS_INFORMATION_CLASS        FsInformationClass
 );
 
 // ******************************************************************
 // * IoCreateFile
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_IoCreateFile)
+typedef XDK::NTSTATUS (NTAPI *FPTR_IoCreateFile)
 (
-    OUT PHANDLE             FileHandle,
-    IN  ACCESS_MASK         DesiredAccess,
-    IN  POBJECT_ATTRIBUTES  ObjectAttributes,
-    OUT PIO_STATUS_BLOCK    IoStatusBlock,
-    IN  PLARGE_INTEGER      AllocationSize OPTIONAL,
-    IN  ULONG               FileAttributes,
-    IN  ULONG               ShareAccess,
-    IN  ULONG               Disposition,
-    IN  ULONG               CreateOptions,
-    IN  PVOID               EaBuffer OPTIONAL,
-    IN  ULONG               EaLength,
+    OUT XDK::PHANDLE             FileHandle,
+    IN  XDK::ACCESS_MASK         DesiredAccess,
+    IN  XDK::POBJECT_ATTRIBUTES  ObjectAttributes,
+    OUT XDK::PIO_STATUS_BLOCK    IoStatusBlock,
+    IN  XDK::PLARGE_INTEGER      AllocationSize OPTIONAL,
+    IN  XDK::ULONG               FileAttributes,
+    IN  XDK::ULONG               ShareAccess,
+    IN  XDK::ULONG               Disposition,
+    IN  XDK::ULONG               CreateOptions,
+    IN  XDK::PVOID               EaBuffer OPTIONAL,
+    IN  XDK::ULONG               EaLength,
     IN  CREATE_FILE_TYPE    CreateFileType,
-    IN  PVOID               ExtraCreateParameters OPTIONAL,
-    IN  ULONG               Options
+    IN  XDK::PVOID               ExtraCreateParameters OPTIONAL,
+    IN  XDK::ULONG               Options
 );
 
 // ******************************************************************
 // * NtQueueApcThread
 // ******************************************************************
-typedef NTSTATUS (NTAPI *FPTR_NtQueueApcThread)
+typedef XDK::NTSTATUS (NTAPI *FPTR_NtQueueApcThread)
 (
-	IN HANDLE               ThreadHandle,
-	IN PIO_APC_ROUTINE      ApcRoutine,
-	IN PVOID                ApcRoutineContext OPTIONAL,
-	IN PIO_STATUS_BLOCK     ApcStatusBlock OPTIONAL,
-	IN ULONG                ApcReserved OPTIONAL 
+	IN XDK::HANDLE               ThreadHandle,
+	IN XDK::PIO_APC_ROUTINE      ApcRoutine,
+	IN XDK::PVOID                ApcRoutineContext OPTIONAL,
+	IN XDK::PIO_STATUS_BLOCK     ApcStatusBlock OPTIONAL,
+	IN XDK::ULONG                ApcReserved OPTIONAL 
 );
 
 // ******************************************************************
 // * RtlDestroyHeap
 // ******************************************************************
-typedef PVOID (NTAPI *FPTR_RtlDestroyHeap)
+typedef XDK::PVOID (NTAPI *FPTR_RtlDestroyHeap)
 (
-    IN PVOID				HeapHandle
+    IN XDK::PVOID				HeapHandle
 );
 
 // ******************************************************************
 // * NtOpenSymbolicLinkObject
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_NtOpenSymbolicLinkObject)
+typedef XDK::NTSTATUS(NTAPI *FPTR_NtOpenSymbolicLinkObject)
 (
-	OUT PHANDLE				pHandle,
-	IN  ACCESS_MASK			DesiredAccess,
+	OUT XDK::PHANDLE				pHandle,
+	IN  XDK::ACCESS_MASK			DesiredAccess,
 	IN  POBJECT_ATTRIBUTES	ObjectAttributes
 );
 
 // ******************************************************************
 // * NtDeviceIoControlFile
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_NtDeviceIoControlFile)
+typedef XDK::NTSTATUS(NTAPI *FPTR_NtDeviceIoControlFile)
 (
-	IN  HANDLE				FileHandle,
-	IN  HANDLE				Event OPTIONAL,
-	IN  PIO_APC_ROUTINE		ApcRoutine OPTIONAL,
-	IN  PVOID				ApcContext OPTIONAL,
-	OUT PIO_STATUS_BLOCK	IoStatusBlock,
-	IN  ULONG				IoControlCode,
-	IN  PVOID				InputBuffer OPTIONAL,
-	IN  ULONG				InputBufferLength,
-	OUT PVOID				OutputBuffer OPTIONAL,
-	IN  ULONG				OutputBufferLength
+	IN  XDK::HANDLE				FileHandle,
+	IN  XDK::HANDLE				Event OPTIONAL,
+	IN  XDK::PIO_APC_ROUTINE		ApcRoutine OPTIONAL,
+	IN  XDK::PVOID				ApcContext OPTIONAL,
+	OUT XDK::PIO_STATUS_BLOCK	IoStatusBlock,
+	IN  XDK::ULONG				IoControlCode,
+	IN  XDK::PVOID				InputBuffer OPTIONAL,
+	IN  XDK::ULONG				InputBufferLength,
+	OUT XDK::PVOID				OutputBuffer OPTIONAL,
+	IN  XDK::ULONG				OutputBufferLength
 );
 
 // ******************************************************************
 // * NtFsControlFile
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_NtFsControlFile)
+typedef XDK::NTSTATUS(NTAPI *FPTR_NtFsControlFile)
 (
-	IN  HANDLE				FileHandle,
-	IN  HANDLE				Event OPTIONAL,
-	IN  PIO_APC_ROUTINE		ApcRoutine OPTIONAL,
-	IN  PVOID				ApcContext OPTIONAL,
-	OUT PIO_STATUS_BLOCK	IoStatusBlock,
-	IN  ULONG				FsControlCode,
-	IN  PVOID				InputBuffer OPTIONAL,
-	IN  ULONG				InputBufferLength,
-	OUT PVOID				OutputBuffer OPTIONAL,
-	IN  ULONG				OutputBufferLength
+	IN  XDK::HANDLE				FileHandle,
+	IN  XDK::HANDLE				Event OPTIONAL,
+	IN  XDK::PIO_APC_ROUTINE		ApcRoutine OPTIONAL,
+	IN  XDK::PVOID				ApcContext OPTIONAL,
+	OUT XDK::PIO_STATUS_BLOCK	IoStatusBlock,
+	IN  XDK::ULONG				FsControlCode,
+	IN  XDK::PVOID				InputBuffer OPTIONAL,
+	IN  XDK::ULONG				InputBufferLength,
+	OUT XDK::PVOID				OutputBuffer OPTIONAL,
+	IN  XDK::ULONG				OutputBufferLength
 );
 
 // ******************************************************************
 // * NtCreateTimer
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_NtCreateTimer)
+typedef XDK::NTSTATUS(NTAPI *FPTR_NtCreateTimer)
 (
-	OUT PHANDLE				TimerHandle,
-	IN  ACCESS_MASK			DesiredAccess,
-	IN  POBJECT_ATTRIBUTES	ObjectAttributes OPTIONAL,
-	IN  TIMER_TYPE			TimerType
+	OUT XDK::PHANDLE				TimerHandle,
+	IN  XDK::ACCESS_MASK			DesiredAccess,
+	IN  XDK::POBJECT_ATTRIBUTES	ObjectAttributes OPTIONAL,
+	IN  XDK::TIMER_TYPE			TimerType
 );
 
 // ******************************************************************
 // * NtSetTimer
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_NtSetTimer)
+typedef XDK::NTSTATUS(NTAPI *FPTR_NtSetTimer)
 (
-	IN  HANDLE				TimerHandle,
-	IN  PLARGE_INTEGER		DueTime,
-	IN  PTIMER_APC_ROUTINE	TimerApcRoutine OPTIONAL,
-	IN  PVOID				TimerContext OPTIONAL,
-	IN  BOOLEAN				ResumeTimer,
-	IN  LONG				Period OPTIONAL,
-	OUT PBOOLEAN			PreviousState OPTIONAL
+	IN  XDK::HANDLE				TimerHandle,
+	IN  XDK::PLARGE_INTEGER		DueTime,
+	IN  XDK::PTIMER_APC_ROUTINE	TimerApcRoutine OPTIONAL,
+	IN  XDK::PVOID				TimerContext OPTIONAL,
+	IN  XDK::BOOLEAN				ResumeTimer,
+	IN  XDK::LONG				Period OPTIONAL,
+	OUT XDK::PBOOLEAN			PreviousState OPTIONAL
 );
 
 // ******************************************************************
 // * NtCancelTimer
 // ******************************************************************
-typedef NTSTATUS(NTAPI *FPTR_NtCancelTimer)
+typedef XDK::NTSTATUS(NTAPI *FPTR_NtCancelTimer)
 (
-	IN  HANDLE				TimerHandle,
-	OUT PBOOLEAN			CurrentState OPTIONAL
+	IN  XDK::HANDLE				TimerHandle,
+	OUT XDK::PBOOLEAN			CurrentState OPTIONAL
 );
 
 // ******************************************************************

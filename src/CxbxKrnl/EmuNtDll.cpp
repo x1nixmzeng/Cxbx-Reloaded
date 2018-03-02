@@ -42,12 +42,15 @@ namespace Native
 
 #include "EmuNtDll.h"
 
+namespace Xbox
+{
+
 // ******************************************************************
 // * Loaded at run-time to avoid linker conflicts
 // ******************************************************************
 static Native::HMODULE hNtDll = Native::GetModuleHandle("ntdll");
 
-#define IMPORT(API) NtDll::FPTR_##API NtDll::API = (NtDll::FPTR_##API)GetProcAddress(hNtDll, #API)
+#define IMPORT(API) FPTR_##API API = (FPTR_##API)GetProcAddress(hNtDll, #API)
 
 // Note : Keep IMPORT's sorted, to ease future sync's (and compares with EXTERN's):
 /*
@@ -155,3 +158,5 @@ IMPORT(RtlUpcaseUnicodeString);
 IMPORT(RtlUpcaseUnicodeToMultiByteN);
 IMPORT(RtlUpperString);
 IMPORT(RtlUshortByteSwap);
+
+} // Xbox
