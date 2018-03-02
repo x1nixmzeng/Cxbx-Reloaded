@@ -57,7 +57,7 @@ namespace XDK
 	typedef unsigned short      USHORT;
 	typedef unsigned short      WORD;
 	typedef unsigned long       ULONG;
-	typedef unsigned long       DWORD;
+	//typedef unsigned long       DWORD;
 	typedef unsigned long       SIZE_T, *PSIZE_T;
 	typedef unsigned long       ACCESS_MASK, *PACCESS_MASK;
 	typedef unsigned long       PHYSICAL_ADDRESS;
@@ -83,8 +83,11 @@ namespace XDK
 	typedef unsigned long              *PULONG;
 	typedef DWORD              *LPDWORD;
 	typedef ACCESS_MASK        *PACCESS_MASK;
-	typedef long               *LONG_PTR;
-	typedef unsigned long              *ULONG_PTR;
+
+	// Already declared!
+	//typedef long               *LONG_PTR;
+	//typedef unsigned long              *ULONG_PTR;
+
 	typedef INT_PTR            *PINT_PTR;
 
 #ifndef VOID
@@ -107,6 +110,7 @@ namespace XDK
 	(
 		LPVOID lpThreadParameter
 	);
+
 	typedef PTHREAD_START_ROUTINE LPTHREAD_START_ROUTINE;
 
 	// ******************************************************************

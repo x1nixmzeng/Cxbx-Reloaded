@@ -916,7 +916,7 @@ bool RequiresConversionToARGB(X_D3DFORMAT Format)
 	return false;
 }
 
-DWORD BitsPerPixel(X_D3DFORMAT Format)
+XDK::DWORD BitsPerPixel(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8)
 		if (FormatInfos[Format].bits_per_pixel > 0) // TODO : Remove this
@@ -925,12 +925,12 @@ DWORD BitsPerPixel(X_D3DFORMAT Format)
 	return 16; // TODO : 8
 }
 
-DWORD BytesPerPixel(X_D3DFORMAT Format)
+XDK::DWORD BytesPerPixel(X_D3DFORMAT Format)
 {
 	return ((EmuXBFormat::BitsPerPixel(Format) + 4) / 8);
 }
 
-BOOL IsCompressed(X_D3DFORMAT Format)
+XDK::BOOL IsCompressed(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8)
 		return (FormatInfos[Format].stored == Cmprsd);
@@ -938,7 +938,7 @@ BOOL IsCompressed(X_D3DFORMAT Format)
 	return false;
 }
 
-BOOL IsLinear(X_D3DFORMAT Format)
+XDK::BOOL IsLinear(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8)
 		return (FormatInfos[Format].stored == Linear);
@@ -946,7 +946,7 @@ BOOL IsLinear(X_D3DFORMAT Format)
 	return (Format == X_D3DFMT_VERTEXDATA); // TODO : false;
 }
 
-BOOL IsSwizzled(X_D3DFORMAT Format)
+XDK::BOOL IsSwizzled(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8)
 		return (FormatInfos[Format].stored == Swzzld);
@@ -954,7 +954,7 @@ BOOL IsSwizzled(X_D3DFORMAT Format)
 	return false;
 }
 
-BOOL IsRenderTarget(X_D3DFORMAT Format)
+XDK::BOOL IsRenderTarget(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8)
 		return (FormatInfos[Format].usage == RenderTarget);
@@ -962,7 +962,7 @@ BOOL IsRenderTarget(X_D3DFORMAT Format)
 	return false;
 }
 
-BOOL IsDepthBuffer(X_D3DFORMAT Format)
+XDK::BOOL IsDepthBuffer(X_D3DFORMAT Format)
 {
 	if (Format <= X_D3DFMT_LIN_R8G8B8A8)
 		return (FormatInfos[Format].usage == DepthBuffer);
@@ -1097,9 +1097,9 @@ X_D3DFORMAT EmuPC2XB_D3DFormat(Native::D3DFORMAT Format)
     return result;
 }
 
-DWORD EmuXB2PC_D3DLock(DWORD Flags)
+XDK::DWORD EmuXB2PC_D3DLock(XDK::DWORD Flags)
 {
-    DWORD NewFlags = 0;
+	XDK::DWORD NewFlags = 0;
 
     // Need to convert the flags, TODO: fix the xbox extensions
 //    if(Flags & X_D3DLOCK_NOFLUSH)
@@ -1118,7 +1118,7 @@ DWORD EmuXB2PC_D3DLock(DWORD Flags)
 }
 
 // convert from xbox to pc multisample formats
-Native::D3DMULTISAMPLE_TYPE EmuXB2PC_D3DMultiSampleFormat(DWORD Type)
+Native::D3DMULTISAMPLE_TYPE EmuXB2PC_D3DMultiSampleFormat(XDK::DWORD Type)
 {
 	Native::D3DMULTISAMPLE_TYPE result;
 	switch (Type & 0xFFFF)
@@ -1150,7 +1150,7 @@ Native::D3DMULTISAMPLE_TYPE EmuXB2PC_D3DMultiSampleFormat(DWORD Type)
 }
 
 // lookup table for converting vertex count to primitive count
-UINT EmuD3DVertexToPrimitive[11][2] =
+XDK::UINT EmuD3DVertexToPrimitive[11][2] =
 {
     {0, 0}, // NULL
     {1, 0}, // X_D3DPT_POINTLIST
@@ -1183,7 +1183,7 @@ Native::D3DPRIMITIVETYPE EmuPrimitiveTypeLookup[] =
 };
 
 // render state conversion table
-CONST DWORD EmuD3DRenderStateSimpleEncoded[174] =
+CONST XDK::DWORD EmuD3DRenderStateSimpleEncoded[174] =
 {
     // WARNING: This lookup table strongly binds us to an SDK with these
     // specific #define values for D3DRS_*. Make VERY sure that you have
@@ -1279,19 +1279,19 @@ CONST DWORD EmuD3DRenderStateSimpleEncoded[174] =
 
 void EmuUnswizzleRect
 (
-	PVOID pSrcBuff,
-	DWORD dwWidth,
-	DWORD dwHeight,
-	DWORD dwDepth,
-	PVOID pDstBuff,
-	DWORD dwPitch,
-	RECT rSrc, // Unused
-	POINT poDst, // Unused
-	DWORD dwBPP // expressed in Bytes Per Pixel
+	XDK::PVOID pSrcBuff,
+	XDK::DWORD dwWidth,
+	XDK::DWORD dwHeight,
+	XDK::DWORD dwDepth,
+	XDK::PVOID pDstBuff,
+	XDK::DWORD dwPitch,
+	Native::RECT rSrc, // Unused
+	Native::POINT poDst, // Unused
+	XDK::DWORD dwBPP // expressed in Bytes Per Pixel
 ) // Source : Dxbx
 {
 	// TODO : The following could be done using a lookup table :
-	DWORD dwMaskX = 0, dwMaskY = 0, dwMaskZ = 0;
+	XDK::DWORD dwMaskX = 0, dwMaskY = 0, dwMaskZ = 0;
 	for (uint i=1, j=1; (i <= dwWidth) || (i <= dwHeight) || (i <= dwDepth); i <<= 1) {
 		if (i < dwWidth) {
 			dwMaskX = dwMaskX | j;
@@ -1310,7 +1310,7 @@ void EmuUnswizzleRect
 	}
 
 	// get the biggest mask
-	DWORD dwMaskMax;
+	XDK::DWORD dwMaskMax;
 	if (dwMaskX > dwMaskY)
 		dwMaskMax = dwMaskX;
 	else
@@ -1319,9 +1319,9 @@ void EmuUnswizzleRect
 	if (dwMaskZ > dwMaskMax)
 		dwMaskMax = dwMaskZ;
 
-	DWORD dwStartX = 0, dwOffsetX = 0;
-	DWORD dwStartY = 0, dwOffsetY = 0;
-	DWORD dwStartZ = 0, dwOffsetW = 0;
+	XDK::DWORD dwStartX = 0, dwOffsetX = 0;
+	XDK::DWORD dwStartY = 0, dwOffsetY = 0;
+	XDK::DWORD dwStartZ = 0, dwOffsetW = 0;
 	/* TODO : Use values from poDst and rSrc to initialize above values, after which the following makes more sense:
 	for (uint i=1; i <= dwMaskMax; i <<= 1) {
 		if (i <= dwMaskX) {
@@ -1346,19 +1346,19 @@ void EmuUnswizzleRect
 		}
 	}*/
 
-	DWORD dwZ = dwStartZ;
+	XDK::DWORD dwZ = dwStartZ;
 	for (uint z = 0; z < dwDepth; z++) {
-		DWORD dwY = dwStartY;
+		XDK::DWORD dwY = dwStartY;
 		for (uint y = 0; y < dwHeight; y++) {
-			DWORD dwX = dwStartX;
+			XDK::DWORD dwX = dwStartX;
 			for (uint x = 0; x < dwWidth; x++) {
 				int delta = ((dwX | dwY | dwZ) * dwBPP);
-				memcpy(pDstBuff, (PBYTE)pSrcBuff + delta, dwBPP); // copy one pixel
-				pDstBuff = (PBYTE)pDstBuff + dwBPP; // Step to next pixel in destination
+				memcpy(pDstBuff, (XDK::PBYTE)pSrcBuff + delta, dwBPP); // copy one pixel
+				pDstBuff = (XDK::PBYTE)pDstBuff + dwBPP; // Step to next pixel in destination
 				dwX = (dwX - dwMaskX) & dwMaskX; // step to next pixel in source
 			}
 
-			pDstBuff = (PBYTE)pDstBuff + dwPitch - (dwWidth * dwBPP); // step to next line in destination
+			pDstBuff = (XDK::PBYTE)pDstBuff + dwPitch - (dwWidth * dwBPP); // step to next line in destination
 			dwY = (dwY - dwMaskY) & dwMaskY; // step to next line in source
 		}
 

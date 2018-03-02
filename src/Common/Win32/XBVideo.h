@@ -59,14 +59,14 @@ class XBVideo : public Error
         // ******************************************************************
         // * SetDirect3DDevice
         // ******************************************************************
-        void  SetDirect3DDevice(DWORD dwDirect3DDevice) { m_dwDirect3DDevice = dwDirect3DDevice; }
-        DWORD GetDirect3DDevice() const { return m_dwDirect3DDevice; }
+        void  SetDirect3DDevice(Native::DWORD dwDirect3DDevice) { m_dwDirect3DDevice = dwDirect3DDevice; }
+		Native::DWORD GetDirect3DDevice() const { return m_dwDirect3DDevice; }
 
         // ******************************************************************
         // * SetDisplayAdapter
         // ******************************************************************
-        void  SetDisplayAdapter(DWORD dwDisplayAdapter) { m_dwDisplayAdapter = dwDisplayAdapter; }
-        DWORD GetDisplayAdapter() const { return m_dwDisplayAdapter; }
+        void  SetDisplayAdapter(Native::DWORD dwDisplayAdapter) { m_dwDisplayAdapter = dwDisplayAdapter; }
+		Native::DWORD GetDisplayAdapter() const { return m_dwDisplayAdapter; }
 
         // ******************************************************************
         // * SetVideoResolution
@@ -77,31 +77,31 @@ class XBVideo : public Error
         // ******************************************************************
         // * Fullscreen Toggling
         // ******************************************************************
-        void SetFullscreen(BOOL bFullscreen) { m_bFullscreen = bFullscreen; }
-        BOOL GetFullscreen() const { return m_bFullscreen; }
+        void SetFullscreen(Native::BOOL bFullscreen) { m_bFullscreen = bFullscreen; }
+		Native::BOOL GetFullscreen() const { return m_bFullscreen; }
 
         // ******************************************************************
         // * VSync Toggling
         // ******************************************************************
-        void SetVSync(BOOL bVSync) { m_bVSync = bVSync; }
-        BOOL GetVSync() const { return m_bVSync; }
+        void SetVSync(Native::BOOL bVSync) { m_bVSync = bVSync; }
+		Native::BOOL GetVSync() const { return m_bVSync; }
 
 		// ******************************************************************
 		// * Hardware YUV Toggling
 		// ******************************************************************
-		void SetHardwareYUV(BOOL bHardwareYUV) { m_bHardwareYUV = bHardwareYUV; }
-		BOOL GetHardwareYUV() const { return m_bHardwareYUV; }
+		void SetHardwareYUV(Native::BOOL bHardwareYUV) { m_bHardwareYUV = bHardwareYUV; }
+		Native::BOOL GetHardwareYUV() const { return m_bHardwareYUV; }
 
     private:
         // ******************************************************************
         // * Configuration
         // ******************************************************************
         char  m_szVideoResolution[100];
-        DWORD m_dwDisplayAdapter;
-        DWORD m_dwDirect3DDevice;
-        BOOL  m_bVSync;
-        BOOL  m_bFullscreen;
-        BOOL  m_bHardwareYUV;
+        Native::DWORD m_dwDisplayAdapter;
+        Native::DWORD m_dwDirect3DDevice;
+        Native::BOOL  m_bVSync;
+        Native::BOOL  m_bFullscreen;
+        Native::BOOL  m_bHardwareYUV;
 };
 
 #endif

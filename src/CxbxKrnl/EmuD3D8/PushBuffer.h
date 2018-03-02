@@ -46,7 +46,7 @@ namespace Xbox
 
 		void PushBufferRaw
 		(
-			DWORD                 *pdwPushData
+			XDK::DWORD                 *pdwPushData
 		);
 
 	} // EmuExecute
@@ -55,8 +55,8 @@ namespace Xbox
 	{
 		extern void PushBuffer
 		(
-			DWORD*				  PBData,
-			DWORD				  dwSize
+			XDK::DWORD*				  PBData,
+			XDK::DWORD				  dwSize
 		);
 
 	} // DbgDump

@@ -35,6 +35,18 @@
 // ******************************************************************
 #define _XBOXKRNL_LOCAL_
 
+#include <assert.h> // assert()
+
+#include <process.h>
+#include <locale.h>
+#include <string>
+
+#include "CxbxKrnl/Emu.h"
+#include "CxbxKrnl/EmuFS.h"
+#include "CxbxKrnl/EmuXTL.h"
+
+#include "CxbxKrnl/CxbxKrnl.h" // For CxbxKrnlCleanup()
+
 namespace Xbox
 {
 
@@ -62,22 +74,6 @@ namespace Xbox
     * Support as instruction modifier,
 	  if necessary as mov_sat x, y
 */
-
-#include "CxbxKrnl/Emu.h"
-#include "CxbxKrnl/EmuFS.h"
-#include "CxbxKrnl/EmuXTL.h"
-
-#include "CxbxKrnl/CxbxKrnl.h" // For CxbxKrnlCleanup()
-
-typedef uint8_t uint8; // TODO : Remove
-
-#include <assert.h> // assert()
-
-#include <process.h>
-#include <locale.h>
-#include <string>
-
-//#include "EmuD3DPixelShader.h"
 
 /*---------------------------------------------------------------------------*/
 /*  Texture configuration - The following members of the D3DPixelShaderDef   */
@@ -383,10 +379,10 @@ enum PS_CHANNEL
     PS_CHANNEL_ALPHA= 0x10, // used as RGB or ALPHA source
 };
 
-constexpr DWORD PS_ChannelMask = (DWORD)PS_CHANNEL_ALPHA;
-constexpr DWORD PS_NoChannelMask = (DWORD)(~PS_ChannelMask);
-constexpr DWORD PS_AlphaChannelsMask = (DWORD)(PS_ChannelMask | (PS_ChannelMask << 8) | (PS_ChannelMask << 16) | (PS_ChannelMask << 24));
-constexpr DWORD PS_NoChannelsMask = (DWORD)(~PS_AlphaChannelsMask);
+constexpr XDK::DWORD PS_ChannelMask = (XDK::DWORD)PS_CHANNEL_ALPHA;
+constexpr XDK::DWORD PS_NoChannelMask = (XDK::DWORD)(~PS_ChannelMask);
+constexpr XDK::DWORD PS_AlphaChannelsMask = (XDK::DWORD)(PS_ChannelMask | (PS_ChannelMask << 8) | (PS_ChannelMask << 16) | (PS_ChannelMask << 24));
+constexpr XDK::DWORD PS_NoChannelsMask = (XDK::DWORD)(~PS_AlphaChannelsMask);
 
 enum PS_FINALCOMBINERSETTING
 {
@@ -452,10 +448,10 @@ enum PS_COMBINEROUTPUT
 // xxxx----.--------.--------.-------- // offset of D3D constant for stage 7
 
 #define PS_CONSTANTMAPPING(s0,s1,s2,s3,s4,s5,s6,s7) \
-     (((DWORD)(s0)&0xf)<< 0) | (((DWORD)(s1)&0xf)<< 4) | \
-     (((DWORD)(s2)&0xf)<< 8) | (((DWORD)(s3)&0xf)<<12) | \
-     (((DWORD)(s4)&0xf)<<16) | (((DWORD)(s5)&0xf)<<20) | \
-     (((DWORD)(s6)&0xf)<<24) | (((DWORD)(s7)&0xf)<<28)
+     (((XDK::DWORD)(s0)&0xf)<< 0) | (((XDK::DWORD)(s1)&0xf)<< 4) | \
+     (((XDK::DWORD)(s2)&0xf)<< 8) | (((XDK::DWORD)(s3)&0xf)<<12) | \
+     (((XDK::DWORD)(s4)&0xf)<<16) | (((XDK::DWORD)(s5)&0xf)<<20) | \
+     (((XDK::DWORD)(s6)&0xf)<<24) | (((XDK::DWORD)(s7)&0xf)<<28)
 // s0-s7 contain the offset of the D3D constant that corresponds to the
 // c0 or c1 constant in stages 0 through 7.  These mappings are only used in
 // SetPixelShaderConstant().
@@ -466,7 +462,7 @@ enum PS_COMBINEROUTPUT
 // --------.--------.--------.xxxx---- // offset of D3D constant for C1
 // --------.--------.-------x.-------- // Adjust texture flag
 
-#define PS_FINALCOMBINERCONSTANTS(c0,c1,flags) (((DWORD)(flags) << 8) | ((DWORD)(c0)&0xf)<< 0) | (((DWORD)(c1)&0xf)<< 4)
+#define PS_FINALCOMBINERCONSTANTS(c0,c1,flags) (((XDK::DWORD)(flags) << 8) | ((XDK::DWORD)(c0)&0xf)<< 0) | (((XDK::DWORD)(c1)&0xf)<< 4)
 // c0 and c1 contain the offset of the D3D constant that corresponds to the
 // constants in the final combiner.  These mappings are only used in
 // SetPixelShaderConstant().  Flags contains values from PS_GLOBALFLAGS
@@ -748,7 +744,7 @@ struct RPSCombinerStageChannel {
 	PS_COMBINEROUTPUT CombinerOutputFlags;
 	bool AB_CD_SUM; // True=AB+CD, False=MUX(AB;CD) based on R0.a
 
-	void Decode(DWORD PSInputs, DWORD PSOutputs, bool IsAlpha = false);
+	void Decode(XDK::DWORD PSInputs, DWORD PSOutputs, bool IsAlpha = false);
 };
 
 struct RPSCombinerStage {
@@ -832,8 +828,8 @@ typedef struct _PSH_INTERMEDIATE_FORMAT {
 	bool MoveRemovableParametersRight(const int Index1, const int Index2);
 	bool XMoveNonRegisterOutputsRight();
 	void XCopySecondOpcodeToFirst(const PSH_OPCODE aOpcode);
-	bool Decode(DWORD CombinerStageNr, DWORD PSInputs, DWORD PSOutputs, DWORD aMask);
-	bool DecodeFinalCombiner(DWORD aPSFinalCombinerInputsABCD, DWORD aPSFinalCombinerInputsEFG);
+	bool Decode(XDK::DWORD CombinerStageNr, DWORD PSInputs, DWORD PSOutputs, DWORD aMask);
+	bool DecodeFinalCombiner(XDK::DWORD aPSFinalCombinerInputsABCD, DWORD aPSFinalCombinerInputsEFG);
 } PSH_INTERMEDIATE_FORMAT,
 *PPSH_INTERMEDIATE_FORMAT;
 
@@ -1223,7 +1219,7 @@ std::string PSH_IMD_ARGUMENT::ToString()
 
   if (UsesRegister())
   {
-    for (DWORD Modifier = ARGMOD_IDENTITY; Modifier < ARGMOD_BLUE_REPLICATE; Modifier++)
+    for (XDK::DWORD Modifier = ARGMOD_IDENTITY; Modifier < ARGMOD_BLUE_REPLICATE; Modifier++)
       if (Modifier & Modifiers) {
 		char buffer[256];
 		Result = std::string(buffer, sprintf(buffer, PSH_ARG_MODIFIER_Str[Modifier], Result.c_str()));
@@ -1723,7 +1719,7 @@ void PSH_INTERMEDIATE_FORMAT::XCopySecondOpcodeToFirst(const PSH_OPCODE aOpcode)
   Parameters[1] = Parameters[3];
 }
 
-bool PSH_INTERMEDIATE_FORMAT::Decode(DWORD CombinerStageNr, DWORD PSInputs, DWORD PSOutputs, DWORD aMask)
+bool PSH_INTERMEDIATE_FORMAT::Decode(XDK::DWORD CombinerStageNr, DWORD PSInputs, DWORD PSOutputs, DWORD aMask)
 {
   DWORD CombinerOutputFlags;
   int i;
@@ -1822,7 +1818,7 @@ bool PSH_INTERMEDIATE_FORMAT::Decode(DWORD CombinerStageNr, DWORD PSInputs, DWOR
   return Result;
 } // Decode
 
-bool PSH_INTERMEDIATE_FORMAT::DecodeFinalCombiner(DWORD aPSFinalCombinerInputsABCD, DWORD aPSFinalCombinerInputsEFG)
+bool PSH_INTERMEDIATE_FORMAT::DecodeFinalCombiner(XDK::DWORD aPSFinalCombinerInputsABCD, DWORD aPSFinalCombinerInputsEFG)
 {
   int i;
 // Note : The sign bit is lost upon input to the final combiner!
@@ -3838,7 +3834,7 @@ void RPSCombinerOutput::Decode(uint8 Value, DWORD PSInputs, bool aIsAlpha)
 
 /* RPSCombinerStageChannel */
 
-void RPSCombinerStageChannel::Decode(DWORD PSInputs, DWORD PSOutputs, bool IsAlpha/* = false*/)
+void RPSCombinerStageChannel::Decode(XDK::DWORD PSInputs, DWORD PSOutputs, bool IsAlpha/* = false*/)
 {
   // Get the combiner output flags :
   CombinerOutputFlags = (PS_COMBINEROUTPUT)(PSOutputs >> 12);
@@ -3999,7 +3995,7 @@ static const
 
   if (pShader)
   {
-    pFunction = (DWORD*)(pShader->GetBufferPointer());
+    pFunction = (XDK::DWORD*)(pShader->GetBufferPointer());
 
     if (hRet == D3D_OK)
       // redirect to windows d3d
@@ -4067,8 +4063,8 @@ bool g_EmuD3DActivePixelShader = (pPSDef != NULL);
     while (RecompiledPixelShader)
 	{
       // Only compare parts that form a unique shader (ignore the constants and Direct3D8 run-time fields) :
-      if ((memcmp(&(RecompiledPixelShader->PSDef.PSAlphaInputs[0]), &(pPSDef->PSAlphaInputs[0]), (8+2)*sizeof(DWORD)) == 0)
-      && (memcmp(&(RecompiledPixelShader->PSDef.PSAlphaOutputs[0]), &(pPSDef->PSAlphaOutputs[0]), (8+8+3+8+4)* sizeof(DWORD)) == 0))
+      if ((memcmp(&(RecompiledPixelShader->PSDef.PSAlphaInputs[0]), &(pPSDef->PSAlphaInputs[0]), (8+2)*sizeof(XDK::DWORD)) == 0)
+      && (memcmp(&(RecompiledPixelShader->PSDef.PSAlphaOutputs[0]), &(pPSDef->PSAlphaOutputs[0]), (8+8+3+8+4)* sizeof(XDK::DWORD)) == 0))
         break;
 
       RecompiledPixelShader = RecompiledPixelShader->Next;
@@ -6721,7 +6717,7 @@ inline void CorrectConstToReg(char *szConst, int *pPSC0, int *pPSC1)
 	for(i=2; i<8; i++) 
 	{
 		// Go through all stages and check whether used
-		BOOL bUsed=FALSE;
+		XDK::BOOL bUsed=FALSE;
 		for(int j=0; j<8; j++) {
 			if((pPSC0[j] == i)||(pPSC1[j] == i)||(iConstants[j] == i)) {
 				bUsed=TRUE;
@@ -6773,7 +6769,7 @@ void DumpPixelShaderDefToFile( X_D3DPIXELSHADERDEF* pPSDef, const char* pszCode 
 	static int PshNumber = 0;	// Keep track of how many pixel shaders we've attemted to convert.
 	char szPSDef[512];			
 
-	sprintf( szPSDef, "PSDef%.03d.txt", PshNumber++ );
+	Native::sprintf( szPSDef, "PSDef%.03d.txt", PshNumber++ );
 
 	FILE* out = fopen( szPSDef, "w" );
 	if( out )

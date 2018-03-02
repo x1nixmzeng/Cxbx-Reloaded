@@ -43,15 +43,15 @@ namespace Xbox
 typedef struct _VertexPatchDesc
 {
     IN     X_D3DPRIMITIVETYPE    PrimitiveType;
-    IN     DWORD                 dwVertexCount;
-    IN     DWORD                 dwPrimitiveCount;
-    IN     DWORD                 dwOffset;
+    IN     XDK::DWORD                 dwVertexCount;
+    IN     XDK::DWORD                 dwPrimitiveCount;
+    IN     XDK::DWORD                 dwOffset;
     // Data if Draw...UP call
-    IN OUT PVOID                 pVertexStreamZeroData;
-    IN     UINT                  uiVertexStreamZeroStride;
+    IN OUT XDK::PVOID                 pVertexStreamZeroData;
+    IN     XDK::UINT                  uiVertexStreamZeroStride;
     // The current vertex shader, used to identify the streams
-    IN     DWORD                 hVertexShader;
-	IN	   PWORD				 pIndexData = nullptr;
+    IN     XDK::DWORD                 hVertexShader;
+	IN	   Native::PWORD				 pIndexData = nullptr;
 }
 VertexPatchDesc;
 
@@ -59,8 +59,8 @@ typedef struct _PATCHEDSTREAM
 {
     X_D3DVertexBuffer *pOriginalStream;
     Native::IDirect3DVertexBuffer8 *pPatchedStream;
-    UINT                    uiOrigStride;
-    UINT                    uiNewStride;
+    XDK::UINT                    uiOrigStride;
+    XDK::UINT                    uiNewStride;
     bool                    bUsedCached;
 } PATCHEDSTREAM;
 
@@ -92,10 +92,10 @@ class VertexPatcher
 
     private:
 
-        UINT m_uiNbrStreams;
+		XDK::UINT m_uiNbrStreams;
         PATCHEDSTREAM m_pStreams[MAX_NBR_STREAMS];
 
-        PVOID m_pNewVertexStreamZeroData;
+		XDK::PVOID m_pNewVertexStreamZeroData;
 
         bool m_bPatched;
         bool m_bAllocatedStreamZeroData;
@@ -103,11 +103,11 @@ class VertexPatcher
         VERTEX_DYNAMIC_PATCH *m_pDynamicPatch;
 
         // Returns the number of streams of a patch
-        UINT GetNbrStreams(VertexPatchDesc *pPatchDesc);
+		XDK::UINT GetNbrStreams(VertexPatchDesc *pPatchDesc);
 
         // Caches a patched stream
         void CacheStream(VertexPatchDesc *pPatchDesc,
-                         UINT             uiStream,
+                         Native::UINT             uiStream,
 						 uint32_t		  uiHash);
 
         // Frees a cached, patched stream
@@ -115,24 +115,24 @@ class VertexPatcher
 
         // Tries to apply a previously patched stream from the cache
         bool ApplyCachedStream(VertexPatchDesc *pPatchDesc,
-                               UINT             uiStream,
+                               XDK::UINT             uiStream,
 							   bool			   *pbFatalError,
 							   uint32_t        *uiHash);
 
         // Patches the types of the stream
-        bool PatchStream(VertexPatchDesc *pPatchDesc, UINT uiStream);
+        bool PatchStream(VertexPatchDesc *pPatchDesc, XDK::UINT uiStream);
 
         // Normalize texture coordinates in FVF stream if needed
-        bool NormalizeTexCoords(VertexPatchDesc *pPatchDesc, UINT uiStream);
+        bool NormalizeTexCoords(VertexPatchDesc *pPatchDesc, XDK::UINT uiStream);
 
         // Patches the primitive of the stream
-        bool PatchPrimitive(VertexPatchDesc *pPatchDesc, UINT uiStream);
+        bool PatchPrimitive(VertexPatchDesc *pPatchDesc, XDK::UINT uiStream);
 };
 
 // inline vertex buffer emulation
-extern DWORD                  *g_pIVBVertexBuffer;
+extern XDK::DWORD                  *g_pIVBVertexBuffer;
 extern X_D3DPRIMITIVETYPE      g_IVBPrimitiveType;
-extern DWORD                   g_IVBFVF;
+extern XDK::DWORD                   g_IVBFVF;
 
 #define IVB_TABLE_SIZE  4096 // This should be more than enough. Tweak as necessary if it overflows or the resulting VertexBuffer fails to allocate
 #define IVB_BUFFER_SIZE sizeof(_D3DIVB) * IVB_TABLE_SIZE
@@ -143,10 +143,10 @@ extern DWORD                   g_IVBFVF;
 struct _D3DIVB
 {
 	Native::D3DXVECTOR3 Position;   // Position
-    FLOAT            Rhw;        // Rhw
-	FLOAT			 Blend1;	 // Blend1		
-    DWORD       dwSpecular; // Specular
-    DWORD       dwDiffuse;  // Diffuse
+    Native::FLOAT            Rhw;        // Rhw
+	Native::FLOAT			 Blend1;	 // Blend1		
+    XDK::DWORD       dwSpecular; // Specular
+    XDK::DWORD       dwDiffuse;  // Diffuse
     Native::D3DXVECTOR3 Normal;     // Normal
     Native::D3DXVECTOR2 TexCoord1;  // TexCoord1
     Native::D3DXVECTOR2 TexCoord2;  // TexCoord2
@@ -156,14 +156,14 @@ struct _D3DIVB
 
 extern _D3DIVB g_IVBTable[IVB_TABLE_SIZE];
 
-extern UINT g_IVBTblOffs;
+extern XDK::UINT g_IVBTblOffs;
 
 extern VOID EmuFlushIVB();
 
 extern VOID EmuUpdateActiveTexture();
 
-extern DWORD g_dwPrimPerFrame;
+extern XDK::DWORD g_dwPrimPerFrame;
  
-} // ~XBL
+} // ~Xbox
 
 #endif

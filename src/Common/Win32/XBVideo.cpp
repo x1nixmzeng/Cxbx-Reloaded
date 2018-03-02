@@ -61,28 +61,32 @@ void XBVideo::Load(const char *szRegistryKey)
     // * Load Configuration from Registry
     // ******************************************************************
     {
-        DWORD   dwDisposition, dwType, dwSize;
-        HKEY    hKey;
+        Native::DWORD   dwDisposition, dwType, dwSize;
+        Native::HKEY    hKey;
+
+		using Native::ULONG_PTR;
+		using Native::HKEY;
+		using Native::LONG;
 
         if(RegCreateKeyEx(HKEY_CURRENT_USER, szRegistryKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_QUERY_VALUE, NULL, &hKey, &dwDisposition) == ERROR_SUCCESS)
         {
             dwType = REG_SZ; dwSize = sizeof(m_szVideoResolution);
-            RegQueryValueEx(hKey, "VideoResolution", NULL, &dwType, (PBYTE)m_szVideoResolution, &dwSize);
+            RegQueryValueEx(hKey, "VideoResolution", NULL, &dwType, (Native::PBYTE)m_szVideoResolution, &dwSize);
 
             dwType = REG_DWORD; dwSize = sizeof(m_dwDisplayAdapter);
-            RegQueryValueEx(hKey, "DisplayAdapter", NULL, &dwType, (PBYTE)&m_dwDisplayAdapter, &dwSize);
+            RegQueryValueEx(hKey, "DisplayAdapter", NULL, &dwType, (Native::PBYTE)&m_dwDisplayAdapter, &dwSize);
 
             dwType = REG_DWORD; dwSize = sizeof(m_dwDirect3DDevice);
-            RegQueryValueEx(hKey, "Direct3DDevice", NULL, &dwType, (PBYTE)&m_dwDirect3DDevice, &dwSize);
+            RegQueryValueEx(hKey, "Direct3DDevice", NULL, &dwType, (Native::PBYTE)&m_dwDirect3DDevice, &dwSize);
 
             dwType = REG_DWORD; dwSize = sizeof(m_bFullscreen);
-            RegQueryValueEx(hKey, "Fullscreen", NULL, &dwType, (PBYTE)&m_bFullscreen, &dwSize);
+            RegQueryValueEx(hKey, "Fullscreen", NULL, &dwType, (Native::PBYTE)&m_bFullscreen, &dwSize);
 
             dwType = REG_DWORD; dwSize = sizeof(m_bVSync);
-            RegQueryValueEx(hKey, "VSync", NULL, &dwType, (PBYTE)&m_bVSync, &dwSize);
+            RegQueryValueEx(hKey, "VSync", NULL, &dwType, (Native::PBYTE)&m_bVSync, &dwSize);
 
             dwType = REG_DWORD; dwSize = sizeof(m_bHardwareYUV);
-            RegQueryValueEx(hKey, "HardwareYUV", NULL, &dwType, (PBYTE)&m_bHardwareYUV, &dwSize);
+            RegQueryValueEx(hKey, "HardwareYUV", NULL, &dwType, (Native::PBYTE)&m_bHardwareYUV, &dwSize);
 
             RegCloseKey(hKey);
         }
@@ -98,28 +102,32 @@ void XBVideo::Save(const char *szRegistryKey)
     // * Save Configuration to Registry
     // ******************************************************************
     if (g_SaveOnExit) {
-        DWORD   dwDisposition, dwType, dwSize;
-        HKEY    hKey;
+        Native::DWORD   dwDisposition, dwType, dwSize;
+        Native::HKEY    hKey;
+
+		using Native::ULONG_PTR;
+		using Native::HKEY;
+		using Native::LONG;
 
         if(RegCreateKeyEx(HKEY_CURRENT_USER, szRegistryKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL, &hKey, &dwDisposition) == ERROR_SUCCESS)
         {
             dwType = REG_SZ; dwSize = sizeof(m_szVideoResolution);
-            RegSetValueEx(hKey, "VideoResolution", 0, dwType, (PBYTE)m_szVideoResolution, dwSize);
+            RegSetValueEx(hKey, "VideoResolution", 0, dwType, (Native::PBYTE)m_szVideoResolution, dwSize);
 
             dwType = REG_DWORD; dwSize = sizeof(m_dwDisplayAdapter);
-            RegSetValueEx(hKey, "DisplayAdapter", 0, dwType, (PBYTE)&m_dwDisplayAdapter, dwSize);
+            RegSetValueEx(hKey, "DisplayAdapter", 0, dwType, (Native::PBYTE)&m_dwDisplayAdapter, dwSize);
 
             dwType = REG_DWORD; dwSize = sizeof(m_dwDirect3DDevice);
-            RegSetValueEx(hKey, "Direct3DDevice", 0, dwType, (PBYTE)&m_dwDirect3DDevice, dwSize);
+            RegSetValueEx(hKey, "Direct3DDevice", 0, dwType, (Native::PBYTE)&m_dwDirect3DDevice, dwSize);
 
             dwType = REG_DWORD; dwSize = sizeof(m_bFullscreen);
-            RegSetValueEx(hKey, "Fullscreen", 0, dwType, (PBYTE)&m_bFullscreen, dwSize);
+            RegSetValueEx(hKey, "Fullscreen", 0, dwType, (Native::PBYTE)&m_bFullscreen, dwSize);
 
             dwType = REG_DWORD; dwSize = sizeof(m_bVSync);
-            RegSetValueEx(hKey, "VSync", 0, dwType, (PBYTE)&m_bVSync, dwSize);
+            RegSetValueEx(hKey, "VSync", 0, dwType, (Native::PBYTE)&m_bVSync, dwSize);
 
             dwType = REG_DWORD; dwSize = sizeof(m_bHardwareYUV);
-            RegSetValueEx(hKey, "HardwareYUV", 0, dwType, (PBYTE)&m_bHardwareYUV, dwSize);
+            RegSetValueEx(hKey, "HardwareYUV", 0, dwType, (Native::PBYTE)&m_bHardwareYUV, dwSize);
 
             RegCloseKey(hKey);
         }

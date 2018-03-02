@@ -35,6 +35,7 @@
 #define CONVERT_H
 
 #include "../CxbxKrnl.h"
+#include "XDK.h"
 
 namespace Xbox
 {
@@ -47,7 +48,7 @@ namespace Xbox
 
 // simple render state encoding lookup table
 #define X_D3DRSSE_UNK 0x7fffffff
-extern CONST DWORD EmuD3DRenderStateSimpleEncoded[174];
+extern CONST XDK::DWORD EmuD3DRenderStateSimpleEncoded[174];
 
 #ifdef OLD_COLOR_CONVERSION
 typedef struct _ComponentEncodingInfo
@@ -73,25 +74,25 @@ bool CanBeConvertedToARGB(X_D3DFORMAT Format);
 bool RequiresConversionToARGB(X_D3DFORMAT Format);
 
 // how many bits does this format use per pixel?
-DWORD BitsPerPixel(X_D3DFORMAT Format);
+XDK::DWORD BitsPerPixel(X_D3DFORMAT Format);
 
 // how many bytes does this format use per pixel?
-DWORD BytesPerPixel(X_D3DFORMAT Format);
+XDK::DWORD BytesPerPixel(X_D3DFORMAT Format);
 
 // is this format compressed?
-BOOL IsCompressed(X_D3DFORMAT Format);
+XDK::BOOL IsCompressed(X_D3DFORMAT Format);
 
 // is this format linear?
-BOOL IsLinear(X_D3DFORMAT Format);
+XDK::BOOL IsLinear(X_D3DFORMAT Format);
 
 // is this format swizzled?
-BOOL IsSwizzled(X_D3DFORMAT Format);
+XDK::BOOL IsSwizzled(X_D3DFORMAT Format);
 
 // is this format a valid render target?
-BOOL IsRenderTarget(X_D3DFORMAT Format);
+XDK::BOOL IsRenderTarget(X_D3DFORMAT Format);
 
 // is this format a valid depth buffer?
-BOOL IsDepthBuffer(X_D3DFORMAT Format);
+XDK::BOOL IsDepthBuffer(X_D3DFORMAT Format);
 
 } // EmuXBFormat
 
@@ -102,10 +103,10 @@ extern Native::D3DFORMAT EmuXB2PC_D3DFormat(X_D3DFORMAT Format);
 extern X_D3DFORMAT EmuPC2XB_D3DFormat(Native::D3DFORMAT Format);
 
 // convert from xbox to pc d3d lock flags
-extern DWORD EmuXB2PC_D3DLock(DWORD Flags);
+extern XDK::DWORD EmuXB2PC_D3DLock(XDK::DWORD Flags);
 
 // convert from xbox to pc multisample formats
-extern Native::D3DMULTISAMPLE_TYPE EmuXB2PC_D3DMultiSampleFormat(DWORD Type);
+extern Native::D3DMULTISAMPLE_TYPE EmuXB2PC_D3DMultiSampleFormat(XDK::DWORD Type);
 
 /**
 // convert from pc to xbox texture transform state types (unnecessary so far)
@@ -228,7 +229,7 @@ inline Native::D3DSTENCILOP EmuXB2PC_D3DSTENCILOP(X_D3DSTENCILOP Value)
 }
 
 // table used for vertex->primitive count conversion
-extern UINT EmuD3DVertexToPrimitive[11][2];
+extern XDK::UINT EmuD3DVertexToPrimitive[11][2];
 
 // convert from vertex count to primitive count (Xbox)
 inline int EmuD3DVertex2PrimitiveCount(X_D3DPRIMITIVETYPE PrimitiveType, int VertexCount)
@@ -248,7 +249,7 @@ extern Native::D3DPRIMITIVETYPE EmuPrimitiveTypeLookup[];
 // convert xbox->pc primitive type
 inline Native::D3DPRIMITIVETYPE EmuXB2PC_D3DPrimitiveType(X_D3DPRIMITIVETYPE PrimitiveType)
 {
-    if((DWORD)PrimitiveType == 0x7FFFFFFF)
+    if((XDK::DWORD)PrimitiveType == 0x7FFFFFFF)
         return Native::D3DPT_FORCE_DWORD;
 
     return EmuPrimitiveTypeLookup[PrimitiveType];
@@ -256,15 +257,15 @@ inline Native::D3DPRIMITIVETYPE EmuXB2PC_D3DPrimitiveType(X_D3DPRIMITIVETYPE Pri
 
 extern void EmuUnswizzleRect
 (
-	PVOID pSrcBuff,
-	DWORD dwWidth,
-	DWORD dwHeight,
-	DWORD dwDepth,
-	PVOID pDstBuff,
-	DWORD dwPitch,
-	RECT rSrc, // Unused
-	POINT poDst, // Unused
-	DWORD dwBPP // expressed in Bytes Per Pixel
+	XDK::PVOID pSrcBuff,
+	XDK::DWORD dwWidth,
+	XDK::DWORD dwHeight,
+	XDK::DWORD dwDepth,
+	XDK::PVOID pDstBuff,
+	XDK::DWORD dwPitch,
+	Native::RECT rSrc, // Unused
+	Native::POINT poDst, // Unused
+	XDK::DWORD dwBPP // expressed in Bytes Per Pixel
 ); // NOPATCH
 
 // From : https://www.virtualbox.org/svn/vbox/trunk/src/VBox/Additions/x11/x11include/libdrm-2.4.13/nouveau_class.h
@@ -1785,15 +1786,15 @@ typedef enum _TXBType {
 
 typedef struct _RenderStateInfo {
 	char *S;   // String representation.
-	WORD V;    // The XDK version since which a render state was introduced (using the 5911 declarations as a base).
+	XDK::WORD V;    // The XDK version since which a render state was introduced (using the 5911 declarations as a base).
 	TXBType T; // The Xbox data type. Defaults to xt_Unknown.
-	DWORD M;   // The related push buffer method. Not always a 1-to-1 mapping. Needs push-buffer interpretation & conversion code.
+	XDK::DWORD M;   // The related push buffer method. Not always a 1-to-1 mapping. Needs push-buffer interpretation & conversion code.
 	Native::D3DRENDERSTATETYPE PC; // Map XBox to PC render state. Defaults to D3DRS_UNSUPPORTED.
 	char *N;   // XDK notes. Defaults to ''.
 }
 RenderStateInfo;
 
-#define D3DRS_NONE ((D3DRENDERSTATETYPE)0)
+#define D3DRS_NONE ((Native::D3DRENDERSTATETYPE)0)
 
 extern const RenderStateInfo DxbxRenderStateInfo[];
 

@@ -35,6 +35,7 @@
 #define VERTEXSHADER_H
 
 #include "Cxbx.h"
+#include "CxbxKrnl/EmuD3D8Types.h"
 
 namespace Xbox
 {
@@ -49,43 +50,43 @@ typedef struct
 VSH_SHADER_HEADER;
 
 #define VSH_INSTRUCTION_SIZE       4
-#define VSH_INSTRUCTION_SIZE_BYTES (VSH_INSTRUCTION_SIZE * sizeof(DWORD))
+#define VSH_INSTRUCTION_SIZE_BYTES (VSH_INSTRUCTION_SIZE * sizeof(XDK::DWORD))
 
 // recompile xbox vertex shader declaration
-extern DWORD EmuRecompileVshDeclaration
+extern XDK::DWORD EmuRecompileVshDeclaration
 (
-    DWORD                *pDeclaration,
-    DWORD               **ppRecompiledDeclaration,
-    DWORD                *pDeclarationSize,
-    boolean               IsFixedFunction,
-    VERTEX_DYNAMIC_PATCH *pVertexDynamicPatch
+    XDK::DWORD                *pDeclaration,
+    XDK::DWORD               **ppRecompiledDeclaration,
+    XDK::DWORD                *pDeclarationSize,
+    Native::boolean               IsFixedFunction,
+	VERTEX_DYNAMIC_PATCH *pVertexDynamicPatch
 );
 
 // recompile xbox vertex shader function
-extern HRESULT EmuRecompileVshFunction
+extern XDK::HRESULT EmuRecompileVshFunction
 (
-    DWORD        *pFunction,
+	XDK::DWORD        *pFunction,
     Native::LPD3DXBUFFER *ppRecompiled,
-    DWORD        *pOriginalSize,
-    boolean      bNoReservedConstants,
-	boolean		 *pbUseDeclarationOnly
+    XDK::DWORD        *pOriginalSize,
+    Native::boolean      bNoReservedConstants,
+	Native::boolean		 *pbUseDeclarationOnly
 );
 
 extern void FreeVertexDynamicPatch(VERTEX_SHADER *pVertexShader);
 
 // Checks for failed vertex shaders, and shaders that would need patching
-extern boolean IsValidCurrentShader(void);
-extern boolean VshHandleIsValidShader(DWORD Handle);
+extern Native::boolean IsValidCurrentShader(void);
+extern Native::boolean VshHandleIsValidShader(XDK::DWORD Handle);
 
 // NOTE: Comparing with 0xFFFF breaks some titles (like Kingdom Under Fire)
 // The real Xbox checks the D3DFVF_RESERVED0 flag but we can't do that without 
 // breaking rendering in many titles: CreateVertexShader needs to be unpatched first.
 // Instead, we assume any vertex shaders will be allocated by our memory manager and
 // exist above the XBE reserved region, not great, but it'l do for now.
-inline boolean VshHandleIsFVF(DWORD Handle) { return (Handle > NULL) && (Handle <= XBE_MAX_VA); }
-inline boolean VshHandleIsVertexShader(DWORD Handle) { return (Handle > XBE_MAX_VA) ? TRUE : FALSE; }
-inline X_D3DVertexShader *VshHandleGetVertexShader(DWORD Handle) { return VshHandleIsVertexShader(Handle) ? (X_D3DVertexShader *)Handle : nullptr; }
-VERTEX_DYNAMIC_PATCH *VshGetVertexDynamicPatch(DWORD Handle);
+inline Native::boolean VshHandleIsFVF(XDK::DWORD Handle) { return (Handle != NULL) && (Handle <= XBE_MAX_VA); }
+inline Native::boolean VshHandleIsVertexShader(XDK::DWORD Handle) { return (Handle > XBE_MAX_VA) ? TRUE : FALSE; }
+inline X_D3DVertexShader *VshHandleGetVertexShader(XDK::DWORD Handle) { return VshHandleIsVertexShader(Handle) ? (X_D3DVertexShader *)Handle : nullptr; }
+VERTEX_DYNAMIC_PATCH *VshGetVertexDynamicPatch(XDK::DWORD Handle);
 
 #ifdef _DEBUG_TRACK_VS
 #define DbgVshPrintf if(g_bPrintfOn) printf
@@ -94,6 +95,6 @@ inline void null_func_vsh(...) { }
 #define DbgVshPrintf null_func_vsh
 #endif
 
-} // ~XBL
+} // ~Xbox
 
 #endif

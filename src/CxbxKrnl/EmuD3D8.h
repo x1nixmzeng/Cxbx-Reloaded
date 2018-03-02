@@ -550,7 +550,7 @@ XDK::HRESULT WINAPI EMUPATCH(D3DDevice_CreateIndexBuffer)
 // ******************************************************************
 // * patch: D3DDevice_CreateIndexBuffer2
 // ******************************************************************
-X_D3DIndexBuffer * WINAPI EMUPATCH(D3DDevice_CreateIndexBuffer2)(UINT Length);
+X_D3DIndexBuffer * WINAPI EMUPATCH(D3DDevice_CreateIndexBuffer2)(XDK::UINT Length);
 
 // ******************************************************************
 // * patch: D3DDevice_SetIndices
@@ -622,10 +622,10 @@ VOID WINAPI EMUPATCH(D3DDevice_SetVertexData2s)
 VOID WINAPI EMUPATCH(D3DDevice_SetVertexData4f)
 (
     int     Register,
-    XDK::FLOAT   a,
-    XDK::FLOAT   b,
-    XDK::FLOAT   c,
-    XDK::FLOAT   d
+    Native::FLOAT   a,
+    Native::FLOAT   b,
+    Native::FLOAT   c,
+    Native::FLOAT   d
 );
 
 // ******************************************************************
@@ -693,16 +693,16 @@ VOID WINAPI EMUPATCH(D3DDevice_Clear)
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_Present)
 (
-    CONST RECT* pSourceRect,
-    CONST RECT* pDestRect,
-    PVOID       pDummy1,
-    PVOID       pDummy2
+    CONST Native::RECT* pSourceRect,
+    CONST Native::RECT* pDestRect,
+    XDK::PVOID       pDummy1,
+    XDK::PVOID       pDummy2
 );
 
 // ******************************************************************
 // * patch: D3DDevice_Swap
 // ******************************************************************
-DWORD WINAPI EMUPATCH(D3DDevice_Swap)
+XDK::DWORD WINAPI EMUPATCH(D3DDevice_Swap)
 (
     XDK::DWORD Flags
 );
@@ -713,7 +713,7 @@ DWORD WINAPI EMUPATCH(D3DDevice_Swap)
 VOID WINAPI EMUPATCH(D3DResource_Register)
 (
     X_D3DResource      *pThis,
-    PVOID               pBase
+	XDK::PVOID               pBase
 );
 
 // ******************************************************************
@@ -745,7 +745,7 @@ XDK::ULONG WINAPI EMUPATCH(D3DResource_AddRef)
 // ******************************************************************
 // * patch: IDirect3DResource8_IsBusy
 // ******************************************************************
-BOOL WINAPI EMUPATCH(D3DResource_IsBusy)
+XDK::BOOL WINAPI EMUPATCH(D3DResource_IsBusy)
 (
     X_D3DResource      *pThis
 );
@@ -759,7 +759,7 @@ VOID WINAPI EMUPATCH(Lock2DSurface)
 	Native::D3DCUBEMAP_FACES     FaceType,
     XDK::UINT                 Level,
 	Native::D3DLOCKED_RECT      *pLockedRect,
-    RECT                *pRect,
+	Native::RECT                *pRect,
     XDK::DWORD                Flags
 );
 
@@ -769,10 +769,10 @@ VOID WINAPI EMUPATCH(Lock2DSurface)
 VOID WINAPI EMUPATCH(Lock3DSurface)
 (
     X_D3DPixelContainer *pPixelContainer,
-    UINT				Level,
+	XDK::UINT				Level,
 	Native::D3DLOCKED_BOX		*pLockedVolume,
 	Native::D3DBOX				*pBox,
-	DWORD				Flags
+	XDK::DWORD				Flags
 );
 
 // ******************************************************************
@@ -801,14 +801,14 @@ VOID WINAPI EMUPATCH(D3DSurface_LockRect)
 (
     X_D3DResource  *pThis,
 	Native::D3DLOCKED_RECT *pLockedRect,
-    CONST RECT     *pRect,
+    CONST Native::RECT     *pRect,
     XDK::DWORD           Flags
 );
 
 // ******************************************************************
 // * patch: IDirect3DBaseTexture8_GetLevelCount
 // ******************************************************************
-DWORD WINAPI EMUPATCH(D3DBaseTexture_GetLevelCount)
+XDK::DWORD WINAPI EMUPATCH(D3DBaseTexture_GetLevelCount)
 (
     X_D3DBaseTexture   *pThis
 );
@@ -830,7 +830,7 @@ VOID WINAPI EMUPATCH(D3DTexture_LockRect)
     X_D3DTexture   *pThis,
     XDK::UINT            Level,
 	Native::D3DLOCKED_RECT *pLockedRect,
-    CONST RECT     *pRect,
+    CONST Native::RECT     *pRect,
     XDK::DWORD           Flags
 );
 
@@ -865,7 +865,7 @@ VOID WINAPI EMUPATCH(D3DCubeTexture_LockRect)
 	Native::D3DCUBEMAP_FACES    FaceType,
     XDK::UINT                Level,
 	Native::D3DLOCKED_RECT     *pLockedBox,
-    CONST RECT         *pRect,
+    CONST Native::RECT         *pRect,
     XDK::DWORD               Flags
 );
 
@@ -907,16 +907,16 @@ VOID WINAPI EMUPATCH(D3DDevice_EnableOverlay)
 VOID WINAPI EMUPATCH(D3DDevice_UpdateOverlay)
 (
     X_D3DSurface *pSurface,
-    CONST RECT   *SrcRect,
-    CONST RECT   *DstRect,
-    BOOL          EnableColorKey,
+    CONST Native::RECT   *SrcRect,
+    CONST Native::RECT   *DstRect,
+    XDK::BOOL          EnableColorKey,
 	Native::D3DCOLOR      ColorKey
 );
 
 // ******************************************************************
 // * patch: D3DDevice_GetOverlayUpdateStatus
 // ******************************************************************
-BOOL WINAPI EMUPATCH(D3DDevice_GetOverlayUpdateStatus)();
+XDK::BOOL WINAPI EMUPATCH(D3DDevice_GetOverlayUpdateStatus)();
 
 // ******************************************************************
 // * patch: D3DDevice_BlockUntilVerticalBlank
@@ -1292,7 +1292,7 @@ VOID WINAPI EMUPATCH(D3DDevice_DrawVerticesUP)
 (
     X_D3DPRIMITIVETYPE  PrimitiveType,
     XDK::UINT                VertexCount,
-    CONST PVOID         pVertexStreamZeroData,
+    CONST XDK::PVOID         pVertexStreamZeroData,
     XDK::UINT                VertexStreamZeroStride
 );
 
@@ -1303,7 +1303,7 @@ VOID WINAPI EMUPATCH(D3DDevice_DrawIndexedVertices)
 (
     X_D3DPRIMITIVETYPE  PrimitiveType,
     XDK::UINT                VertexCount,
-    CONST PWORD         pIndexData
+    CONST Native::PWORD         pIndexData
 );
 
 // ******************************************************************
@@ -1313,8 +1313,8 @@ VOID WINAPI EMUPATCH(D3DDevice_DrawIndexedVerticesUP)
 (
     X_D3DPRIMITIVETYPE  PrimitiveType,
     XDK::UINT                VertexCount,
-    CONST PVOID         pIndexData,
-    CONST PVOID         pVertexStreamZeroData,
+    CONST XDK::PVOID         pIndexData,
+    CONST XDK::PVOID         pVertexStreamZeroData,
     XDK::UINT                VertexStreamZeroStride
 );
 
@@ -1350,7 +1350,7 @@ VOID WINAPI EMUPATCH(D3DDevice_SetMaterial)
 XDK::HRESULT WINAPI EMUPATCH(D3DDevice_LightEnable)
 (
     XDK::DWORD            Index,
-    BOOL             bEnable
+    XDK::BOOL             bEnable
 );
 
 // ******************************************************************
@@ -1406,7 +1406,7 @@ void WINAPI EMUPATCH(D3DDevice_SetFlickerFilter)
 // ******************************************************************
 void WINAPI EMUPATCH(D3DDevice_SetSoftDisplayFilter)
 (
-    BOOL Enable
+	XDK::BOOL Enable
 );
 
 // ******************************************************************
@@ -1434,7 +1434,7 @@ Native::D3DCOLOR * WINAPI EMUPATCH(D3DPalette_Lock2)
 VOID WINAPI EMUPATCH(D3DDevice_GetVertexShaderSize)
 (
     XDK::DWORD Handle,
-    UINT* pSize
+	XDK::PUINT pSize
 );
 
 // ******************************************************************
@@ -1475,7 +1475,7 @@ VOID WINAPI EMUPATCH(D3DDevice_GetVertexShader)
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_GetVertexShaderConstant)
 (
-    INT   Register,
+	XDK::INT   Register,
     void  *pConstantData,
     XDK::DWORD ConstantCount
 );
@@ -1516,7 +1516,7 @@ VOID WINAPI EMUPATCH(D3DDevice_SetVertexShaderInput)
 VOID WINAPI EMUPATCH(D3DDevice_RunVertexStateShader)
 (
     XDK::DWORD        Address,
-    CONST FLOAT *pData
+    CONST Native::FLOAT *pData
 );
 
 // ******************************************************************
@@ -1543,7 +1543,7 @@ VOID WINAPI EMUPATCH(D3DDevice_GetVertexShaderType)
 XDK::HRESULT WINAPI EMUPATCH(D3DDevice_GetVertexShaderDeclaration)
 (
     XDK::DWORD  Handle,
-    PVOID  pData,
+	XDK::PVOID  pData,
     XDK::DWORD *pSizeOfData
 );
 
@@ -1553,7 +1553,7 @@ XDK::HRESULT WINAPI EMUPATCH(D3DDevice_GetVertexShaderDeclaration)
 XDK::HRESULT WINAPI EMUPATCH(D3DDevice_GetVertexShaderFunction)
 (
     XDK::DWORD  Handle,
-    PVOID *pData,
+	XDK::PVOID *pData,
     XDK::DWORD *pSizeOfData
 );
 
@@ -1562,8 +1562,8 @@ XDK::HRESULT WINAPI EMUPATCH(D3DDevice_GetVertexShaderFunction)
 // ******************************************************************
 XDK::HRESULT WINAPI EMUPATCH(D3DDevice_SetDepthClipPlanes)
 (
-    FLOAT Near,
-    FLOAT Far,
+    Native::FLOAT Near,
+    Native::FLOAT Far,
     XDK::DWORD Flags
 );
 
@@ -1598,7 +1598,7 @@ XDK::HRESULT WINAPI EMUPATCH(Direct3D_CheckDeviceMultiSampleType)
     XDK::UINT                 Adapter,
     D3DDEVTYPE           DeviceType,
     X_D3DFORMAT          SurfaceFormat,
-    BOOL                 Windowed,
+	XDK::BOOL                 Windowed,
     D3DMULTISAMPLE_TYPE  MultiSampleType
 );
 #endif
@@ -1629,12 +1629,12 @@ XDK::HRESULT WINAPI EMUPATCH(D3D_SetPushBufferSize)
 // ******************************************************************
 // * patch: D3DDevice_InsertFence
 // ******************************************************************
-DWORD WINAPI EMUPATCH(D3DDevice_InsertFence)();
+XDK::DWORD WINAPI EMUPATCH(D3DDevice_InsertFence)();
 
 // ******************************************************************
 // * patch: D3DDevice_IsFencePending
 // ******************************************************************
-BOOL WINAPI EMUPATCH(D3DDevice_IsFencePending)
+XDK::BOOL WINAPI EMUPATCH(D3DDevice_IsFencePending)
 (
     XDK::DWORD Fence
 );
@@ -1672,7 +1672,7 @@ VOID WINAPI EMUPATCH(D3DVertexBuffer_GetDesc)
 VOID WINAPI EMUPATCH(D3DDevice_SetScissors)
 (
     XDK::DWORD          Count,
-    BOOL           Exclusive,
+	XDK::BOOL           Exclusive,
     CONST Native::D3DRECT  *pRects
 );
 
@@ -1681,8 +1681,8 @@ VOID WINAPI EMUPATCH(D3DDevice_SetScissors)
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_SetScreenSpaceOffset)
 (
-    FLOAT x,
-    FLOAT y
+    Native::FLOAT x,
+    Native::FLOAT y
 );
 
 // ******************************************************************
@@ -1699,7 +1699,7 @@ VOID WINAPI EMUPATCH(D3DDevice_SetPixelShaderProgram)
 XDK::HRESULT WINAPI EMUPATCH(D3DDevice_CreateStateBlock)
 (
 	Native::D3DSTATEBLOCKTYPE Type,
-	DWORD			  *pToken
+	XDK::DWORD			  *pToken
 );
 
 // ******************************************************************
@@ -1709,7 +1709,7 @@ VOID WINAPI EMUPATCH(D3DDevice_InsertCallback)
 (
 	X_D3DCALLBACKTYPE	Type,
 	X_D3DCALLBACK		pCallback,
-	DWORD				Context
+	XDK::DWORD				Context
 );
 
 // ******************************************************************
@@ -1717,8 +1717,8 @@ VOID WINAPI EMUPATCH(D3DDevice_InsertCallback)
 // ******************************************************************
 XDK::HRESULT WINAPI EMUPATCH(D3DDevice_DrawRectPatch)
 (
-	UINT					Handle,
-	CONST FLOAT				*pNumSegs,
+	XDK::UINT					Handle,
+	CONST Native::FLOAT				*pNumSegs,
 	CONST Native::D3DRECTPATCH_INFO *pRectPatchInfo
 );
 
@@ -1743,21 +1743,21 @@ VOID WINAPI EMUPATCH(D3DDevice_KickPushBuffer)();
 // ******************************************************************
 // * patch: D3DDevice_GetTexture2
 // ******************************************************************
-X_D3DBaseTexture* WINAPI EMUPATCH(D3DDevice_GetTexture2)(DWORD Stage);
+X_D3DBaseTexture* WINAPI EMUPATCH(D3DDevice_GetTexture2)(XDK::DWORD Stage);
 
 // ******************************************************************
 // * patch: D3DDevice_GetTexture
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_GetTexture)
 (
-	DWORD           Stage,
+	XDK::DWORD           Stage,
 	X_D3DBaseTexture  **pTexture
 );
 
 // ******************************************************************
 // * patch: D3DDevice_SetStateVB (D3D::CDevice::SetStateVB)
 // ******************************************************************
-VOID WINAPI EMUPATCH(D3DDevice_SetStateVB)( ULONG Unknown1 );
+VOID WINAPI EMUPATCH(D3DDevice_SetStateVB)(XDK::ULONG Unknown1 );
 
 // ******************************************************************
 // * patch: D3DDevice_SetStateUP (D3D::CDevice::SetStateUP)
@@ -1767,7 +1767,7 @@ VOID WINAPI EMUPATCH(D3DDevice_SetStateUP)();
 // ******************************************************************
 // * patch: D3DDevice_SetStipple
 // ******************************************************************
-void WINAPI EMUPATCH(D3DDevice_SetStipple)( DWORD* pPattern );
+void WINAPI EMUPATCH(D3DDevice_SetStipple)(XDK::DWORD* pPattern );
 
 // ******************************************************************
 // * patch: D3DDevice_SetSwapCallback
@@ -1791,15 +1791,15 @@ X_D3DSurface* WINAPI EMUPATCH(D3DDevice_GetPersistedSurface2)();
 // ******************************************************************
 // * patch: D3D_CMiniport_GetDisplayCapabilities
 // ******************************************************************
-DWORD WINAPI EMUPATCH(D3D_CMiniport_GetDisplayCapabilities)();
+XDK::DWORD WINAPI EMUPATCH(D3D_CMiniport_GetDisplayCapabilities)();
 
 // ******************************************************************
 // * patch: D3DDevice_PrimeVertexCache
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_PrimeVertexCache)
 (
-	UINT VertexCount,
-	WORD *pIndexData
+	XDK::UINT VertexCount,
+	XDK::WORD *pIndexData
 );
 
 // ******************************************************************
@@ -1807,7 +1807,7 @@ VOID WINAPI EMUPATCH(D3DDevice_PrimeVertexCache)
 // ******************************************************************
 XDK::HRESULT WINAPI EMUPATCH(D3DDevice_SetRenderState_SampleAlpha)
 (
-	DWORD dwSampleAlpha
+	XDK::DWORD dwSampleAlpha
 );
 
 // ******************************************************************
@@ -1815,8 +1815,8 @@ XDK::HRESULT WINAPI EMUPATCH(D3DDevice_SetRenderState_SampleAlpha)
 // ******************************************************************
 VOID __fastcall EMUPATCH(D3DDevice_SetRenderState_Deferred)
 (
-	DWORD State,
-	DWORD Value
+	XDK::DWORD State,
+	XDK::DWORD Value
 );
 
 // ******************************************************************
@@ -1824,7 +1824,7 @@ VOID __fastcall EMUPATCH(D3DDevice_SetRenderState_Deferred)
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_DeleteStateBlock)
 (
-	DWORD Token
+	XDK::DWORD Token
 );
 
 // ******************************************************************
@@ -1876,8 +1876,8 @@ VOID WINAPI EMUPATCH(D3DDevice_SetBackMaterial)(Native::D3DMATERIAL8* pMaterial)
 // ******************************************************************
 XDK::HRESULT WINAPI EMUPATCH(D3D_GetAdapterIdentifier)
 (
-	UINT					Adapter,
-	DWORD					Flags,
+	XDK::UINT					Adapter,
+	XDK::DWORD					Flags,
 	D3DADAPTER_IDENTIFIER8* pIdentifier
 );
 #endif
@@ -1887,8 +1887,8 @@ XDK::HRESULT WINAPI EMUPATCH(D3D_GetAdapterIdentifier)
 // ******************************************************************
 XDK::PDWORD WINAPI EMUPATCH(D3D_MakeRequestedSpace)
 (
-	DWORD MinimumSpace,
-	DWORD RequestedSpace
+	XDK::DWORD MinimumSpace,
+	XDK::DWORD RequestedSpace
 );
 
 // ******************************************************************

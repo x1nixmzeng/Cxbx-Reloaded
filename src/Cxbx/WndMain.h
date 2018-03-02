@@ -48,13 +48,13 @@
 class WndMain : public Wnd
 {
     public:
-        WndMain(HINSTANCE x_hInstance);
+        WndMain(Native::HINSTANCE x_hInstance);
        ~WndMain();
 
         // ******************************************************************
         // * window message procedure
         // ******************************************************************
-        LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	   Native::LRESULT CALLBACK WndProc(Native::HWND hwnd, Native::UINT uMsg, Native::WPARAM wParam, Native::LPARAM lParam);
 
         // ******************************************************************
         // * Xbe operations
@@ -68,7 +68,7 @@ class WndMain : public Wnd
         // ******************************************************************
         // * start emulation
         // ******************************************************************
-        void StartEmulation(HWND hwndParent, DebuggerState LocalDebuggerState = debuggerOff);
+        void StartEmulation(Native::HWND hwndParent, DebuggerState LocalDebuggerState = debuggerOff);
 
         // ******************************************************************
         // * stop emulation (close existing child window)
@@ -124,7 +124,7 @@ class WndMain : public Wnd
 		// ******************************************************************
 		// * crash monitoring wrapper function
 		// ******************************************************************
-		static DWORD WINAPI CrashMonitorWrapper(LPVOID lpVoid);
+		static Native::DWORD WINAPI CrashMonitorWrapper(Native::LPVOID lpVoid);
 
 		// ******************************************************************
 		// * crash monitoring function thread
@@ -139,25 +139,25 @@ class WndMain : public Wnd
 		// ******************************************************************
 		// * draw Xbox LED bitmap
 		// ******************************************************************
-		void DrawLedBitmap(HWND hwnd, bool boolbDefault);
+		void DrawLedBitmap(Native::HWND hwnd, bool boolbDefault);
 
 		// ******************************************************************
 		// * drawing information
 		// ******************************************************************
-		HDC         m_BackDC;
-		HDC         m_LogoDC;
-		HDC         m_GameLogoDC;
-		HDC         m_LedDC;
-		HBITMAP     m_OrigBmp;
-		HBITMAP     m_OrigLogo;
-		HBITMAP     m_OrigGameLogo;
-		HBITMAP     m_OriLed;
-		HBITMAP     m_BackBmp;
-		HBITMAP     m_LogoBmp;
-		HBITMAP		m_GameLogoBMP;
-		HBITMAP     m_LedBmp;
-		HBRUSH      m_Brushes[4];
-		HPEN        m_Pens[4];
+		Native::HDC         m_BackDC;
+		Native::HDC         m_LogoDC;
+		Native::HDC         m_GameLogoDC;
+		Native::HDC         m_LedDC;
+		Native::HBITMAP     m_OrigBmp;
+		Native::HBITMAP     m_OrigLogo;
+		Native::HBITMAP     m_OrigGameLogo;
+		Native::HBITMAP     m_OriLed;
+		Native::HBITMAP     m_BackBmp;
+		Native::HBITMAP     m_LogoBmp;
+		Native::HBITMAP		m_GameLogoBMP;
+		Native::HBITMAP     m_LedBmp;
+		Native::HBRUSH      m_Brushes[4];
+		Native::HPEN        m_Pens[4];
 		int         m_xBmp, m_yBmp;
 
         // ******************************************************************
@@ -179,7 +179,7 @@ class WndMain : public Wnd
         // ******************************************************************
         // * cached child window handle
         // ******************************************************************
-        HWND        m_hwndChild;
+		Native::HWND        m_hwndChild;
 
         // ******************************************************************
         // * Recent Xbe files

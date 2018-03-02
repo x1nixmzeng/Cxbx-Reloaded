@@ -36,6 +36,8 @@
 #include "Wnd.h"
 #include "ResCxbx.h"
 
+#include <windows.h>
+
 // ******************************************************************
 // * constructor
 // ******************************************************************
@@ -73,22 +75,22 @@ bool Wnd::ProcessMessages()
     {
         m_initialized = true;
 
-        WNDCLASS wnd_class;
+		Native::WNDCLASS wnd_class;
 
         wnd_class.hInstance     = m_hInstance;
         wnd_class.lpszClassName = m_classname;
         wnd_class.lpfnWndProc   = WndProcForward;
         wnd_class.style         = m_clsstyle;
         wnd_class.hIcon         = 0; // TODO : LoadIcon(hmodule, ?)
-        wnd_class.hCursor       = LoadCursor(NULL, IDC_ARROW);
+        wnd_class.hCursor       = Native::LoadCursor(NULL, IDC_ARROW);
         wnd_class.lpszMenuName  = NULL;
         wnd_class.cbClsExtra    = 0;
         wnd_class.cbWndExtra    = 0;
         wnd_class.hbrBackground = m_background;
 
-        m_class = RegisterClass(&wnd_class);
+        m_class = Native::RegisterClass(&wnd_class);
 
-        m_hwnd = CreateWindowEx
+        m_hwnd = Native::CreateWindowEx
         (
             NULL,
             m_classname,

@@ -34,12 +34,6 @@
 #ifndef EMUXAPI_H
 #define EMUXAPI_H
 
-//// Beware of this namespace choice as DirectX8 is both Xbox AND Native
-//namespace Native
-//{
-//#include <dxerr8.h>
-//}
-
 #include "XDK.h"
 
 namespace Xbox
@@ -50,9 +44,9 @@ namespace Xbox
 // ******************************************************************
 typedef struct _XINPUT_POLLING_PARAMETERS
 {
-    XDK::BYTE       fAutoPoll        : 1;
-    XDK::BYTE       fInterruptOut    : 1;
-    XDK::BYTE       ReservedMBZ1     : 6;
+    Native::BYTE       fAutoPoll        : 1;
+    Native::BYTE       fInterruptOut    : 1;
+    Native::BYTE       ReservedMBZ1     : 6;
     XDK::BYTE       bInputInterval;
     XDK::BYTE       bOutputInterval;
     XDK::BYTE       ReservedMBZ2;

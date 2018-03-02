@@ -68,7 +68,7 @@ uint32_t EmuX86_IORead(xbaddr addr, int size)
 			// HACK: This is very wrong.
 			// This timer should count at a specific frequency (3579.545 ticks per ms)
 			// But this is enough to keep NXDK from hanging for now.
-			LARGE_INTEGER performanceCount;
+			Native::LARGE_INTEGER performanceCount;
 			QueryPerformanceCounter(&performanceCount);
 			return static_cast<uint32_t>(performanceCount.QuadPart);
 		}
@@ -233,63 +233,63 @@ int ContextRecordOffsetByRegisterType[/*_RegisterType*/R_DR7 + 1] = { 0 };
 void EmuX86_InitContextRecordOffsetByRegisterType()
 {
 	// Unsupported by XBox CPU : R_RAX, R_RCX, R_RDX, R_RBX, R_RSP, R_RBP, R_RSI, R_RDI, R_R8, R_R9, R_R10, R_R11, R_R12, R_R13, R_R14, R_R15,
-	ContextRecordOffsetByRegisterType[R_EAX] = offsetof(CONTEXT, Eax);
-	ContextRecordOffsetByRegisterType[R_ECX] = offsetof(CONTEXT, Ecx);
-	ContextRecordOffsetByRegisterType[R_EDX] = offsetof(CONTEXT, Edx);
-	ContextRecordOffsetByRegisterType[R_EBX] = offsetof(CONTEXT, Ebx);
-	ContextRecordOffsetByRegisterType[R_ESP] = offsetof(CONTEXT, Esp);
-	ContextRecordOffsetByRegisterType[R_EBP] = offsetof(CONTEXT, Ebp);
-	ContextRecordOffsetByRegisterType[R_ESI] = offsetof(CONTEXT, Esi);
-	ContextRecordOffsetByRegisterType[R_EDI] = offsetof(CONTEXT, Edi);
+	ContextRecordOffsetByRegisterType[R_EAX] = offsetof(Native::CONTEXT, Eax);
+	ContextRecordOffsetByRegisterType[R_ECX] = offsetof(Native::CONTEXT, Ecx);
+	ContextRecordOffsetByRegisterType[R_EDX] = offsetof(Native::CONTEXT, Edx);
+	ContextRecordOffsetByRegisterType[R_EBX] = offsetof(Native::CONTEXT, Ebx);
+	ContextRecordOffsetByRegisterType[R_ESP] = offsetof(Native::CONTEXT, Esp);
+	ContextRecordOffsetByRegisterType[R_EBP] = offsetof(Native::CONTEXT, Ebp);
+	ContextRecordOffsetByRegisterType[R_ESI] = offsetof(Native::CONTEXT, Esi);
+	ContextRecordOffsetByRegisterType[R_EDI] = offsetof(Native::CONTEXT, Edi);
 	// Unsupported by XBox CPU : R_R8D, R_R9D, R_R10D, R_R11D, R_R12D, R_R13D, R_R14D, R_R15D,
-	ContextRecordOffsetByRegisterType[R_AX] = offsetof(CONTEXT, Eax);
-	ContextRecordOffsetByRegisterType[R_CX] = offsetof(CONTEXT, Ecx);
-	ContextRecordOffsetByRegisterType[R_DX] = offsetof(CONTEXT, Edx);
-	ContextRecordOffsetByRegisterType[R_BX] = offsetof(CONTEXT, Ebx);
-	ContextRecordOffsetByRegisterType[R_SP] = offsetof(CONTEXT, Esp); // ??
-	ContextRecordOffsetByRegisterType[R_BP] = offsetof(CONTEXT, Ebp); // ??
-	ContextRecordOffsetByRegisterType[R_SI] = offsetof(CONTEXT, Esi); // ??
-	ContextRecordOffsetByRegisterType[R_DI] = offsetof(CONTEXT, Edi); // ??
+	ContextRecordOffsetByRegisterType[R_AX] = offsetof(Native::CONTEXT, Eax);
+	ContextRecordOffsetByRegisterType[R_CX] = offsetof(Native::CONTEXT, Ecx);
+	ContextRecordOffsetByRegisterType[R_DX] = offsetof(Native::CONTEXT, Edx);
+	ContextRecordOffsetByRegisterType[R_BX] = offsetof(Native::CONTEXT, Ebx);
+	ContextRecordOffsetByRegisterType[R_SP] = offsetof(Native::CONTEXT, Esp); // ??
+	ContextRecordOffsetByRegisterType[R_BP] = offsetof(Native::CONTEXT, Ebp); // ??
+	ContextRecordOffsetByRegisterType[R_SI] = offsetof(Native::CONTEXT, Esi); // ??
+	ContextRecordOffsetByRegisterType[R_DI] = offsetof(Native::CONTEXT, Edi); // ??
 	// Unsupported by XBox CPU : R_R8W, R_R9W, R_R10W, R_R11W, R_R12W, R_R13W, R_R14W, R_R15W,
-	ContextRecordOffsetByRegisterType[R_AL] = offsetof(CONTEXT, Eax);
-	ContextRecordOffsetByRegisterType[R_CL] = offsetof(CONTEXT, Ecx);
-	ContextRecordOffsetByRegisterType[R_DL] = offsetof(CONTEXT, Edx);
-	ContextRecordOffsetByRegisterType[R_BL] = offsetof(CONTEXT, Ebx);
-	ContextRecordOffsetByRegisterType[R_AH] = offsetof(CONTEXT, Eax) + 1;
-	ContextRecordOffsetByRegisterType[R_CH] = offsetof(CONTEXT, Ecx) + 1;
-	ContextRecordOffsetByRegisterType[R_DH] = offsetof(CONTEXT, Edx) + 1;
-	ContextRecordOffsetByRegisterType[R_BH] = offsetof(CONTEXT, Ebx) + 1;
+	ContextRecordOffsetByRegisterType[R_AL] = offsetof(Native::CONTEXT, Eax);
+	ContextRecordOffsetByRegisterType[R_CL] = offsetof(Native::CONTEXT, Ecx);
+	ContextRecordOffsetByRegisterType[R_DL] = offsetof(Native::CONTEXT, Edx);
+	ContextRecordOffsetByRegisterType[R_BL] = offsetof(Native::CONTEXT, Ebx);
+	ContextRecordOffsetByRegisterType[R_AH] = offsetof(Native::CONTEXT, Eax) + 1;
+	ContextRecordOffsetByRegisterType[R_CH] = offsetof(Native::CONTEXT, Ecx) + 1;
+	ContextRecordOffsetByRegisterType[R_DH] = offsetof(Native::CONTEXT, Edx) + 1;
+	ContextRecordOffsetByRegisterType[R_BH] = offsetof(Native::CONTEXT, Ebx) + 1;
 	// Unsupported by XBox CPU : R_R8B, R_R9B, R_R10B, R_R11B, R_R12B, R_R13B, R_R14B, R_R15B,
-	ContextRecordOffsetByRegisterType[R_SPL] = offsetof(CONTEXT, Esp); // ??
-	ContextRecordOffsetByRegisterType[R_BPL] = offsetof(CONTEXT, Ebp); // ??
-	ContextRecordOffsetByRegisterType[R_SIL] = offsetof(CONTEXT, Esi); // ??
-	ContextRecordOffsetByRegisterType[R_DIL] = offsetof(CONTEXT, Edi); // ??
-	ContextRecordOffsetByRegisterType[R_ES] = offsetof(CONTEXT, SegEs);
-	ContextRecordOffsetByRegisterType[R_CS] = offsetof(CONTEXT, SegCs);
-	ContextRecordOffsetByRegisterType[R_SS] = offsetof(CONTEXT, SegSs);
-	ContextRecordOffsetByRegisterType[R_DS] = offsetof(CONTEXT, SegDs);
-	ContextRecordOffsetByRegisterType[R_FS] = offsetof(CONTEXT, SegFs);
-	ContextRecordOffsetByRegisterType[R_GS] = offsetof(CONTEXT, SegGs);
+	ContextRecordOffsetByRegisterType[R_SPL] = offsetof(Native::CONTEXT, Esp); // ??
+	ContextRecordOffsetByRegisterType[R_BPL] = offsetof(Native::CONTEXT, Ebp); // ??
+	ContextRecordOffsetByRegisterType[R_SIL] = offsetof(Native::CONTEXT, Esi); // ??
+	ContextRecordOffsetByRegisterType[R_DIL] = offsetof(Native::CONTEXT, Edi); // ??
+	ContextRecordOffsetByRegisterType[R_ES] = offsetof(Native::CONTEXT, SegEs);
+	ContextRecordOffsetByRegisterType[R_CS] = offsetof(Native::CONTEXT, SegCs);
+	ContextRecordOffsetByRegisterType[R_SS] = offsetof(Native::CONTEXT, SegSs);
+	ContextRecordOffsetByRegisterType[R_DS] = offsetof(Native::CONTEXT, SegDs);
+	ContextRecordOffsetByRegisterType[R_FS] = offsetof(Native::CONTEXT, SegFs);
+	ContextRecordOffsetByRegisterType[R_GS] = offsetof(Native::CONTEXT, SegGs);
 	// R_RIP, TODO : Does this also mean EIP and is that enum missing in distorm? https://github.com/gdabah/distorm/issues/110
 	// Unsupported by XBox CPU : R_ST0, R_ST1, R_ST2, R_ST3, R_ST4, R_ST5, R_ST6, R_ST7,
-	ContextRecordOffsetByRegisterType[R_MM0] = offsetof(CONTEXT, ExtendedRegisters[(10 + 0) * 16]);
-	ContextRecordOffsetByRegisterType[R_MM1] = offsetof(CONTEXT, ExtendedRegisters[(10 + 1) * 16]);
-	ContextRecordOffsetByRegisterType[R_MM2] = offsetof(CONTEXT, ExtendedRegisters[(10 + 2) * 16]);
-	ContextRecordOffsetByRegisterType[R_MM3] = offsetof(CONTEXT, ExtendedRegisters[(10 + 3) * 16]);
-	ContextRecordOffsetByRegisterType[R_MM4] = offsetof(CONTEXT, ExtendedRegisters[(10 + 4) * 16]);
-	ContextRecordOffsetByRegisterType[R_MM5] = offsetof(CONTEXT, ExtendedRegisters[(10 + 5) * 16]);
-	ContextRecordOffsetByRegisterType[R_MM6] = offsetof(CONTEXT, ExtendedRegisters[(10 + 6) * 16]);
-	ContextRecordOffsetByRegisterType[R_MM7] = offsetof(CONTEXT, ExtendedRegisters[(10 + 7) * 16]);
+	ContextRecordOffsetByRegisterType[R_MM0] = offsetof(Native::CONTEXT, ExtendedRegisters[(10 + 0) * 16]);
+	ContextRecordOffsetByRegisterType[R_MM1] = offsetof(Native::CONTEXT, ExtendedRegisters[(10 + 1) * 16]);
+	ContextRecordOffsetByRegisterType[R_MM2] = offsetof(Native::CONTEXT, ExtendedRegisters[(10 + 2) * 16]);
+	ContextRecordOffsetByRegisterType[R_MM3] = offsetof(Native::CONTEXT, ExtendedRegisters[(10 + 3) * 16]);
+	ContextRecordOffsetByRegisterType[R_MM4] = offsetof(Native::CONTEXT, ExtendedRegisters[(10 + 4) * 16]);
+	ContextRecordOffsetByRegisterType[R_MM5] = offsetof(Native::CONTEXT, ExtendedRegisters[(10 + 5) * 16]);
+	ContextRecordOffsetByRegisterType[R_MM6] = offsetof(Native::CONTEXT, ExtendedRegisters[(10 + 6) * 16]);
+	ContextRecordOffsetByRegisterType[R_MM7] = offsetof(Native::CONTEXT, ExtendedRegisters[(10 + 7) * 16]);
 	// Unsupported by XBox CPU : R_XMM0, R_XMM1, R_XMM2, R_XMM3, R_XMM4, R_XMM5, R_XMM6, R_XMM7, R_XMM8, R_XMM9, R_XMM10, R_XMM11, R_XMM12, R_XMM13, R_XMM14, R_XMM15,
 	// Unsupported by XBox CPU : R_YMM0, R_YMM1, R_YMM2, R_YMM3, R_YMM4, R_YMM5, R_YMM6, R_YMM7, R_YMM8, R_YMM9, R_YMM10, R_YMM11, R_YMM12, R_YMM13, R_YMM14, R_YMM15,
 	// Unsupported by XBox CPU : R_CR0, R_UNUSED0, R_CR2, R_CR3, R_CR4, R_UNUSED1, R_UNUSED2, R_UNUSED3, R_CR8,
-	ContextRecordOffsetByRegisterType[R_DR0] = offsetof(CONTEXT, Dr0);
-	ContextRecordOffsetByRegisterType[R_DR1] = offsetof(CONTEXT, Dr1);
-	ContextRecordOffsetByRegisterType[R_DR2] = offsetof(CONTEXT, Dr2);
-	ContextRecordOffsetByRegisterType[R_DR3] = offsetof(CONTEXT, Dr3);
+	ContextRecordOffsetByRegisterType[R_DR0] = offsetof(Native::CONTEXT, Dr0);
+	ContextRecordOffsetByRegisterType[R_DR1] = offsetof(Native::CONTEXT, Dr1);
+	ContextRecordOffsetByRegisterType[R_DR2] = offsetof(Native::CONTEXT, Dr2);
+	ContextRecordOffsetByRegisterType[R_DR3] = offsetof(Native::CONTEXT, Dr3);
 	// Unsupported by XBox CPU : R_UNUSED4, R_UNUSED5,
-	ContextRecordOffsetByRegisterType[R_DR6] = offsetof(CONTEXT, Dr6);
-	ContextRecordOffsetByRegisterType[R_DR7] = offsetof(CONTEXT, Dr7);
+	ContextRecordOffsetByRegisterType[R_DR6] = offsetof(Native::CONTEXT, Dr6);
+	ContextRecordOffsetByRegisterType[R_DR7] = offsetof(Native::CONTEXT, Dr7);
 
 	/* struct CONTEXT { // ! markers below, are used in the above offsetof calls
 	DWORD ContextFlags;
@@ -329,7 +329,7 @@ void EmuX86_InitContextRecordOffsetByRegisterType()
 	!BYTE    ExtendedRegisters[MAXIMUM_SUPPORTED_EXTENSION];*/
 }
 
-inline void * EmuX86_GetRegisterPointer(const LPEXCEPTION_POINTERS e, const uint8_t reg)
+inline void * EmuX86_GetRegisterPointer(const Native::LPEXCEPTION_POINTERS e, const uint8_t reg)
 {
 	int offset = ContextRecordOffsetByRegisterType[reg];
 	if (offset > 0)
@@ -339,7 +339,7 @@ inline void * EmuX86_GetRegisterPointer(const LPEXCEPTION_POINTERS e, const uint
 	return nullptr;
 }
 
-inline uint32_t EmuX86_GetRegisterValue32(const LPEXCEPTION_POINTERS e, const uint8_t reg)
+inline uint32_t EmuX86_GetRegisterValue32(const Native::LPEXCEPTION_POINTERS e, const uint8_t reg)
 {
 	if (reg != R_NONE)
 	{
@@ -351,14 +351,14 @@ inline uint32_t EmuX86_GetRegisterValue32(const LPEXCEPTION_POINTERS e, const ui
 	return 0;
 }
 
-xbaddr EmuX86_Distorm_O_SMEM_Addr(const LPEXCEPTION_POINTERS e, const _DInst& info, const int operand)
+xbaddr EmuX86_Distorm_O_SMEM_Addr(const Native::LPEXCEPTION_POINTERS e, const _DInst& info, const int operand)
 {
 	xbaddr base = EmuX86_GetRegisterValue32(e, info.ops[operand].index);
 
 	return base + (uint32_t)info.disp;
 }
 
-xbaddr EmuX86_Distorm_O_MEM_Addr(const LPEXCEPTION_POINTERS e, const _DInst& info, const int operand)
+xbaddr EmuX86_Distorm_O_MEM_Addr(const Native::LPEXCEPTION_POINTERS e, const _DInst& info, const int operand)
 {
 	xbaddr base = EmuX86_GetRegisterValue32(e, info.base);
 
@@ -376,7 +376,7 @@ typedef struct {
 	int size; // Expressed in bytes, not bits!
 } OperandAddress;
 
-bool EmuX86_Operand_Addr_ForReadOnly(const LPEXCEPTION_POINTERS e, const _DInst& info, const int operand, OperandAddress &opAddr)
+bool EmuX86_Operand_Addr_ForReadOnly(const Native::LPEXCEPTION_POINTERS e, const _DInst& info, const int operand, OperandAddress &opAddr)
 {
 	opAddr.size = info.ops[operand].size / 8; // Convert size in bits into bytes
 	switch (info.ops[operand].type) {
@@ -450,7 +450,7 @@ bool EmuX86_Operand_Addr_ForReadOnly(const LPEXCEPTION_POINTERS e, const _DInst&
 	return false;
 }
 
-bool EmuX86_Operand_Addr_ForReadWrite(const LPEXCEPTION_POINTERS e, const _DInst& info, const int operand, OperandAddress &opAddr)
+bool EmuX86_Operand_Addr_ForReadWrite(const Native::LPEXCEPTION_POINTERS e, const _DInst& info, const int operand, OperandAddress &opAddr)
 {
 	// Disallow write-access to immediate value adresses
 	switch (info.ops[operand].type) {
@@ -489,7 +489,7 @@ void EmuX86_Addr_Write(const OperandAddress &opAddr, const uint32_t value)
 	}
 }
 
-bool EmuX86_Operand_Read(const LPEXCEPTION_POINTERS e, const _DInst& info, const int operand, OUT uint32_t *value)
+bool EmuX86_Operand_Read(const Native::LPEXCEPTION_POINTERS e, const _DInst& info, const int operand, OUT uint32_t *value)
 {
 	OperandAddress opAddr;
 	if (EmuX86_Operand_Addr_ForReadOnly(e, info, operand, OUT opAddr)) {
@@ -500,7 +500,7 @@ bool EmuX86_Operand_Read(const LPEXCEPTION_POINTERS e, const _DInst& info, const
 	return false;
 }
 
-bool EmuX86_Operand_Write(LPEXCEPTION_POINTERS e, _DInst& info, int operand, uint32_t value)
+bool EmuX86_Operand_Write(Native::LPEXCEPTION_POINTERS e, _DInst& info, int operand, uint32_t value)
 {
 	OperandAddress opAddr;
 	if (EmuX86_Operand_Addr_ForReadWrite(e, info, operand, OUT opAddr)) {
@@ -511,7 +511,7 @@ bool EmuX86_Operand_Write(LPEXCEPTION_POINTERS e, _DInst& info, int operand, uin
 	return false;
 }
 
-inline void EmuX86_SetFlags(LPEXCEPTION_POINTERS e, DWORD mask, DWORD value)
+inline void EmuX86_SetFlags(Native::LPEXCEPTION_POINTERS e, Native::DWORD mask, Native::DWORD value)
 {
 	// By Ron Jeffery, see http://graphics.stanford.edu/~seander/bithacks.html#MaskedMerge
 	e->ContextRecord->EFlags ^= ((e->ContextRecord->EFlags ^ value) & mask);
@@ -525,7 +525,7 @@ inline void EmuX86_SetFlags(LPEXCEPTION_POINTERS e, DWORD mask, DWORD value)
 // the least significant bit.
 inline void EmuX86_SetFlags_OSZAPC
 (
-	LPEXCEPTION_POINTERS e,
+	Native::LPEXCEPTION_POINTERS e,
 	const bool OF,
 	const bool SF,
 	const bool ZF,
@@ -542,7 +542,7 @@ inline void EmuX86_SetFlags_OSZAPC
 
 inline void EmuX86_SetFlags_OSZPC
 (
-	LPEXCEPTION_POINTERS e,
+	Native::LPEXCEPTION_POINTERS e,
 	const bool OF,
 	const bool SF,
 	const bool ZF,
@@ -558,7 +558,7 @@ inline void EmuX86_SetFlags_OSZPC
 
 inline void EmuX86_SetFlags_OSZAP
 (
-	LPEXCEPTION_POINTERS e,
+	Native::LPEXCEPTION_POINTERS e,
 	const bool OF,
 	const bool SF,
 	const bool ZF,
@@ -592,7 +592,7 @@ inline void EmuX86_SetFlags_OSZAP
 
 // Keep opcode emulations alphabetically ordered :
 
-bool EmuX86_Opcode_ADD(LPEXCEPTION_POINTERS e, _DInst& info)
+bool EmuX86_Opcode_ADD(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	// ADD reads value from source :
 	uint32_t dest = 0;
@@ -623,7 +623,7 @@ bool EmuX86_Opcode_ADD(LPEXCEPTION_POINTERS e, _DInst& info)
 	return true;
 }
 
-bool EmuX86_Opcode_AND(LPEXCEPTION_POINTERS e, _DInst& info)
+bool EmuX86_Opcode_AND(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	// Read value from Source and Destination
 	uint32_t src = 0;
@@ -654,7 +654,7 @@ bool EmuX86_Opcode_AND(LPEXCEPTION_POINTERS e, _DInst& info)
 	return true;
 }
 
-bool EmuX86_Opcode_CMP(LPEXCEPTION_POINTERS e, _DInst& info)
+bool EmuX86_Opcode_CMP(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	// Read value from Source and Destination
 	uint32_t src = 0;
@@ -680,7 +680,7 @@ bool EmuX86_Opcode_CMP(LPEXCEPTION_POINTERS e, _DInst& info)
 	return true;
 }
 
-bool EmuX86_Opcode_CMPXCHG(LPEXCEPTION_POINTERS e, _DInst& info)
+bool EmuX86_Opcode_CMPXCHG(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	// Read value from Source and Destination
 	uint32_t src = 0;
@@ -718,7 +718,7 @@ bool EmuX86_Opcode_CMPXCHG(LPEXCEPTION_POINTERS e, _DInst& info)
 	return true;
 }
 
-void EmuX86_Opcode_CPUID(LPEXCEPTION_POINTERS e, _DInst& info)
+void EmuX86_Opcode_CPUID(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	// This CPUID emulation is based on :
 	// https://github.com/docbrown/vxb/wiki/Xbox-CPUID-Information
@@ -729,9 +729,9 @@ void EmuX86_Opcode_CPUID(LPEXCEPTION_POINTERS e, _DInst& info)
 		// Maximum supported standard level
 		e->ContextRecord->Eax = 2;
 		// "GenuineIntel" Intel processor
-		e->ContextRecord->Ebx = (ULONG)'uneG';
-		e->ContextRecord->Edx = (ULONG)'Ieni';
-		e->ContextRecord->Ecx = (ULONG)'letn';
+		e->ContextRecord->Ebx = (Native::ULONG)'uneG';
+		e->ContextRecord->Edx = (Native::ULONG)'Ieni';
+		e->ContextRecord->Ecx = (Native::ULONG)'letn';
 		return;
 	}
 	case 1: { // CPUID Function 1, Return the processor type / family / model / stepping and feature flags
@@ -764,7 +764,7 @@ void EmuX86_Opcode_CPUID(LPEXCEPTION_POINTERS e, _DInst& info)
 	// Note : CPUID instructions never update CPU flags
 }
 
-bool EmuX86_Opcode_DEC(LPEXCEPTION_POINTERS e, _DInst& info)
+bool EmuX86_Opcode_DEC(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	// DEC reads and writes the same operand :
 	OperandAddress opAddr;
@@ -790,7 +790,7 @@ bool EmuX86_Opcode_DEC(LPEXCEPTION_POINTERS e, _DInst& info)
 	return true;
 }
 
-bool EmuX86_Opcode_IN(LPEXCEPTION_POINTERS e, _DInst& info)
+bool EmuX86_Opcode_IN(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	uint32_t addr;
 	if (!EmuX86_Operand_Read(e, info, 1, &addr))
@@ -808,7 +808,7 @@ bool EmuX86_Opcode_IN(LPEXCEPTION_POINTERS e, _DInst& info)
 	return true;
 }
 
-bool EmuX86_Opcode_INC(LPEXCEPTION_POINTERS e, _DInst& info)
+bool EmuX86_Opcode_INC(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	// INC reads and writes the same operand :
 	OperandAddress opAddr;
@@ -834,7 +834,7 @@ bool EmuX86_Opcode_INC(LPEXCEPTION_POINTERS e, _DInst& info)
 	return true;
 }
 
-bool EmuX86_Opcode_MOV(LPEXCEPTION_POINTERS e, _DInst& info)
+bool EmuX86_Opcode_MOV(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	// MOV reads value from source :
 	uint32_t value = 0;
@@ -850,7 +850,7 @@ bool EmuX86_Opcode_MOV(LPEXCEPTION_POINTERS e, _DInst& info)
 	return true;
 }
 
-bool EmuX86_Opcode_MOVSX(LPEXCEPTION_POINTERS e, _DInst& info)
+bool EmuX86_Opcode_MOVSX(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	// MOVSX reads value from source :
 	uint32_t value = 0;
@@ -878,7 +878,7 @@ bool EmuX86_Opcode_MOVSX(LPEXCEPTION_POINTERS e, _DInst& info)
 	return true;
 }
 
-bool EmuX86_Opcode_MOVZX(LPEXCEPTION_POINTERS e, _DInst& info)
+bool EmuX86_Opcode_MOVZX(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	// MOVZX reads value from source :
 	uint32_t value = 0;
@@ -896,7 +896,7 @@ bool EmuX86_Opcode_MOVZX(LPEXCEPTION_POINTERS e, _DInst& info)
 	return true;
 }
 
-bool EmuX86_Opcode_OR(LPEXCEPTION_POINTERS e, _DInst& info)
+bool EmuX86_Opcode_OR(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	// Read value from Source and Destination
 	uint32_t src = 0;
@@ -927,7 +927,7 @@ bool EmuX86_Opcode_OR(LPEXCEPTION_POINTERS e, _DInst& info)
 	return true;
 }
 
-bool EmuX86_Opcode_OUT(LPEXCEPTION_POINTERS e, _DInst& info)
+bool EmuX86_Opcode_OUT(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	// OUT will address the first operand :
 	uint32_t addr;
@@ -946,7 +946,7 @@ bool EmuX86_Opcode_OUT(LPEXCEPTION_POINTERS e, _DInst& info)
 return true;
 }
 
-bool EmuX86_Opcode_SUB(LPEXCEPTION_POINTERS e, _DInst& info)
+bool EmuX86_Opcode_SUB(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	// Read value from Source and Destination
 	uint32_t src = 0;
@@ -978,7 +978,7 @@ bool EmuX86_Opcode_SUB(LPEXCEPTION_POINTERS e, _DInst& info)
 	return true;
 }
 
-bool EmuX86_Opcode_TEST(LPEXCEPTION_POINTERS e, _DInst& info)
+bool EmuX86_Opcode_TEST(Native::LPEXCEPTION_POINTERS e, _DInst& info)
 {
 	// TEST reads first value :
 	uint32_t src = 0;
@@ -1036,7 +1036,7 @@ int EmuX86_OpcodeSize(uint8_t *Eip)
 	return 1;
 }
 
-bool EmuX86_DecodeException(LPEXCEPTION_POINTERS e)
+bool EmuX86_DecodeException(Native::LPEXCEPTION_POINTERS e)
 {
 	// Only decode instructions which reside in the loaded Xbe
 	if (e->ContextRecord->Eip > XBE_MAX_VA || e->ContextRecord->Eip < XBE_IMAGE_BASE) {
@@ -1133,3 +1133,5 @@ void EmuX86_Init()
 	DbgPrintf("X86 : Initializing distorm version %d\n", distorm_version());
 	EmuX86_InitContextRecordOffsetByRegisterType();
 }
+
+#undef LOG_PREFIX
