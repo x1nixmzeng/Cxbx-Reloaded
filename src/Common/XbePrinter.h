@@ -37,7 +37,7 @@
 #include "Common/Error.h"
 #include "Common/Xbe.h"
 
-#include <cstdio>
+#include <string>
 
 extern std::string DumpInformation(Xbe* Xbe_object);
 

@@ -34,21 +34,23 @@
 #ifndef EMUXG_H
 #define EMUXG_H
 
+#include "XDK.h"
+
 namespace Xbox
 {
 
 typedef struct _XGPOINT3D
 {
-    DWORD u;
-    DWORD v;
-    DWORD w;
+    XDK::DWORD u;
+    XDK::DWORD v;
+    XDK::DWORD w;
 }
 XGPOINT3D;
 
 // ******************************************************************
 // * patch: XGIsSwizzledFormat
 // ******************************************************************
-PVOID WINAPI EMUPATCH(XGIsSwizzledFormat)
+XDK::PVOID WINAPI EMUPATCH(XGIsSwizzledFormat)
 (
     X_D3DFORMAT     Format
 );
@@ -76,25 +78,25 @@ VOID WINAPI EMUPATCH(XGSwizzleRect)
 VOID WINAPI EMUPATCH(XGSwizzleBox)
 (
     LPCVOID          pSource,
-    DWORD            RowPitch,
-    DWORD            SlicePitch,
+    XDK::DWORD            RowPitch,
+    XDK::DWORD            SlicePitch,
     CONST Native::D3DBOX    *pBox,
-    LPVOID           pDest,
-    DWORD            Width,
-    DWORD            Height,
-    DWORD            Depth,
+    XDK::LPVOID           pDest,
+    XDK::DWORD            Width,
+    XDK::DWORD            Height,
+    XDK::DWORD            Depth,
     CONST XGPOINT3D *pPoint,
-    DWORD            BytesPerPixel
+	XDK::DWORD            BytesPerPixel
 );
 
 // ******************************************************************
 // * patch: XGWriteSurfaceOrTextureToXPR
 // ******************************************************************
-HRESULT WINAPI EMUPATCH(XGWriteSurfaceOrTextureToXPR)
+XDK::HRESULT WINAPI EMUPATCH(XGWriteSurfaceOrTextureToXPR)
 ( 
-	LPVOID			pResource,
+	Native::LPVOID			pResource,
 	const char*		cPath,
-	BOOL			bWriteSurfaceAsTexture
+	XDK::BOOL			bWriteSurfaceAsTexture
 );
 
 // ******************************************************************
@@ -102,15 +104,15 @@ HRESULT WINAPI EMUPATCH(XGWriteSurfaceOrTextureToXPR)
 // ******************************************************************
 VOID	WINAPI EMUPATCH(XGSetTextureHeader)
 (
-	UINT			Width,
-	UINT			Height,
-	UINT			Levels,
-	DWORD			Usage,
+	XDK::UINT			Width,
+	XDK::UINT			Height,
+	XDK::UINT			Levels,
+	XDK::DWORD			Usage,
 	X_D3DFORMAT		Format,
 	Native::D3DPOOL			Pool,
 	X_D3DTexture*	pTexture,
-	UINT			Data,
-	UINT			Pitch
+	XDK::UINT			Data,
+	XDK::UINT			Pitch
 );
 
 // ******************************************************************

@@ -67,7 +67,7 @@ void SetThreadName(Native::DWORD dwThreadID, const char* szThreadName)
 #pragma warning(push)  
 #pragma warning(disable: 6320 6322)  
 	__try {
-		Native::RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(Native::ULONG_PTR), (ULONG_PTR*)&info);
+		Native::RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(Native::ULONG_PTR), (Native::ULONG_PTR*)&info);
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER) {
 	}

@@ -38,7 +38,8 @@
 
 namespace Native
 {
-#include <windows.h> // For wint_t
+//#include <windows.h> // For wint_t
+#include <wchar.h>
 }
 
 #include <sstream> // For std::stringstream
@@ -180,7 +181,7 @@ extern thread_local std::string _logPrefix;
 #define LOG_THREAD_INIT \
 	if (_logPrefix.length() == 0) { \
 		std::stringstream tmp; \
-		tmp << "[" << hexstring16 << GetCurrentThreadId() << "] "; \
+		tmp << "[" << hexstring16 << Native::GetCurrentThreadId() << "] "; \
 		_logPrefix = tmp.str(); \
     }
 

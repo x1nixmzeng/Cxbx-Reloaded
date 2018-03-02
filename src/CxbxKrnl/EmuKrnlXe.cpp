@@ -52,7 +52,7 @@ namespace Xbox
 // ******************************************************************
 // * 0x0146 - XeImageFileName
 // ******************************************************************
-XBSYSAPI EXPORTNUM(326) OBJECT_STRING XeImageFileName =
+XBSYSAPI EXPORTNUM(326) XDK::OBJECT_STRING XeImageFileName =
 // XeImageFileName.Buffer points to path of XBE
 //
 // Format is like this: \Device\Harddisk0\Partition1\bla.xbe
@@ -78,6 +78,8 @@ XBSYSAPI EXPORTNUM(327) XDK::NTSTATUS NTAPI XeLoadSection
 		LOG_FUNC_ARG(Section)
 		LOG_FUNC_END;
 
+
+	using XDK::DWORD;
 	XDK::NTSTATUS ret = STATUS_SUCCESS;
 
 	void* sectionData = CxbxKrnl_Xbe->FindSection((char*)std::string(Section->SectionName, 9).c_str());
@@ -149,6 +151,7 @@ XBSYSAPI EXPORTNUM(328) XDK::NTSTATUS NTAPI XeUnloadSection
 		LOG_FUNC_ARG(Section)
 		LOG_FUNC_END;
 
+	using XDK::DWORD;
 	XDK::NTSTATUS ret = STATUS_INVALID_PARAMETER;
 
 	// If the section was loaded, process it
@@ -186,7 +189,7 @@ XBSYSAPI EXPORTNUM(328) XDK::NTSTATUS NTAPI XeUnloadSection
 			}
 		}
 
-		ret = XDK::STATUS_SUCCESS;
+		ret = STATUS_SUCCESS;
 	}
 
 	RETURN(ret);

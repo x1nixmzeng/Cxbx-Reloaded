@@ -20,9 +20,6 @@ extern "C" {
 
 #include "xboxkrnl\xboxkrnl.h"
 
-namespace Xbox
-{
-
 #define	INVALID_HANDLE_VALUE			((HANDLE)-1)
 #define INVALID_FILE_SIZE				((HANDLE)-1)
 #define DELETE							(0x00010000L)

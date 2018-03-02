@@ -95,5 +95,33 @@ namespace XDK
 	typedef void               *HANDLE;
 	typedef HANDLE             *PHANDLE;
 
-}
+	// ******************************************************************
+	// * LPSECURITY_ATTRIBUTES
+	// ******************************************************************
+	typedef void* LPSECURITY_ATTRIBUTES;
 
+	// ******************************************************************
+	// * PTHREAD_START_ROUTINE / LPTHREAD_START_ROUTINE
+	// ******************************************************************
+	typedef DWORD (WINAPI *PTHREAD_START_ROUTINE)
+	(
+		LPVOID lpThreadParameter
+	);
+	typedef PTHREAD_START_ROUTINE LPTHREAD_START_ROUTINE;
+
+	// ******************************************************************
+	// * macro: EMUPATCH - marker on patches on original Xbox functions
+	// ******************************************************************
+#define EMUPATCH(Name) EmuPatch_##Name
+
+	// ******************************************************************
+	// * documentation purposes only
+	// * Kept in the Xbox:: namespace for sanity
+	// ******************************************************************
+#define EXPORTNUM(a)
+#define UNALIGNED
+#define OPTIONAL
+#define IN
+#define OUT
+
+}

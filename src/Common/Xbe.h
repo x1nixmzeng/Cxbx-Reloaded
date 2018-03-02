@@ -35,7 +35,7 @@
 #define XBE_H
 
 #include "Common/Error.h"
-#include <cstdio>
+#include <string>
 
 namespace XbeConstants
 {

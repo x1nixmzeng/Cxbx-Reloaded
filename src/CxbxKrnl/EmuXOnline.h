@@ -34,6 +34,10 @@
 #ifndef EMUXONLINE_H
 #define EMUXONLINE_H
 
+#include "XDK.h"
+
+namespace Xbox
+{
 
 // Flags returned by XNetGetEthernetLinkStatus()
 #define XNET_ETHERNET_LINK_ACTIVE           0x01
@@ -47,45 +51,45 @@
 // ******************************************************************
 int WINAPI EMUPATCH(WSAStartup)
 (
-    WORD        wVersionRequested,
-    WSADATA    *lpWSAData
+    XDK::WORD        wVersionRequested,
+    Native::WSADATA    *lpWSAData
 );
 
 // ******************************************************************
 // * patch: XNetStartup
 // ******************************************************************
-INT WINAPI EMUPATCH(XNetStartup)
+XDK::INT WINAPI EMUPATCH(XNetStartup)
 (
-    const PVOID pDummy
+    const XDK::PVOID pDummy
 );
 
 // ******************************************************************
 // * patch: XNetGetEthernetLinkStatus
 // ******************************************************************
-DWORD WINAPI EMUPATCH(XNetGetEthernetLinkStatus)();
+XDK::DWORD WINAPI EMUPATCH(XNetGetEthernetLinkStatus)();
 
 // ******************************************************************
 // * patch: XOnlineLaunchNewImage
 // ******************************************************************
-HRESULT WINAPI XOnlineLaunchNewImage
+XDK::HRESULT WINAPI XOnlineLaunchNewImage
 (
-    LPCSTR	lpImagePath,
-    LPVOID	pLaunchData
+    Native::LPCSTR	lpImagePath,
+    XDK::LPVOID	pLaunchData
 );
 
 // ******************************************************************
 // * patch: XOnlineLogon
 // ******************************************************************
-HRESULT WINAPI EMUPATCH(XOnlineLogon)
+XDK::HRESULT WINAPI EMUPATCH(XOnlineLogon)
 (
     VOID*	pUsers,
-    DWORD*	pdwServiceIDs,
-    DWORD	dwServices,
-    HANDLE	hEvent,
-    HANDLE	pHandle
+    XDK::DWORD*	pdwServiceIDs,
+    XDK::DWORD	dwServices,
+    XDK::HANDLE	hEvent,
+    XDK::HANDLE	pHandle
 );
 
-SOCKET WINAPI EMUPATCH(socket)
+Native::SOCKET WINAPI EMUPATCH(socket)
 (
     int   af,
     int   type,
@@ -94,14 +98,14 @@ SOCKET WINAPI EMUPATCH(socket)
 
 int WINAPI EMUPATCH(connect)
 (
-    SOCKET s,
+    Native::SOCKET s,
     const struct sockaddr FAR *name,
     int namelen
 );
 
 int WINAPI EMUPATCH(send)
 (
-    SOCKET s,
+    Native::SOCKET s,
     const char FAR *buf,
     int len,
     int flags
@@ -109,7 +113,7 @@ int WINAPI EMUPATCH(send)
 
 int WINAPI EMUPATCH(recv)
 (
-    SOCKET s,
+    Native::SOCKET s,
     char FAR *buf,
     int len,
     int flags
@@ -118,22 +122,24 @@ int WINAPI EMUPATCH(recv)
 
 int WINAPI EMUPATCH(bind)
 (
-    SOCKET s, 
+	Native::SOCKET s,
     const struct sockaddr FAR *name, 
     int namelen
 );
 
 int WINAPI EMUPATCH(listen)
 (
-    SOCKET s, 
+	Native::SOCKET s,
     int backlog
 );
 
 int WINAPI EMUPATCH(ioctlsocket)
 (
-    SOCKET s, 
+	Native::SOCKET s,
     long cmd, 
-    u_long FAR *argp
+	Native::u_long FAR *argp
 );
+
+}
 
 #endif

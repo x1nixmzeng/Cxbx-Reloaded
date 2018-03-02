@@ -58,7 +58,7 @@ namespace EmuXInput
 // ******************************************************************
 static Native::XINPUT_STATE		g_Controller;
 static Native::XINPUT_VIBRATION g_Vibration;
-static BOOL				g_bXInputInitialized = FALSE;
+static XDK::BOOL				g_bXInputInitialized = FALSE;
 
 // ******************************************************************
 // * patch: XInputPCPoll

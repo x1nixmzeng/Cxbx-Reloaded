@@ -44,29 +44,6 @@
 
 namespace Xbox
 {
-// ******************************************************************
-// * documentation purposes only
-// * Kept in the Xbox:: namespace for sanity
-// ******************************************************************
-#define EXPORTNUM(a)
-#define UNALIGNED
-#define OPTIONAL
-#define IN
-#define OUT
-
-// ******************************************************************
-// * LPSECURITY_ATTRIBUTES
-// ******************************************************************
-typedef void* LPSECURITY_ATTRIBUTES;
-
-// ******************************************************************
-// * PTHREAD_START_ROUTINE / LPTHREAD_START_ROUTINE
-// ******************************************************************
-typedef XDK::DWORD (WINAPI *PTHREAD_START_ROUTINE)
-(
-    XDK::LPVOID lpThreadParameter
-);
-typedef PTHREAD_START_ROUTINE LPTHREAD_START_ROUTINE;
 
 // ******************************************************************
 // * XINPUT_POLLING_PARAMETERS
@@ -327,11 +304,6 @@ LAUNCH_DATA, *PLAUNCH_DATA;
 #define XDEVICE_ENUMERATION_BUSY 1
 
 // ******************************************************************
-// * macro: EMUPATCH - marker on patches on original Xbox functions
-// ******************************************************************
-#define EMUPATCH(Name) EmuPatch_##Name
-
-// ******************************************************************
 // * patch: XFormatUtilityDrive
 // ******************************************************************
 XDK::BOOL WINAPI EMUPATCH(XFormatUtilityDrive)();
@@ -441,7 +413,7 @@ XDK::DWORD WINAPI EMUPATCH(XInputSetState)
 // ******************************************************************
 XDK::HANDLE WINAPI EMUPATCH(CreateMutex)
 (
-    LPSECURITY_ATTRIBUTES   lpMutexAttributes,
+    XDK::LPSECURITY_ATTRIBUTES   lpMutexAttributes,
 	XDK::BOOL                    bInitialOwner,
 	Native::LPCSTR                  lpName
 );
@@ -801,5 +773,6 @@ DWORD WINAPI EMUPATCH(XCalculateSignatureEnd)
 // +s
 
 
-} // ~XBL
+} // Xbox
+
 #endif

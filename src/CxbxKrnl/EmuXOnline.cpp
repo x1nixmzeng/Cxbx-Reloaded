@@ -42,6 +42,9 @@
 #include "EmuFS.h"
 #include "EmuXTL.h"
 
+namespace Xbox
+{
+
 /*
 // ******************************************************************
 // * patch: WSAStartup
@@ -258,10 +261,10 @@ int WINAPI EMUPATCH(ioctlsocket)
 // ******************************************************************
 // * patch: XOnlineLaunchNewImage
 // ******************************************************************
-HRESULT WINAPI XOnlineLaunchNewImage
+XDK::HRESULT WINAPI XOnlineLaunchNewImage
 (
-    LPCSTR	lpImagePath,
-    LPVOID	pLaunchData
+    Native::LPCSTR	lpImagePath,
+	XDK::LPVOID	pLaunchData
 )
 {
 	LOG_FUNC_BEGIN
@@ -271,7 +274,8 @@ HRESULT WINAPI XOnlineLaunchNewImage
 
 	// TODO: Launch another .xbe from Cxbx someday?
 
-	HRESULT ret = E_FAIL;
+	using Native::HRESULT;
+	XDK::HRESULT ret = E_FAIL;
 
 	RETURN(ret);
 }
@@ -306,3 +310,5 @@ HRESULT WINAPI EMUPATCH(XOnlineLogon)
 	RETURN(ret);
 }
 */
+
+} // Xbox

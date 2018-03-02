@@ -37,6 +37,8 @@
 
 #define LOG_PREFIX "XGRP"
 
+#include "EmuXG.h"
+
 namespace Native
 {
 #undef FIELD_OFFSET     // prevent macro redefinition warnings
@@ -55,7 +57,7 @@ namespace Xbox
 // ******************************************************************
 // * patch: XGIsSwizzledFormat
 // ******************************************************************
-PVOID WINAPI EMUPATCH(XGIsSwizzledFormat)
+XDK::PVOID WINAPI EMUPATCH(XGIsSwizzledFormat)
 (
     X_D3DFORMAT Format
 )
@@ -133,16 +135,16 @@ VOID WINAPI EMUPATCH(XGSwizzleRect)
 // ******************************************************************
 VOID WINAPI EMUPATCH(XGSwizzleBox)
 (
-    LPCVOID          pSource,
-    DWORD            RowPitch,
-    DWORD            SlicePitch,
-    CONST D3DBOX    *pBox,
-    LPVOID           pDest,
-    DWORD            Width,
-    DWORD            Height,
-    DWORD            Depth,
+    Native::LPCVOID          pSource,
+    XDK::DWORD            RowPitch,
+    XDK::DWORD            SlicePitch,
+    CONST Native::D3DBOX    *pBox,
+    XDK::LPVOID           pDest,
+    XDK::DWORD            Width,
+    XDK::DWORD            Height,
+    XDK::DWORD            Depth,
     CONST XGPOINT3D *pPoint,
-    DWORD            BytesPerPixel
+	XDK::DWORD            BytesPerPixel
 )
 {
 	//FUNC_EXPORTS
@@ -160,20 +162,20 @@ VOID WINAPI EMUPATCH(XGSwizzleBox)
 		LOG_FUNC_ARG(BytesPerPixel)
 		LOG_FUNC_END;
 
-	if(pDest != (LPVOID) 0x80000000)
+	if(pDest != (XDK::LPVOID) 0x80000000)
 	{
 		if(pBox == NULL && pPoint == NULL && RowPitch == 0 && SlicePitch == 0)
 		{
-			memcpy(pDest, pSource, Width*Height*Depth*BytesPerPixel);
+			Native::memcpy(pDest, pSource, Width*Height*Depth*BytesPerPixel);
 		}
 		else
 		{
 			if(pPoint != NULL && (pPoint->u != 0 || pPoint->v != 0 || pPoint->w != 0))
 				CxbxKrnlCleanup("Temporarily unsupported swizzle (very easy fix)");
 
-			DWORD dwMaxY = Height;
-			DWORD dwMaxZ = Depth;
-			DWORD dwChunkSize = Width;
+			XDK::DWORD dwMaxY = Height;
+			XDK::DWORD dwMaxZ = Depth;
+			XDK::DWORD dwChunkSize = Width;
 
 			uint08 *pSrc = (uint08*)pSource;
 			uint08 *pDst = (uint08*)pDest;
@@ -187,9 +189,9 @@ VOID WINAPI EMUPATCH(XGSwizzleBox)
 				dwChunkSize = pBox->Right - pBox->Left;
 			}
 
-			for(DWORD y=0;y<dwMaxY;y++)
+			for(XDK::DWORD y=0;y<dwMaxY;y++)
 			{
-				memcpy(pSrc, pDst, dwChunkSize);
+				Native::memcpy(pSrc, pDst, dwChunkSize);
 				pSrc += RowPitch;
 				pDst += RowPitch;
 			}
@@ -200,11 +202,11 @@ VOID WINAPI EMUPATCH(XGSwizzleBox)
 // ******************************************************************
 // * patch: XGWriteSurfaceOrTextureToXPR
 // ******************************************************************
-HRESULT WINAPI EMUPATCH(XGWriteSurfaceOrTextureToXPR)
+XDK::HRESULT WINAPI EMUPATCH(XGWriteSurfaceOrTextureToXPR)
 ( 
-	LPVOID			pResource,
+	XDK::LPVOID			pResource,
 	const char*		cPath,
-	BOOL			bWriteSurfaceAsTexture
+	XDK::BOOL			bWriteSurfaceAsTexture
 )
 {
 	//FUNC_EXPORTS
@@ -221,6 +223,7 @@ HRESULT WINAPI EMUPATCH(XGWriteSurfaceOrTextureToXPR)
 
 	LOG_IGNORED(); // (Temporarily) ignoring EmuXGWriteSurfaceOrTextureToXPR. Need file specs.
 
+	using XDK::HRESULT;
 	RETURN(S_OK);
 }
 
@@ -229,15 +232,15 @@ HRESULT WINAPI EMUPATCH(XGWriteSurfaceOrTextureToXPR)
 // ******************************************************************
 VOID WINAPI EMUPATCH(XGSetTextureHeader)
 (
-	UINT			Width,
-	UINT			Height,
-	UINT			Levels,
-	DWORD			Usage,
+	XDK::UINT			Width,
+	XDK::UINT			Height,
+	XDK::UINT			Levels,
+	XDK::DWORD			Usage,
 	X_D3DFORMAT		Format,
-	D3DPOOL			Pool,
+	Native::D3DPOOL			Pool,
 	X_D3DTexture*	pTexture,
-	UINT			Data,
-	UINT			Pitch
+	XDK::UINT			Data,
+	XDK::UINT			Pitch
 )
 {
 	//FUNC_EXPORTS
@@ -265,8 +268,8 @@ VOID WINAPI EMUPATCH(XGSetTextureHeader)
 	// Note : Do NOT touch pTexture->Lock, as callers can have set it already !
 
 	// Width or Height both a power of two?
-	DWORD l2w; _BitScanReverse(&l2w, Width); // MSVC intrinsic; GCC has __builtin_clz
-	DWORD l2h; _BitScanReverse(&l2h, Height);
+	XDK::DWORD l2w; _BitScanReverse(&l2w, Width); // MSVC intrinsic; GCC has __builtin_clz
+	XDK::DWORD l2h; _BitScanReverse(&l2h, Height);
 	if (((1 << l2w) == Width) && ((1 << l2h) == Height)) {
 		Width = Height = Pitch = 1; // When setting Format, clear Size field
 	} else {
@@ -280,7 +283,7 @@ VOID WINAPI EMUPATCH(XGSetTextureHeader)
 	// Manually fill in Format parameters
 	pTexture->Format = 0
 		| ((Dimensions << X_D3DFORMAT_DIMENSION_SHIFT) & X_D3DFORMAT_DIMENSION_MASK)
-		| (((DWORD)Format << X_D3DFORMAT_FORMAT_SHIFT) & X_D3DFORMAT_FORMAT_MASK)
+		| (((XDK::DWORD)Format << X_D3DFORMAT_FORMAT_SHIFT) & X_D3DFORMAT_FORMAT_MASK)
 		| ((Levels << X_D3DFORMAT_MIPMAP_SHIFT) & X_D3DFORMAT_MIPMAP_MASK)
 		| ((l2w << X_D3DFORMAT_USIZE_SHIFT) & X_D3DFORMAT_USIZE_MASK)
 		| ((l2h << X_D3DFORMAT_VSIZE_SHIFT) & X_D3DFORMAT_VSIZE_MASK)
