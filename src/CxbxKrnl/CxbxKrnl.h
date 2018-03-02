@@ -36,6 +36,7 @@
 
 #include "Cxbx.h"
 #include "Common/Xbe.h"
+#include "XDK.h"
 
 namespace Native
 {
@@ -46,7 +47,6 @@ namespace Native
 
 namespace Xbox
 {
-
 // Opcodes
 #define OPCODE_NOP_90 0x90
 #define OPCODE_INT3_CC 0xCC
@@ -198,10 +198,10 @@ void CxbxKrnlResume();
 void CxbxKrnlShutDown();
 
 /*! display the fatal error message*/
-void CxbxKrnlPrintUEM(ULONG ErrorCode);
+void CxbxKrnlPrintUEM(Native::ULONG ErrorCode);
 
 /*! display the cause of the fatal error message*/
-void CxbxPrintUEMInfo(ULONG ErrorCode);
+void CxbxPrintUEMInfo(Native::ULONG ErrorCode);
 
 /*! terminate the calling thread */
 __declspec(noreturn) void CxbxKrnlTerminateThread();
@@ -226,9 +226,9 @@ extern uint32 CxbxKrnl_KernelThunkTable[379];
 extern bool g_IsWine;
 
 extern bool g_CxbxPrintUEM;
-extern ULONG g_CxbxFatalErrorCode;
+extern Native::ULONG g_CxbxFatalErrorCode;
 
-void InitXboxThread(XDK::DWORD_PTR cores);
+void InitXboxThread(Native::DWORD_PTR cores);
 
 /*! thread local storage structure */
 extern Xbe::TLS *CxbxKrnl_TLS;
@@ -242,7 +242,7 @@ extern Xbe::Header *CxbxKrnl_XbeHeader;
 extern Xbe *CxbxKrnl_Xbe;
 
 /*! parent window handle */
-extern XDK::HWND CxbxKrnl_hEmuParent;
+extern Native::HWND CxbxKrnl_hEmuParent;
 extern DebugMode CxbxKrnl_DebugMode;
 extern std::string CxbxKrnl_DebugFileName;
 

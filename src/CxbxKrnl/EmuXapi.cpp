@@ -50,6 +50,10 @@
 #include "EmuShared.h"
 #include "HLEIntercept.h"
 #include "EmuXapi.h"
+#include "EmuXTL.h"
+
+namespace Xbox
+{
 
 // XInputSetState status waiters
 extern XInputSetStateStatus g_pXInputSetStateStatus[XINPUT_SETSTATE_SLOTS] = {0};
@@ -59,13 +63,7 @@ extern HANDLE g_hInputHandle[XINPUT_HANDLE_SLOTS] = {0};
 
 bool g_bXInputOpenCalled = false;
 
-namespace Xbox
-{
-
 PXPP_DEVICE_TYPE gDeviceType_Gamepad = nullptr;
-
-#include "EmuXTL.h"
-
 
 POLLING_PARAMETERS_HANDLE g_pph;
 XINPUT_POLLING_PARAMETERS g_pp;
@@ -942,7 +940,7 @@ VOID WINAPI EMUPATCH(XapiFiberStartup)(DWORD dwDummy)
 // ******************************************************************
 DWORD WINAPI EMUPATCH(QueueUserAPC)
 (
-	PAPCFUNC	pfnAPC,
+	Native::PAPCFUNC	pfnAPC,
 	HANDLE		hThread,
 	DWORD		dwData
 )

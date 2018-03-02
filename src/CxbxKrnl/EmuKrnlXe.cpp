@@ -46,6 +46,9 @@
 #include "Emu.h" // For EmuWarning()
 #include "VMManager.h"
 
+namespace Xbox
+{
+
 // ******************************************************************
 // * 0x0146 - XeImageFileName
 // ******************************************************************
@@ -66,16 +69,16 @@ XBSYSAPI EXPORTNUM(326) OBJECT_STRING XeImageFileName =
 // count is now above zero.
 //
 // New to the XBOX.
-XBSYSAPI EXPORTNUM(327) NTSTATUS NTAPI XeLoadSection
+XBSYSAPI EXPORTNUM(327) XDK::NTSTATUS NTAPI XeLoadSection
 (
-	IN PXBEIMAGE_SECTION Section
+	IN XDK::PXBEIMAGE_SECTION Section
 )
 {
 	LOG_FUNC_BEGIN
 		LOG_FUNC_ARG(Section)
 		LOG_FUNC_END;
 
-	NTSTATUS ret = STATUS_SUCCESS;
+	XDK::NTSTATUS ret = STATUS_SUCCESS;
 
 	void* sectionData = CxbxKrnl_Xbe->FindSection((char*)std::string(Section->SectionName, 9).c_str());
 	if (sectionData != nullptr) {
@@ -137,16 +140,16 @@ XBSYSAPI EXPORTNUM(327) NTSTATUS NTAPI XeLoadSection
 // if the count is now zero.
 //
 // New to the XBOX.
-XBSYSAPI EXPORTNUM(328) NTSTATUS NTAPI XeUnloadSection
+XBSYSAPI EXPORTNUM(328) XDK::NTSTATUS NTAPI XeUnloadSection
 (
-	IN PXBEIMAGE_SECTION Section
+	IN XDK::PXBEIMAGE_SECTION Section
 )
 {
 	LOG_FUNC_BEGIN
 		LOG_FUNC_ARG(Section)
 		LOG_FUNC_END;
 
-	NTSTATUS ret = STATUS_INVALID_PARAMETER;
+	XDK::NTSTATUS ret = STATUS_INVALID_PARAMETER;
 
 	// If the section was loaded, process it
 	if (Section->SectionReferenceCount > 0) {
@@ -183,7 +186,7 @@ XBSYSAPI EXPORTNUM(328) NTSTATUS NTAPI XeUnloadSection
 			}
 		}
 
-		ret = STATUS_SUCCESS;
+		ret = XDK::STATUS_SUCCESS;
 	}
 
 	RETURN(ret);
@@ -193,5 +196,7 @@ XBSYSAPI EXPORTNUM(328) NTSTATUS NTAPI XeUnloadSection
 // * 0x0163 - XePublicKeyData
 // ******************************************************************
 // TODO : What should we initialize this to?
-XBSYSAPI EXPORTNUM(355) DWORD XePublicKeyData = 0;
+XBSYSAPI EXPORTNUM(355) XDK::DWORD XePublicKeyData = 0;
+
+} // Xbox
 

@@ -34,69 +34,19 @@
 #ifndef EMUXAPI_H
 #define EMUXAPI_H
 
-namespace Native
-{
-#include <dxerr8.h>
-}
+//// Beware of this namespace choice as DirectX8 is both Xbox AND Native
+//namespace Native
+//{
+//#include <dxerr8.h>
+//}
+
+#include "XDK.h"
 
 namespace Xbox
 {
-
-// ******************************************************************
-// * calling conventions
-// ******************************************************************
-#define WINAPI              __stdcall
-
-// ******************************************************************
-// * Basic types
-// ******************************************************************
-typedef char                CHAR, CCHAR;
-typedef short               SHORT, CSHORT;
-typedef long                LONG;
-typedef unsigned char       UCHAR;
-typedef unsigned char       BYTE;
-typedef unsigned char       BOOLEAN;
-typedef unsigned short      USHORT;
-typedef unsigned short      WORD;
-typedef unsigned long       ULONG;
-typedef unsigned long       DWORD;
-typedef unsigned long       SIZE_T, *PSIZE_T;
-typedef unsigned long       ACCESS_MASK, *PACCESS_MASK;
-typedef unsigned long       PHYSICAL_ADDRESS;
-typedef long                INT_PTR;
-typedef unsigned __int64    ULONGLONG;
-
-// xapi
-typedef int                 BOOL;
-typedef int                 INT;
-typedef unsigned int        UINT;
-typedef unsigned int        *PUINT;
-typedef LONG                HRESULT;
-
-// ******************************************************************
-// * Pointer types
-// ******************************************************************
-typedef CHAR               *PCHAR;
-typedef CHAR               *PCSZ;
-typedef BYTE               *PBYTE;
-typedef BOOLEAN            *PBOOLEAN;
-typedef UCHAR              *PUCHAR;
-typedef USHORT             *PUSHORT;
-typedef ULONG              *PULONG;
-typedef DWORD              *LPDWORD;
-typedef ACCESS_MASK        *PACCESS_MASK;
-typedef LONG               *LONG_PTR;
-typedef ULONG              *ULONG_PTR;
-typedef INT_PTR            *PINT_PTR;
-#ifndef VOID
-#define VOID void
-#endif
-typedef VOID               *PVOID, *LPVOID;
-typedef void               *HANDLE;
-typedef HANDLE             *PHANDLE;
-
 // ******************************************************************
 // * documentation purposes only
+// * Kept in the Xbox:: namespace for sanity
 // ******************************************************************
 #define EXPORTNUM(a)
 #define UNALIGNED
@@ -112,9 +62,9 @@ typedef void* LPSECURITY_ATTRIBUTES;
 // ******************************************************************
 // * PTHREAD_START_ROUTINE / LPTHREAD_START_ROUTINE
 // ******************************************************************
-typedef DWORD (WINAPI *PTHREAD_START_ROUTINE)
+typedef XDK::DWORD (WINAPI *PTHREAD_START_ROUTINE)
 (
-    LPVOID lpThreadParameter
+    XDK::LPVOID lpThreadParameter
 );
 typedef PTHREAD_START_ROUTINE LPTHREAD_START_ROUTINE;
 
@@ -123,12 +73,12 @@ typedef PTHREAD_START_ROUTINE LPTHREAD_START_ROUTINE;
 // ******************************************************************
 typedef struct _XINPUT_POLLING_PARAMETERS
 {
-    BYTE       fAutoPoll        : 1;
-    BYTE       fInterruptOut    : 1;
-    BYTE       ReservedMBZ1     : 6;
-    BYTE       bInputInterval;
-    BYTE       bOutputInterval;
-    BYTE       ReservedMBZ2;
+    XDK::BYTE       fAutoPoll        : 1;
+    XDK::BYTE       fInterruptOut    : 1;
+    XDK::BYTE       ReservedMBZ1     : 6;
+    XDK::BYTE       bInputInterval;
+    XDK::BYTE       bOutputInterval;
+    XDK::BYTE       ReservedMBZ2;
 }
 XINPUT_POLLING_PARAMETERS, *PXINPUT_POLLING_PARAMETERS;
 
@@ -139,7 +89,7 @@ typedef struct _POLLING_PARAMETERS_HANDLE
 {
     XINPUT_POLLING_PARAMETERS *pPollingParameters;
 
-    DWORD dwPort;
+	XDK::DWORD dwPort;
 }
 POLLING_PARAMETERS_HANDLE, *PPOLLING_PARAMETERS_HANDLE;
 
@@ -148,9 +98,9 @@ POLLING_PARAMETERS_HANDLE, *PPOLLING_PARAMETERS_HANDLE;
 // ******************************************************************
 typedef struct _XPP_DEVICE_TYPE
 {
-	ULONG CurrentConnected;
-	ULONG ChangeConnected;
-	ULONG PreviousConnected;
+	XDK::ULONG CurrentConnected;
+	XDK::ULONG ChangeConnected;
+	XDK::ULONG PreviousConnected;
 }
 XPP_DEVICE_TYPE, *PXPP_DEVICE_TYPE;
 
@@ -159,10 +109,10 @@ XPP_DEVICE_TYPE, *PXPP_DEVICE_TYPE;
 // ******************************************************************
 typedef struct _XID_TYPE_INFORMATION
 {
-	UCHAR				ucType;
-	UCHAR				ucUnknown[3];
+	XDK::UCHAR				ucType;
+	XDK::UCHAR				ucUnknown[3];
 	PXPP_DEVICE_TYPE    XppType;
-	DWORD				dwUnknown[5];
+	XDK::DWORD				dwUnknown[5];
 } XID_TYPE_INFORMATION, *PXID_TYPE_INFORMATION;
 
 // ******************************************************************
@@ -171,7 +121,7 @@ typedef struct _XID_TYPE_INFORMATION
 typedef struct _XDEVICE_PREALLOC_TYPE 
 {
     PXPP_DEVICE_TYPE DeviceType;
-    DWORD            dwPreallocCount;
+	XDK::DWORD            dwPreallocCount;
 } 
 XDEVICE_PREALLOC_TYPE, *PXDEVICE_PREALLOC_TYPE;
 
@@ -180,12 +130,12 @@ XDEVICE_PREALLOC_TYPE, *PXDEVICE_PREALLOC_TYPE;
 // ******************************************************************
 typedef struct _XINPUT_GAMEPAD
 {
-    WORD    wButtons;
-    BYTE    bAnalogButtons[8];
-    SHORT   sThumbLX;
-    SHORT   sThumbLY;
-    SHORT   sThumbRX;
-    SHORT   sThumbRY;
+    XDK::WORD    wButtons;
+    XDK::BYTE    bAnalogButtons[8];
+    XDK::SHORT   sThumbLX;
+    XDK::SHORT   sThumbLY;
+    XDK::SHORT   sThumbRX;
+    XDK::SHORT   sThumbRY;
 }
 XINPUT_GAMEPAD, *PXINPUT_GAMEPAD;
 
@@ -194,8 +144,8 @@ XINPUT_GAMEPAD, *PXINPUT_GAMEPAD;
 // ******************************************************************
 typedef struct _XINPUT_RUMBLE
 {
-    WORD   wLeftMotorSpeed;
-    WORD   wRightMotorSpeed;
+    XDK::WORD   wLeftMotorSpeed;
+    XDK::WORD   wRightMotorSpeed;
 }
 XINPUT_RUMBLE, *PXINPUT_RUMBLE;
 
@@ -204,8 +154,8 @@ XINPUT_RUMBLE, *PXINPUT_RUMBLE;
 // ******************************************************************
 typedef struct _XINPUT_CAPABILITIES
 {
-    BYTE SubType;
-    WORD Reserved;
+    XDK::BYTE SubType;
+    XDK::WORD Reserved;
 
     union
     {
@@ -237,7 +187,7 @@ XINPUT_CAPABILITIES, *PXINPUT_CAPABILITIES;
 // ******************************************************************
 typedef struct _XINPUT_STATE
 {
-    DWORD dwPacketNumber;
+	XDK::DWORD dwPacketNumber;
 
     union
     {
@@ -275,9 +225,9 @@ XINPUT_STATE, *PXINPUT_STATE;
 // ******************************************************************
 typedef struct _XINPUT_FEEDBACK_HEADER
 {
-    DWORD           dwStatus;
-    HANDLE OPTIONAL hEvent;
-    BYTE            Reserved[58];
+    XDK::DWORD           dwStatus;
+    XDK::HANDLE OPTIONAL hEvent;
+    XDK::BYTE            Reserved[58];
 }
 XINPUT_FEEDBACK_HEADER, *PXINPUT_FEEDBACK_HEADER;
 
@@ -300,20 +250,20 @@ XINPUT_FEEDBACK, *PXINPUT_FEEDBACK;
 // ******************************************************************
 struct XBGAMEPAD : public XINPUT_GAMEPAD
 {
-	FLOAT      fX1;
-	FLOAT      fY1;
-	FLOAT      fX2;
-	FLOAT      fY2;
-	WORD       wLastButtons;
-	BOOL       bLastAnalogButtons[8];
-	WORD       wPressedButtons;
-	BOOL       bPressedAnalogButtons[8];
+	Native::FLOAT      fX1;
+	Native::FLOAT      fY1;
+	Native::FLOAT      fX2;
+	Native::FLOAT      fY2;
+	XDK::WORD       wLastButtons;
+	XDK::BOOL       bLastAnalogButtons[8];
+	XDK::WORD       wPressedButtons;
+	XDK::BOOL       bPressedAnalogButtons[8];
 	XINPUT_RUMBLE	Rumble;
 	XINPUT_FEEDBACK	Feedback;
 	XINPUT_CAPABILITIES caps;
-	HANDLE     hDevice;
-	BOOL       bInserted;
-	BOOL       bRemoved;
+	XDK::HANDLE     hDevice;
+	XDK::BOOL       bInserted;
+	XDK::BOOL       bRemoved;
 };
 
 // ******************************************************************
@@ -321,22 +271,22 @@ struct XBGAMEPAD : public XINPUT_GAMEPAD
 // ******************************************************************
 typedef struct _RTL_HEAP_PARAMETERS
 {
-    ULONG   Length;
-    BYTE    Unknown[0x2C];
+    XDK::ULONG   Length;
+    XDK::BYTE    Unknown[0x2C];
 }
 RTL_HEAP_PARAMETERS;
 
 // ******************************************************************
 // * XTHREAD_NOTIFY_PROC
 // ******************************************************************
-typedef VOID (WINAPI *XTHREAD_NOTIFY_PROC)(BOOL fCreate);
+typedef VOID (WINAPI *XTHREAD_NOTIFY_PROC)(XDK::BOOL fCreate);
 
 // ******************************************************************
 // * XTHREAD_NOTIFICATION
 // ******************************************************************
 typedef struct _XTHREAD_NOTIFICATION
 {
-    LIST_ENTRY          Reserved;
+    XDK::LIST_ENTRY          Reserved;
     XTHREAD_NOTIFY_PROC pfnNotifyRoutine;
 }
 XTHREAD_NOTIFICATION, *PXTHREAD_NOTIFICATION;
@@ -348,7 +298,7 @@ XTHREAD_NOTIFICATION, *PXTHREAD_NOTIFICATION;
 
 typedef struct _XCALCSIG_SIGNATURE
 {
-    BYTE    Signature[XCALCSIG_SIGNATURE_SIZE];
+    Native::BYTE    Signature[XCALCSIG_SIGNATURE_SIZE];
 }
 XCALCSIG_SIGNATURE, *PXCALCSIG_SIGNATURE;
 
@@ -361,7 +311,7 @@ XCALCSIG_SIGNATURE, *PXCALCSIG_SIGNATURE;
 
 typedef struct _LAUNCH_DATA 
 {
-	BYTE	Data[MAX_LAUNCH_DATA_SIZE];
+	XDK::BYTE	Data[MAX_LAUNCH_DATA_SIZE];
 } 
 LAUNCH_DATA, *PLAUNCH_DATA;
 
@@ -384,7 +334,7 @@ LAUNCH_DATA, *PLAUNCH_DATA;
 // ******************************************************************
 // * patch: XFormatUtilityDrive
 // ******************************************************************
-BOOL WINAPI EMUPATCH(XFormatUtilityDrive)();
+XDK::BOOL WINAPI EMUPATCH(XFormatUtilityDrive)();
 
 #if 0 // Handled by ExQueryNonVolatileSetting(XC_MAX_OS) returning XBOX_USER_SETTINGS
 // ******************************************************************
@@ -399,9 +349,9 @@ DWORD WINAPI EMUPATCH(GetTimeZoneInformation)
 // ******************************************************************
 // * patch: XMountUtilityDrive
 // ******************************************************************
-BOOL WINAPI EMUPATCH(XMountUtilityDrive)
+XDK::BOOL WINAPI EMUPATCH(XMountUtilityDrive)
 (
-    BOOL    fFormatClean
+	XDK::BOOL    fFormatClean
 );
 
 // ******************************************************************
@@ -409,14 +359,14 @@ BOOL WINAPI EMUPATCH(XMountUtilityDrive)
 // ******************************************************************
 VOID WINAPI EMUPATCH(XInitDevices)
 (
-    DWORD					dwPreallocTypeCount,
+	XDK::DWORD					dwPreallocTypeCount,
 	PXDEVICE_PREALLOC_TYPE	PreallocTypes
 );
 
 // ******************************************************************
 // * patch: XGetDevices
 // ******************************************************************
-DWORD WINAPI EMUPATCH(XGetDevices)
+XDK::DWORD WINAPI EMUPATCH(XGetDevices)
 (
     XPP_DEVICE_TYPE *DeviceType
 );
@@ -424,21 +374,21 @@ DWORD WINAPI EMUPATCH(XGetDevices)
 // ******************************************************************
 // * patch: XGetDeviceChanges
 // ******************************************************************
-BOOL WINAPI EMUPATCH(XGetDeviceChanges)
+XDK::BOOL WINAPI EMUPATCH(XGetDeviceChanges)
 (
     PXPP_DEVICE_TYPE DeviceType,
-    PDWORD           pdwInsertions,
-    PDWORD           pdwRemovals
+    XDK::PDWORD           pdwInsertions,
+    XDK::PDWORD           pdwRemovals
 );
 
 // ******************************************************************
 // * patch: XInputOpen
 // ******************************************************************
-HANDLE WINAPI EMUPATCH(XInputOpen)
+XDK::HANDLE WINAPI EMUPATCH(XInputOpen)
 (
     IN PXPP_DEVICE_TYPE             DeviceType,
-    IN DWORD                        dwPort,
-    IN DWORD                        dwSlot,
+    IN XDK::DWORD                        dwPort,
+    IN XDK::DWORD                        dwSlot,
     IN PXINPUT_POLLING_PARAMETERS   pPollingParameters OPTIONAL
 );
 
@@ -447,41 +397,41 @@ HANDLE WINAPI EMUPATCH(XInputOpen)
 // ******************************************************************
 VOID WINAPI EMUPATCH(XInputClose)
 (
-    IN HANDLE hDevice
+    IN XDK::HANDLE hDevice
 );
 
 // ******************************************************************
 // * patch: XInputPoll
 // ******************************************************************
-DWORD WINAPI EMUPATCH(XInputPoll)
+XDK::DWORD WINAPI EMUPATCH(XInputPoll)
 (
-    IN HANDLE Device
+    IN XDK::HANDLE Device
 );
 
 // ******************************************************************
 // * patch: XInputGetCapabilities
 // ******************************************************************
-DWORD WINAPI EMUPATCH(XInputGetCapabilities)
+XDK::DWORD WINAPI EMUPATCH(XInputGetCapabilities)
 (
-    IN  HANDLE               hDevice,
+    IN  XDK::HANDLE               hDevice,
     OUT PXINPUT_CAPABILITIES pCapabilities
 );
 
 // ******************************************************************
 // * patch: XInputGetState
 // ******************************************************************
-DWORD WINAPI EMUPATCH(XInputGetState)
+XDK::DWORD WINAPI EMUPATCH(XInputGetState)
 (
-    IN  HANDLE         hDevice,
+    IN  XDK::HANDLE         hDevice,
     OUT PXINPUT_STATE  pState
 );
 
 // ******************************************************************
 // * patch: XInputSetState
 // ******************************************************************
-DWORD WINAPI EMUPATCH(XInputSetState)
+XDK::DWORD WINAPI EMUPATCH(XInputSetState)
 (
-    IN     HANDLE           hDevice,
+    IN     XDK::HANDLE           hDevice,
     IN OUT PXINPUT_FEEDBACK pFeedback
 );
 
@@ -489,27 +439,27 @@ DWORD WINAPI EMUPATCH(XInputSetState)
 // ******************************************************************
 // * patch: CreateMutex
 // ******************************************************************
-HANDLE WINAPI EMUPATCH(CreateMutex)
+XDK::HANDLE WINAPI EMUPATCH(CreateMutex)
 (
     LPSECURITY_ATTRIBUTES   lpMutexAttributes,
-    BOOL                    bInitialOwner,
-    LPCSTR                  lpName
+	XDK::BOOL                    bInitialOwner,
+	Native::LPCSTR                  lpName
 );
 
 // ******************************************************************
 // * patch: CloseHandle
 // ******************************************************************
-BOOL WINAPI EMUPATCH(CloseHandle)
+XDK::BOOL WINAPI EMUPATCH(CloseHandle)
 (
-    HANDLE hObject
+	XDK::HANDLE hObject
 );
 
 // ******************************************************************
 // * patch: SetThreadPriority
 // ******************************************************************
-BOOL WINAPI EMUPATCH(SetThreadPriority)
+XDK::BOOL WINAPI EMUPATCH(SetThreadPriority)
 (
-    HANDLE  hThread,
+	XDK::HANDLE  hThread,
     int     nPriority
 );
 
@@ -518,25 +468,25 @@ BOOL WINAPI EMUPATCH(SetThreadPriority)
 // ******************************************************************
 int WINAPI EMUPATCH(GetThreadPriority)
 (
-    HANDLE  hThread
+	XDK::HANDLE  hThread
 );
 
 // ******************************************************************
 // * patch: SetThreadPriorityBoost
 // ******************************************************************
-BOOL WINAPI EMUPATCH(SetThreadPriorityBoost)
+XDK::BOOL WINAPI EMUPATCH(SetThreadPriorityBoost)
 (
-    HANDLE  hThread,
-    BOOL    DisablePriorityBoost
+	XDK::HANDLE  hThread,
+	XDK::BOOL    DisablePriorityBoost
 );
 
 // ******************************************************************
 // * patch: GetExitCodeThread
 // ******************************************************************
-BOOL WINAPI EMUPATCH(GetExitCodeThread)
+XDK::BOOL WINAPI EMUPATCH(GetExitCodeThread)
 (
-    HANDLE  hThread,
-    LPDWORD lpExitCode
+	XDK::HANDLE  hThread,
+	XDK::LPDWORD lpExitCode
 );
 
 // ******************************************************************
@@ -544,8 +494,8 @@ BOOL WINAPI EMUPATCH(GetExitCodeThread)
 // ******************************************************************
 VOID WINAPI EMUPATCH(XapiThreadStartup)
 (
-    DWORD dwDummy1,
-    DWORD dwDummy2
+    XDK::DWORD dwDummy1,
+    XDK::DWORD dwDummy2
 );
 
 /* Too High Level!
@@ -561,7 +511,7 @@ NTSTATUS CDECL XapiSetupPerTitleDriveLetters(DWORD dwTitleId, LPCWSTR wszTitleNa
 VOID WINAPI EMUPATCH(XRegisterThreadNotifyRoutine)
 (
     PXTHREAD_NOTIFICATION   pThreadNotification,
-    BOOL                    fRegister
+	XDK::BOOL                    fRegister
 );
 
 #if 0 // patch disabled
@@ -616,11 +566,11 @@ VOID WINAPI EMUPATCH(XapiFiberStartup)(DWORD dwDummy);
 // ******************************************************************
 // * patch: QueueUserAPC
 // ******************************************************************
-DWORD WINAPI EMUPATCH(QueueUserAPC)
+XDK::DWORD WINAPI EMUPATCH(QueueUserAPC)
 (
-	PAPCFUNC	pfnAPC,
-	HANDLE		hThread,
-	DWORD   	dwData
+	Native::PAPCFUNC	pfnAPC,
+	XDK::HANDLE		hThread,
+	XDK::DWORD   	dwData
 );
 
 #if 0 // Handled by WaitForSingleObject
@@ -639,9 +589,9 @@ BOOL WINAPI EMUPATCH(GetOverlappedResult)
 // ******************************************************************
 // * patch: XLaunchNewImageA
 // ******************************************************************
-DWORD WINAPI EMUPATCH(XLaunchNewImageA)
+XDK::DWORD WINAPI EMUPATCH(XLaunchNewImageA)
 (
-	LPCSTR			lpTitlePath,
+	Native::LPCSTR			lpTitlePath,
 	PLAUNCH_DATA	pLaunchData
 );
 
@@ -661,38 +611,38 @@ DWORD WINAPI EMUPATCH(XGetLaunchInfo)
 // ******************************************************************
 VOID WINAPI EMUPATCH(XSetProcessQuantumLength)
 (
-    DWORD dwMilliseconds
+	XDK::DWORD dwMilliseconds
 );
 
 // ******************************************************************
 // * patch: SignalObjectAndWait
 // ******************************************************************
-DWORD WINAPI EMUPATCH(SignalObjectAndWait)
+XDK::DWORD WINAPI EMUPATCH(SignalObjectAndWait)
 (
-	HANDLE	hObjectToSignal,
-	HANDLE	hObjectToWaitOn,
-	DWORD	dwMilliseconds,
-	BOOL	bAlertable
+	XDK::HANDLE	hObjectToSignal,
+	XDK::HANDLE	hObjectToWaitOn,
+	XDK::DWORD	dwMilliseconds,
+	XDK::BOOL	bAlertable
 );
 
 // ******************************************************************
 // * patch: timeSetEvent
 // ******************************************************************
-MMRESULT WINAPI EMUPATCH(timeSetEvent)
+Native::MMRESULT WINAPI EMUPATCH(timeSetEvent)
 (
-	UINT			uDelay,
-	UINT			uResolution,
-	LPTIMECALLBACK	fptc,
-	DWORD			dwUser,
-	UINT			fuEvent
+	XDK::UINT			uDelay,
+	XDK::UINT			uResolution,
+	Native::LPTIMECALLBACK	fptc,
+	XDK::DWORD			dwUser,
+	XDK::UINT			fuEvent
 );
 
 // ******************************************************************
 // * patch: timeKillEvent
 // ******************************************************************
-MMRESULT WINAPI EMUPATCH(timeKillEvent)
+Native::MMRESULT WINAPI EMUPATCH(timeKillEvent)
 (
-	UINT uTimerID  
+	XDK::UINT uTimerID
 );
 
 // ******************************************************************
@@ -700,10 +650,10 @@ MMRESULT WINAPI EMUPATCH(timeKillEvent)
 // ******************************************************************
 VOID WINAPI EMUPATCH(RaiseException)
 (
-	DWORD			dwExceptionCode,       // exception code
-	DWORD			dwExceptionFlags,      // continuable exception flag
-	DWORD			nNumberOfArguments,    // number of arguments
-	CONST ULONG_PTR *lpArguments		   // array of arguments
+	XDK::DWORD			dwExceptionCode,       // exception code
+	XDK::DWORD			dwExceptionFlags,      // continuable exception flag
+	XDK::DWORD			nNumberOfArguments,    // number of arguments
+	CONST XDK::ULONG_PTR *lpArguments		   // array of arguments
 );
 
 // ******************************************************************
@@ -711,95 +661,95 @@ VOID WINAPI EMUPATCH(RaiseException)
 // ******************************************************************
 int WINAPI EMUPATCH(lstrcmpiW)
 (
-	LPCWSTR lpString1,
-	LPCWSTR lpString2
+	Native::LPCWSTR lpString1,
+	Native::LPCWSTR lpString2
 );
 
 // ******************************************************************
 // * patch: XMountMUA
 // ******************************************************************
-DWORD WINAPI EMUPATCH(XMountMUA)
+XDK::DWORD WINAPI EMUPATCH(XMountMUA)
 (
-	DWORD dwPort,                  
-	DWORD dwSlot,                  
-	PCHAR pchDrive               
+	XDK::DWORD dwPort,                  
+	XDK::DWORD dwSlot,                  
+	XDK::PCHAR pchDrive               
 );
 
 // ******************************************************************
 // * patch: XMountMURootA
 // ******************************************************************
-DWORD WINAPI EMUPATCH(XMountMURootA)
+XDK::DWORD WINAPI EMUPATCH(XMountMURootA)
 (
-	DWORD dwPort,                  
-	DWORD dwSlot,                  
-	PCHAR pchDrive               
+	XDK::DWORD dwPort,                  
+	XDK::DWORD dwSlot,                  
+	XDK::PCHAR pchDrive               
 );
 
 // ******************************************************************
 // * patch: XMountAlternateTitleA
 // ******************************************************************
-DWORD WINAPI EMUPATCH(XMountAlternateTitleA)
+XDK::DWORD WINAPI EMUPATCH(XMountAlternateTitleA)
 (
-	LPCSTR		lpRootPath,               
-	DWORD		dwAltTitleId,               
-	PCHAR		pchDrive               
+	Native::LPCSTR		lpRootPath,
+	XDK::DWORD		dwAltTitleId,               
+	XDK::PCHAR		pchDrive               
 );
 
 // ******************************************************************
 // * patch: XUnmountAlternateTitleA
 // ******************************************************************
-DWORD WINAPI EMUPATCH(XUnmountAlternateTitleA)(CHAR chDrive);
+XDK::DWORD WINAPI EMUPATCH(XUnmountAlternateTitleA)(XDK::CHAR chDrive);
 
 // ******************************************************************
 // * patch: MoveFileA
 // ******************************************************************
-BOOL WINAPI EMUPATCH(MoveFileA)
+XDK::BOOL WINAPI EMUPATCH(MoveFileA)
 (
-    LPCSTR lpExistingFileName,
-    LPCSTR lpNewFileName
+    Native::LPCSTR lpExistingFileName,
+	Native::LPCSTR lpNewFileName
 );
 
 // ******************************************************************
 // * patch: XGetDeviceEnumerationStatus
 // ******************************************************************
-DWORD WINAPI EMUPATCH(XGetDeviceEnumerationStatus)();
+XDK::DWORD WINAPI EMUPATCH(XGetDeviceEnumerationStatus)();
 
 // ******************************************************************
 // * patch: SwitchToThread
 // ******************************************************************
-BOOL WINAPI EMUPATCH(SwitchToThread)();
+XDK::BOOL WINAPI EMUPATCH(SwitchToThread)();
 
 // ******************************************************************
 // * patch: XInputGetDeviceDescription
 // ******************************************************************
-DWORD WINAPI EMUPATCH(XInputGetDeviceDescription)
+XDK::DWORD WINAPI EMUPATCH(XInputGetDeviceDescription)
 (
-    HANDLE	hDevice,
-    PVOID	pDescription
+    XDK::HANDLE	hDevice,
+    XDK::PVOID	pDescription
 );
 
 // ******************************************************************
 // * patch: ReadFileEx
 // ******************************************************************
-BOOL WINAPI EMUPATCH(ReadFileEx)
+XDK::BOOL WINAPI EMUPATCH(ReadFileEx)
 (
-	HANDLE hFile,                                       // handle to file
-	LPVOID lpBuffer,                                    // data buffer
-	DWORD nNumberOfBytesToRead,                         // number of bytes to read
-	LPOVERLAPPED lpOverlapped,                          // offset
-	LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine // completion routine
+	XDK::HANDLE hFile,                                       // handle to file
+	XDK::LPVOID lpBuffer,                                    // data buffer
+	XDK::DWORD nNumberOfBytesToRead,                         // number of bytes to read
+	Native::LPOVERLAPPED lpOverlapped,                          // offset
+	Native::LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine // completion routine
 );
 
 // ******************************************************************
 // * patch: WriteFileEx
 // ******************************************************************
-BOOL WINAPI EMUPATCH(WriteFileEx)
+XDK::BOOL WINAPI EMUPATCH(WriteFileEx)
 (
-	HANDLE hFile,                                       // handle to output file
-	LPCVOID lpBuffer,                                   // data buffer
-	DWORD nNumberOfBytesToWrite,                        // number of bytes to write
-	LPOVERLAPPED lpOverlapped,                          // overlapped buffer
-	LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine // completion routine
+	XDK::HANDLE hFile,                                       // handle to output file
+	Native::LPCVOID lpBuffer,                                   // data buffer
+	XDK::DWORD nNumberOfBytesToWrite,                        // number of bytes to write
+	Native::LPOVERLAPPED lpOverlapped,                          // overlapped buffer
+	Native::LPOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine // completion routine
 );
 
 // ******************************************************************
@@ -807,7 +757,7 @@ BOOL WINAPI EMUPATCH(WriteFileEx)
 // ******************************************************************
 VOID WINAPI EMUPATCH(OutputDebugStringA)
 (
-	IN LPCSTR lpOutputString
+	IN Native::LPCSTR lpOutputString
 );
 
 // s+

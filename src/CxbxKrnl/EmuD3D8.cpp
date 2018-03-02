@@ -68,7 +68,7 @@ namespace Xbox
 // This doesn't work : #include <dxerr8.h> // See DXGetErrorString8A below
 
 // Global(s)
-HWND                                g_hEmuWindow   = NULL; // rendering window
+Native::HWND                                g_hEmuWindow   = NULL; // rendering window
 Native::LPDIRECT3DDEVICE8              g_pD3DDevice8  = NULL; // Direct3D8 Device
 Native::LPDIRECTDRAWSURFACE7           g_pDDSPrimary  = NULL; // DirectDraw7 Primary Surface
 Native::LPDIRECTDRAWCLIPPER            g_pDDClipper   = nullptr; // DirectDraw7 Clipper

@@ -39,6 +39,7 @@
 #include "CxbxKrnl.h"
 #include "Emu.h"
 
+// Beware of this namespace choice as DirectX8 is both Xbox AND Native
 namespace Native
 {
 #define DIRECTDRAW_VERSION 0x0700
@@ -89,7 +90,7 @@ HRESULT WINAPI EMUPATCH(Direct3D_CreateDevice)
 (
     UINT                        Adapter,
     Native::D3DDEVTYPE                  DeviceType,
-    HWND                        hFocusWindow,
+	Native::HWND                        hFocusWindow,
     DWORD                       BehaviorFlags,
     X_D3DPRESENT_PARAMETERS    *pPresentationParameters,
 	Native::IDirect3DDevice8          **ppReturnedDeviceInterface
@@ -129,7 +130,7 @@ HRESULT WINAPI EMUPATCH(D3D_CheckDeviceFormat)
 // ******************************************************************
 VOID WINAPI EMUPATCH(D3DDevice_GetDeviceCaps)
 (
-    D3DCAPS8                   *pCaps
+	NativeD3DCAPS8                   *pCaps
 );
 #endif
 
@@ -144,7 +145,7 @@ VOID WINAPI EMUPATCH(D3DDevice_GetDisplayFieldStatus)
 // ******************************************************************
 // * patch: D3DDevice_BeginPush
 // ******************************************************************
-PDWORD WINAPI EMUPATCH(D3DDevice_BeginPush)(DWORD Count);
+XDK::PDWORD WINAPI EMUPATCH(D3DDevice_BeginPush)(DWORD Count);
 
 // ******************************************************************
 // * patch: D3DDevice_EndPush

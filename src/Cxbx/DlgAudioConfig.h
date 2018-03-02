@@ -34,9 +34,7 @@
 #ifndef DLGAUDIOCONFIG_H
 #define DLGAUDIOCONFIG_H
 
-#include <windows.h>
-
 /*! show audio configuration dialog */
-extern VOID ShowAudioConfig(HWND hwnd);
+extern VOID ShowAudioConfig(Native::HWND hwnd);
 
 #endif

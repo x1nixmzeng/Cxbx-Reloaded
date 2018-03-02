@@ -37,5 +37,63 @@
 namespace XDK
 {
 #include <xboxkrnl/xboxkrnl.h>
+
+	// The following has moved from EmuXapi.h
+
+	// ******************************************************************
+	// * calling conventions
+	// ******************************************************************
+#define WINAPI              __stdcall
+
+	// ******************************************************************
+	// * Basic types
+	// ******************************************************************
+	typedef char                CHAR, CCHAR;
+	typedef short               SHORT, CSHORT;
+	typedef long                LONG;
+	typedef unsigned char       UCHAR;
+	typedef unsigned char       BYTE;
+	typedef unsigned char       BOOLEAN;
+	typedef unsigned short      USHORT;
+	typedef unsigned short      WORD;
+	typedef unsigned long       ULONG;
+	typedef unsigned long       DWORD;
+	typedef unsigned long       SIZE_T, *PSIZE_T;
+	typedef unsigned long       ACCESS_MASK, *PACCESS_MASK;
+	typedef unsigned long       PHYSICAL_ADDRESS;
+	typedef long                INT_PTR;
+	typedef unsigned __int64    ULONGLONG;
+
+	// xapi
+	typedef int                 BOOL;
+	typedef int                 INT;
+	typedef unsigned int        UINT;
+	typedef unsigned int        *PUINT;
+	typedef LONG                HRESULT;
+
+	// ******************************************************************
+	// * Pointer types
+	// ******************************************************************
+	typedef CHAR               *PCHAR;
+	typedef CHAR               *PCSZ;
+	typedef BYTE               *PBYTE;
+	typedef BOOLEAN            *PBOOLEAN;
+	typedef UCHAR              *PUCHAR;
+	typedef USHORT             *PUSHORT;
+	typedef unsigned long              *PULONG;
+	typedef DWORD              *LPDWORD;
+	typedef ACCESS_MASK        *PACCESS_MASK;
+	typedef long               *LONG_PTR;
+	typedef unsigned long              *ULONG_PTR;
+	typedef INT_PTR            *PINT_PTR;
+
+#ifndef VOID
+#  define VOID void
+#endif
+
+	typedef VOID               *PVOID, *LPVOID;
+	typedef void               *HANDLE;
+	typedef HANDLE             *PHANDLE;
+
 }
 

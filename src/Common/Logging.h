@@ -36,7 +36,11 @@
 
 #pragma once
 
-#include <windows.h> // For DWORD
+namespace Native
+{
+#include <windows.h> // For wint_t
+}
+
 #include <sstream> // For std::stringstream
 #include <iostream> // For std::cout
 #include <iomanip> // For std::setw
@@ -70,7 +74,7 @@ constexpr const char* file_name(const char* str) {
 // Character escaping functions
 //
 
-extern const bool needs_escape(const wint_t _char);
+extern const bool needs_escape(const Native::wint_t _char);
 extern inline void output_char(std::ostream& os, char c);
 extern inline void output_wchar(std::ostream& os, wchar_t c);
 

@@ -34,9 +34,7 @@
 #ifndef DLGVIDEOCONFIG_H
 #define DLGVIDEOCONFIG_H
 
-#include <windows.h>
-
 /*! show video configuration dialog */
-extern VOID ShowVideoConfig(HWND hwnd);
+extern VOID ShowVideoConfig(Native::HWND hwnd);
 
 #endif

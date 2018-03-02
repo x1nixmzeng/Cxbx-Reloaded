@@ -36,7 +36,10 @@
 
 #include "Common/Error.h"
 
+namespace Native
+{
 #include <windows.h>
+}
 
 // ******************************************************************
 // * class : Wnd
@@ -47,7 +50,7 @@ class Wnd : public Error
         // ******************************************************************
         // * Constructor
         // ******************************************************************
-        Wnd(HINSTANCE x_hInstance);
+        Wnd(Native::HINSTANCE x_hInstance);
 
         // ******************************************************************
         // * Deconstructor
@@ -64,41 +67,41 @@ private:
         // ******************************************************************
         // * Forward WndProc to thiscall member function
         // ******************************************************************
-        static  LRESULT CALLBACK WndProcForward(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+        static Native::LRESULT CALLBACK WndProcForward(Native::HWND hwnd, Native::UINT uMsg, Native::WPARAM wParam, Native::LPARAM lParam);
 
         // ******************************************************************
         // * Window Message Handling Procedure
         // ******************************************************************
-        virtual LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+        virtual Native::LRESULT CALLBACK WndProc(Native::HWND hwnd, Native::UINT uMsg, Native::WPARAM wParam, Native::LPARAM lParam);
 
 public:
         // ******************************************************************
         // * Retrieve this window's handle
         // ******************************************************************
-        HWND GetHwnd() const { return m_hwnd; }
+        Native::HWND GetHwnd() const { return m_hwnd; }
 
     protected:
         // ******************************************************************
         // * Module's Instance Handle
         // ******************************************************************
-        HINSTANCE   m_hInstance;
+        Native::HINSTANCE   m_hInstance;
 
         // ******************************************************************
         // * Module's Window Handle
         // ******************************************************************
-        HWND        m_hwnd;
+		Native::HWND        m_hwnd;
 
         // ******************************************************************
         // * Etc
         // ******************************************************************
-        ATOM        m_class;
+		Native::ATOM        m_class;
         const char *m_classname;
         const char *m_wndname;
-        UINT        m_clsstyle;
-        DWORD       m_wndstyle;
+        Native::UINT        m_clsstyle;
+        Native::DWORD       m_wndstyle;
         int         m_x, m_y, m_w, m_h;
-        HWND        m_parent;
-        HBRUSH      m_background;
+        Native::HWND        m_parent;
+        Native::HBRUSH      m_background;
         bool        m_initialized;
 
     private:

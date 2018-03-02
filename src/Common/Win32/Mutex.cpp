@@ -40,10 +40,10 @@
 // ******************************************************************
 Mutex::Mutex()
 {
-    InterlockedExchange(&m_MutexLock, 0);
-    InterlockedExchange(&m_OwnerProcess, 0);
-    InterlockedExchange(&m_OwnerThread, 0);
-    InterlockedExchange(&m_LockCount, 0);
+    Native::InterlockedExchange(&m_MutexLock, 0);
+    Native::InterlockedExchange(&m_OwnerProcess, 0);
+    Native::InterlockedExchange(&m_OwnerThread, 0);
+    Native::InterlockedExchange(&m_LockCount, 0);
 }
 
 // ******************************************************************
@@ -51,28 +51,30 @@ Mutex::Mutex()
 // ******************************************************************
 void Mutex::Lock()
 {
-    LONG _CurrentProcessId = (LONG) GetCurrentProcessId();
-    LONG _CurrentThreadId = (LONG) GetCurrentThreadId();
+    Native::LONG _CurrentProcessId = (Native::LONG)Native::GetCurrentProcessId();
+    Native::LONG _CurrentThreadId = (Native::LONG) Native::GetCurrentThreadId();
     while(true)
     {
         // Grab the lock, letting us look at the variables
 #if (_MSC_VER < 1300)  // We are not using VC++.NET
-        while(InterlockedCompareExchange((LPVOID*)&m_MutexLock, (LPVOID)1, (LPVOID)0))
+		while (Native::InterlockedCompareExchange((Native::LPVOID*)&m_MutexLock, (Native::LPVOID)1, (Native::LPVOID)0))
 #else
-        while(InterlockedCompareExchange((LPLONG)&m_MutexLock, (LONG)1, (LONG)0))
+		while (Native::InterlockedCompareExchange((Native::LPLONG)&m_MutexLock, (Native::LONG)1, (Native::LONG)0))
 #endif
-            Sleep(1);
+		{
+			Native::Sleep(1);
+		}
 
         // Are we the the new owner?
         if (!m_OwnerProcess)
         {
             // Take ownership
-            InterlockedExchange(&m_OwnerProcess, _CurrentProcessId);
-            InterlockedExchange(&m_OwnerThread, _CurrentThreadId);
-            InterlockedExchange(&m_LockCount, 1);
+            Native::InterlockedExchange(&m_OwnerProcess, _CurrentProcessId);
+            Native::InterlockedExchange(&m_OwnerThread, _CurrentThreadId);
+            Native::InterlockedExchange(&m_LockCount, 1);
 
             // Unlock the mutex itself
-            InterlockedExchange(&m_MutexLock, 0);
+			Native::InterlockedExchange(&m_MutexLock, 0);
 
             return;
         }
@@ -84,18 +86,18 @@ void Mutex::Lock()
             (m_OwnerThread  != _CurrentThreadId))
         {
             // Unlock the mutex itself
-            InterlockedExchange(&m_MutexLock, 0);
+			Native::InterlockedExchange(&m_MutexLock, 0);
 
             // Wait and try again
 			// TODO : Improve performance replacing Sleep(1) with YieldProcessor and perhaps an optional SpinLock
-            Sleep(1);
+			Native::Sleep(1);
             continue;
         }
 
         // The mutex was already locked, but by us.  Just increment
         // the lock count and unlock the mutex itself.
-        InterlockedIncrement(&m_LockCount);
-        InterlockedExchange(&m_MutexLock, 0);
+        Native::InterlockedIncrement(&m_LockCount);
+        Native::InterlockedExchange(&m_MutexLock, 0);
 
         return;
     }
@@ -108,20 +110,22 @@ void Mutex::Unlock()
 {
     // Grab the lock, letting us look at the variables
 #if (_MSC_VER < 1300)  // We are not using VC++.NET
-    while(InterlockedCompareExchange((LPVOID*)&m_MutexLock, (LPVOID)1, (LPVOID)0))
+	while (Native::InterlockedCompareExchange((Native::LPVOID*)&m_MutexLock, (Native::LPVOID)1, (Native::LPVOID)0))
 #else
-    while (InterlockedCompareExchange((LPLONG)&m_MutexLock, (LONG)1, (LONG)0))
+	while (Native::InterlockedCompareExchange((Native::LPLONG)&m_MutexLock, (Native::LONG)1, (Native::LONG)0))
 #endif
-        Sleep(1);
+	{
+		Native::Sleep(1);
+	}
 
     // Decrement the lock count
-    if (!InterlockedDecrement(&m_LockCount))
+    if (!Native::InterlockedDecrement(&m_LockCount))
     {
         // Mark the mutex as now unused
-        InterlockedExchange(&m_OwnerProcess, 0);
-        InterlockedExchange(&m_OwnerThread, 0);
+        Native::InterlockedExchange(&m_OwnerProcess, 0);
+        Native::InterlockedExchange(&m_OwnerThread, 0);
     }
 
     // Unlock the mutex itself
-    InterlockedExchange(&m_MutexLock, 0);
+	Native::InterlockedExchange(&m_MutexLock, 0);
 }

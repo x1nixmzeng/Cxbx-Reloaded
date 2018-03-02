@@ -179,6 +179,7 @@ void SetupPerTitleKeys()
 
 void CxbxLaunchXbe(void(*Entry)())
 {
+	using Native::_exception_info;
 	using Native::_EXCEPTION_POINTERS;
 
 	__try
@@ -284,7 +285,7 @@ std::string CxbxGetLastErrorString(char * lpszFunction)
 void *CxbxRestoreContiguousMemory(char *szFilePath_memory_bin)
 {
 	// First, try to open an existing memory.bin file :
-	HANDLE hFile = CreateFile(szFilePath_memory_bin,
+	Native::HANDLE hFile = Native::CreateFile(szFilePath_memory_bin,
 		GENERIC_READ | GENERIC_WRITE | GENERIC_EXECUTE,
 		FILE_SHARE_READ | FILE_SHARE_WRITE,
 		/* lpSecurityAttributes */nullptr,
@@ -296,7 +297,7 @@ void *CxbxRestoreContiguousMemory(char *szFilePath_memory_bin)
 	if (NeedsInitialization)
 	{
 		// If the memory.bin file doesn't exist yet, create it :
-		hFile = CreateFile(szFilePath_memory_bin,
+		hFile = Native::CreateFile(szFilePath_memory_bin,
 			GENERIC_READ | GENERIC_WRITE | GENERIC_EXECUTE,
 			FILE_SHARE_READ | FILE_SHARE_WRITE,
 			/* lpSecurityAttributes */nullptr,
@@ -311,10 +312,10 @@ void *CxbxRestoreContiguousMemory(char *szFilePath_memory_bin)
 	}
 
 	// Make sure memory.bin is at least 128 MB in size
-	SetFilePointer(hFile, CHIHIRO_MEMORY_SIZE, nullptr, FILE_BEGIN);
-	SetEndOfFile(hFile);
+	Native::SetFilePointer(hFile, CHIHIRO_MEMORY_SIZE, nullptr, FILE_BEGIN);
+	Native::SetEndOfFile(hFile);
 
-	HANDLE hFileMapping = CreateFileMapping(
+	Native::HANDLE hFileMapping = Native::CreateFileMapping(
 		hFile,
 		/* lpFileMappingAttributes */nullptr,
 		PAGE_EXECUTE_READWRITE,
@@ -327,8 +328,8 @@ void *CxbxRestoreContiguousMemory(char *szFilePath_memory_bin)
 		return nullptr;
 	}
 
-	LARGE_INTEGER  len_li;
-	GetFileSizeEx(hFile, &len_li);
+	Native::LARGE_INTEGER  len_li;
+	Native::GetFileSizeEx(hFile, &len_li);
 	unsigned int FileSize = len_li.u.LowPart;
 	if (FileSize != CHIHIRO_MEMORY_SIZE)
 	{
@@ -337,7 +338,7 @@ void *CxbxRestoreContiguousMemory(char *szFilePath_memory_bin)
 	}
 
 	// Map memory.bin contents into memory :
-	void *memory = (void *)MapViewOfFileEx(
+	void *memory = (void *)Native::MapViewOfFileEx(
 		hFileMapping,
 		FILE_MAP_READ | FILE_MAP_WRITE | FILE_MAP_EXECUTE,
 		/* dwFileOffsetHigh */0,
@@ -347,22 +348,22 @@ void *CxbxRestoreContiguousMemory(char *szFilePath_memory_bin)
 	if (memory != (void *)CONTIGUOUS_MEMORY_BASE)
 	{
 		if (memory)
-			UnmapViewOfFile(memory);
+			Native::UnmapViewOfFile(memory);
 
 		CxbxKrnlCleanup("CxbxRestoreContiguousMemory: Couldn't map contiguous memory.bin to 0x80000000!");
 		return nullptr;
 	}
 
 	printf("[0x%.4X] INIT: Mapped %d MiB of Xbox contiguous memory at 0x%.8X to 0x%.8X\n",
-		GetCurrentThreadId(), CONTIGUOUS_MEMORY_CHIHIRO_SIZE / ONE_MB, CONTIGUOUS_MEMORY_BASE, CONTIGUOUS_MEMORY_BASE + CONTIGUOUS_MEMORY_CHIHIRO_SIZE - 1);
+		Native::GetCurrentThreadId(), CONTIGUOUS_MEMORY_CHIHIRO_SIZE / ONE_MB, CONTIGUOUS_MEMORY_BASE, CONTIGUOUS_MEMORY_BASE + CONTIGUOUS_MEMORY_CHIHIRO_SIZE - 1);
 
 	if (NeedsInitialization)
 	{
 		memset(memory, 0, CONTIGUOUS_MEMORY_CHIHIRO_SIZE);
-		printf("[0x%.4X] INIT: Initialized contiguous memory\n", GetCurrentThreadId());
+		printf("[0x%.4X] INIT: Initialized contiguous memory\n", Native::GetCurrentThreadId());
 	}
 	else
-		printf("[0x%.4X] INIT: Loaded contiguous memory.bin\n", GetCurrentThreadId());
+		printf("[0x%.4X] INIT: Loaded contiguous memory.bin\n", Native::GetCurrentThreadId());
 
 	size_t tiledMemorySize = TILED_MEMORY_CHIHIRO_SIZE;
 	if (g_IsWine) {
@@ -373,7 +374,7 @@ void *CxbxRestoreContiguousMemory(char *szFilePath_memory_bin)
 	}
 
 	// Map memory.bin contents into tiled memory too :
-	void *tiled_memory = (void *)MapViewOfFileEx(
+	void *tiled_memory = (void *)Native::MapViewOfFileEx(
 		hFileMapping,
 		FILE_MAP_READ | FILE_MAP_WRITE,
 				/* dwFileOffsetHigh */0,
@@ -384,14 +385,14 @@ void *CxbxRestoreContiguousMemory(char *szFilePath_memory_bin)
 	if (tiled_memory != (void *)TILED_MEMORY_BASE)
 	{
 		if (tiled_memory)
-			UnmapViewOfFile(tiled_memory);
+			Native::UnmapViewOfFile(tiled_memory);
 
 		CxbxKrnlCleanup("CxbxRestoreContiguousMemory: Couldn't map contiguous memory.bin into tiled memory at 0xF0000000!");
 		return nullptr;
 	}
 
 	printf("[0x%.4X] INIT: Mapped contiguous memory to Xbox tiled memory at 0x%.8X to 0x%.8X\n",
-		GetCurrentThreadId(), TILED_MEMORY_BASE, TILED_MEMORY_BASE + TILED_MEMORY_CHIHIRO_SIZE - 1);
+		Native::GetCurrentThreadId(), TILED_MEMORY_BASE, TILED_MEMORY_BASE + TILED_MEMORY_CHIHIRO_SIZE - 1);
 
 	// Initialize the virtual manager :
 	g_VMManager.Initialize(hFileMapping);
@@ -411,7 +412,7 @@ void CxbxPopupMessage(const char *message, ...)
 	va_end(argp);
 
 	EmuWarning("Popup : %s\n", Buffer);
-	MessageBox(NULL, Buffer, TEXT("Cxbx-Reloaded"), MB_OK | MB_ICONEXCLAMATION | MB_TOPMOST | MB_SETFOREGROUND);
+	Native::MessageBox(NULL, Buffer, TEXT("Cxbx-Reloaded"), MB_OK | MB_ICONEXCLAMATION | MB_TOPMOST | MB_SETFOREGROUND);
 }
 
 void PrintCurrentConfigurationLog()
@@ -419,19 +420,21 @@ void PrintCurrentConfigurationLog()
 	// Print environment information
 	{
 		// Get Windows Version
-		DWORD dwVersion = 0;
-		DWORD dwMajorVersion = 0;
-		DWORD dwMinorVersion = 0;
-		DWORD dwBuild = 0;
+		Native::DWORD dwVersion = 0;
+		Native::DWORD dwMajorVersion = 0;
+		Native::DWORD dwMinorVersion = 0;
+		Native::DWORD dwBuild = 0;
 
 		// TODO: GetVersion is deprecated but we use it anyway (for now)
 		// The correct solution is to use GetProductInfo but that function
 		// requires more logic to parse the response, and I didn't feel
 		// like building it just yet :P
-		dwVersion = GetVersion();
+		dwVersion = Native::GetVersion();
 
-		dwMajorVersion = (DWORD)(LOBYTE(LOWORD(dwVersion)));
-		dwMinorVersion = (DWORD)(HIBYTE(LOWORD(dwVersion)));
+		using Native::DWORD_PTR;
+
+		dwMajorVersion = (Native::DWORD)(LOBYTE(LOWORD(dwVersion)));
+		dwMinorVersion = (Native::DWORD)(HIBYTE(LOWORD(dwVersion)));
 
 		// Get the build number.
 		if (dwVersion < 0x80000000) {
@@ -541,7 +544,7 @@ void TriggerPendingConnectedInterrupts()
 	}
 }
 
-static unsigned int WINAPI CxbxKrnlInterruptThread(PVOID param)
+static unsigned int WINAPI CxbxKrnlInterruptThread(Native::PVOID param)
 {
 	CxbxSetThreadName("CxbxKrnl Interrupts");
 
@@ -554,7 +557,7 @@ static unsigned int WINAPI CxbxKrnlInterruptThread(PVOID param)
 
 	while (true) {
 		TriggerPendingConnectedInterrupts();
-		SwitchToThread();
+		Native::SwitchToThread();
 	}
 
 	return 0;
@@ -567,9 +570,9 @@ void CxbxKrnlMain(int argc, char* argv[])
 	std::string xbePath = argv[2];
 
 	// Get DCHandle :
-	HWND hWnd = 0;
+	Native::HWND hWnd = 0;
 	if (argc > 2) {
-		hWnd = (HWND)StrToInt(argv[3]);
+		hWnd = (Native::HWND)StrToInt(argv[3]);
 	}
 
 	// Get KernelDebugMode :
@@ -587,29 +590,29 @@ void CxbxKrnlMain(int argc, char* argv[])
 	// debug console allocation (if configured)
 	if (DbgMode == DM_CONSOLE)
 	{
-		if (AllocConsole())
+		if (Native::AllocConsole())
 		{
-			HANDLE StdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+			Native::HANDLE StdHandle = Native::GetStdHandle(STD_OUTPUT_HANDLE);
 			// Maximise the console scroll buffer height :
-			CONSOLE_SCREEN_BUFFER_INFO coninfo;
-			GetConsoleScreenBufferInfo(StdHandle, &coninfo);
+			Native::CONSOLE_SCREEN_BUFFER_INFO coninfo;
+			Native::GetConsoleScreenBufferInfo(StdHandle, &coninfo);
 			coninfo.dwSize.Y = SHRT_MAX - 1; // = 32767-1 = 32766 = maximum value that works
-			SetConsoleScreenBufferSize(StdHandle, coninfo.dwSize);
+			Native::SetConsoleScreenBufferSize(StdHandle, coninfo.dwSize);
 			freopen("CONOUT$", "wt", stdout);
 			freopen("CONIN$", "rt", stdin);
-			SetConsoleTitle("Cxbx-Reloaded : Kernel Debug Console");
-			SetConsoleTextAttribute(StdHandle, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED);
+			Native::SetConsoleTitle("Cxbx-Reloaded : Kernel Debug Console");
+			Native::SetConsoleTextAttribute(StdHandle, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED);
 		}
 	}
 	else
 	{
-		FreeConsole();
+		Native::FreeConsole();
 		if (DbgMode == DM_FILE)
 			freopen(DebugFileName.c_str(), "wt", stdout);
 		else
 		{
 			char buffer[16];
-			if (GetConsoleTitle(buffer, 16) != NULL)
+			if (Native::GetConsoleTitle(buffer, 16) != NULL)
 				freopen("nul", "w", stdout);
 		}
 	}
@@ -617,31 +620,31 @@ void CxbxKrnlMain(int argc, char* argv[])
 	// We must save this handle now to keep the child window working in the case we need to display the UEM
 	CxbxKrnl_hEmuParent = IsWindow(hWnd) ? hWnd : NULL;
 
-	g_CurrentProcessHandle = GetCurrentProcess(); // OpenProcess(PROCESS_ALL_ACCESS, FALSE, GetCurrentProcessId());
+	g_CurrentProcessHandle = Native::GetCurrentProcess(); // OpenProcess(PROCESS_ALL_ACCESS, FALSE, GetCurrentProcessId());
 
 	// Write a header to the log
 	{
-		printf("[0x%.4X] INIT: Cxbx-Reloaded Version %s\n", GetCurrentThreadId(), _CXBX_VERSION);
+		printf("[0x%.4X] INIT: Cxbx-Reloaded Version %s\n", Native::GetCurrentThreadId(), _CXBX_VERSION);
 
 		time_t startTime = time(nullptr);
 		struct tm* tm_info = localtime(&startTime);
 		char timeString[26];
 		strftime(timeString, 26, "%F %T", tm_info);
-		printf("[0x%.4X] INIT: Log started at %s\n", GetCurrentThreadId(), timeString);
+		printf("[0x%.4X] INIT: Log started at %s\n", Native::GetCurrentThreadId(), timeString);
 
 #ifdef _DEBUG_TRACE
-		printf("[0x%.4X] INIT: Debug Trace Enabled.\n", GetCurrentThreadId());
+		printf("[0x%.4X] INIT: Debug Trace Enabled.\n", Native::GetCurrentThreadId());
 #else
-		printf("[0x%.4X] INIT: Debug Trace Disabled.\n", GetCurrentThreadId());
+		printf("[0x%.4X] INIT: Debug Trace Disabled.\n", Native::GetCurrentThreadId());
 #endif
 	}
 
 	// Detect Wine
 	g_IsWine = false;
-	HMODULE hNtDll = GetModuleHandle("ntdll.dll");
+	Native::HMODULE hNtDll = Native::GetModuleHandle("ntdll.dll");
 
 	if (hNtDll != nullptr) {
-		wine_get_version = (LPFN_WINEGETVERSION)GetProcAddress(hNtDll, "wine_get_version");
+		wine_get_version = (LPFN_WINEGETVERSION)Native::GetProcAddress(hNtDll, "wine_get_version");
 		if (wine_get_version) {
 			g_IsWine = true;
 		}
@@ -654,8 +657,8 @@ void CxbxKrnlMain(int argc, char* argv[])
 		// Assert(ExeDosHeader == XBE_IMAGE_BASE);
 
 		// Determine EXE's header locations & size :
-		ExeNtHeader = (PIMAGE_NT_HEADERS)((ULONG_PTR)ExeDosHeader + ExeDosHeader->e_lfanew); // = + 0x138
-		ExeOptionalHeader = (PIMAGE_OPTIONAL_HEADER)&(ExeNtHeader->OptionalHeader);
+		ExeNtHeader = (Native::PIMAGE_NT_HEADERS)((ULONG_PTR)ExeDosHeader + ExeDosHeader->e_lfanew); // = + 0x138
+		ExeOptionalHeader = (Native::PIMAGE_OPTIONAL_HEADER)&(ExeNtHeader->OptionalHeader);
 
 		// verify base of code of our executable is 0x00001000
 		if (ExeNtHeader->OptionalHeader.BaseOfCode != CXBX_BASE_OF_CODE)
@@ -665,7 +668,7 @@ void CxbxKrnlMain(int argc, char* argv[])
 		}
 
 		// verify virtual_memory_placeholder is located at 0x00011000
-		if ((UINT_PTR)(&(virtual_memory_placeholder[0])) != (XBE_IMAGE_BASE + CXBX_BASE_OF_CODE))
+		if ((Native::UINT_PTR)(&(virtual_memory_placeholder[0])) != (XBE_IMAGE_BASE + CXBX_BASE_OF_CODE))
 		{
 			CxbxPopupMessage("virtual_memory_placeholder is not loaded to base address 0x00011000 (which is a requirement for Xbox emulation)");
 			return; // TODO : Halt(0); 
@@ -673,15 +676,15 @@ void CxbxKrnlMain(int argc, char* argv[])
 
 		// Create a safe copy of the complete EXE header:
 		DWORD ExeHeaderSize = ExeOptionalHeader->SizeOfHeaders; // Should end up as 0x400
-		NewDosHeader = (PIMAGE_DOS_HEADER)VirtualAlloc(nullptr, ExeHeaderSize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+		NewDosHeader = (Native::PIMAGE_DOS_HEADER)Native::VirtualAlloc(nullptr, ExeHeaderSize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
 		memcpy(NewDosHeader, ExeDosHeader, ExeHeaderSize);
 
 		// Determine NewOptionalHeader, required by RestoreExeImageHeader
-		NewNtHeader = (PIMAGE_NT_HEADERS)((ULONG_PTR)NewDosHeader + ExeDosHeader->e_lfanew);
-		NewOptionalHeader = (PIMAGE_OPTIONAL_HEADER)&(NewNtHeader->OptionalHeader);
+		NewNtHeader = (Native::PIMAGE_NT_HEADERS)((ULONG_PTR)NewDosHeader + ExeDosHeader->e_lfanew);
+		NewOptionalHeader = (Native::PIMAGE_OPTIONAL_HEADER)&(NewNtHeader->OptionalHeader);
 
 		// Make sure the new DOS header points to the new relative NtHeader location:
-		NewDosHeader->e_lfanew = (ULONG_PTR)NewNtHeader - XBE_IMAGE_BASE;
+		NewDosHeader->e_lfanew = (Native::ULONG_PTR)NewNtHeader - XBE_IMAGE_BASE;
 
 		// Note : NewOptionalHeader->ImageBase can stay at ExeOptionalHeader->ImageBase = 0x00010000
 
@@ -689,8 +692,8 @@ void CxbxKrnlMain(int argc, char* argv[])
 		// and Cxbx.exe sections, section headers don't have to be patched up.
 
 		// Mark the virtual memory range completely accessible
-		DWORD OldProtection;
-		VirtualProtect((void*)XBE_IMAGE_BASE, XBE_MAX_VA - XBE_IMAGE_BASE, PAGE_EXECUTE_READWRITE, &OldProtection);
+		Native::DWORD OldProtection;
+		Native::VirtualProtect((void*)XBE_IMAGE_BASE, XBE_MAX_VA - XBE_IMAGE_BASE, PAGE_EXECUTE_READWRITE, &OldProtection);
 
 		// Clear out the virtual memory range
 		memset((void*)XBE_IMAGE_BASE, 0, XBE_MAX_VA - XBE_IMAGE_BASE);
@@ -742,10 +745,10 @@ void CxbxKrnlMain(int argc, char* argv[])
 		memcpy((void*)(CxbxKrnl_Xbe->m_Header.dwBaseAddr + sizeof(Xbe::Header)), CxbxKrnl_Xbe->m_HeaderEx, CxbxKrnl_Xbe->m_ExSize);
 
 		// Load all sections marked as preload using the in-memory copy of the xbe header
-		PXBEIMAGE_SECTION sectionHeaders = (PXBEIMAGE_SECTION)CxbxKrnl_Xbe->m_Header.dwSectionHeadersAddr;
+		XDK::PXBEIMAGE_SECTION sectionHeaders = (XDK::PXBEIMAGE_SECTION)CxbxKrnl_Xbe->m_Header.dwSectionHeadersAddr;
 		for (uint32 i = 0; i < CxbxKrnl_Xbe->m_Header.dwSections; i++) {
 			if ((sectionHeaders[i].Flags & XBEIMAGE_SECTION_PRELOAD) != 0) {
-				NTSTATUS result = XeLoadSection(&sectionHeaders[i]);
+				XDK::NTSTATUS result = XDK::XeLoadSection(&sectionHeaders[i]);
 				if (FAILED(result)) {
 					CxbxKrnlCleanup("Failed to preload XBE section: %s", CxbxKrnl_Xbe->m_szSectionName[i]);
 				}
@@ -832,8 +835,8 @@ void LoadXboxKeys(std::string path)
 		if (size == XBOX_KEY_LENGTH * 2) {
 			fread(keys, XBOX_KEY_LENGTH, 2, fp);
 
-			memcpy(XboxEEPROMKey, &keys[0], XBOX_KEY_LENGTH);
-			memcpy(XboxCertificateKey, &keys[1], XBOX_KEY_LENGTH);
+			memcpy(XDK::XboxEEPROMKey, &keys[0], XBOX_KEY_LENGTH);
+			memcpy(XDK::XboxCertificateKey, &keys[1], XBOX_KEY_LENGTH);
 		} else {
 			EmuWarning("Keys.bin has an incorrect filesize. Should be %d bytes", XBOX_KEY_LENGTH * 2);
 		}
@@ -1351,14 +1354,14 @@ void CxbxKrnlShutDown()
 		Native::SendMessage(CxbxKrnl_hEmuParent, WM_PARENTNOTIFY, WM_DESTROY, 0);
 
 	EmuShared::Cleanup();
-	TerminateProcess(g_CurrentProcessHandle, 0);
+	Native::TerminateProcess(g_CurrentProcessHandle, 0);
 }
 
-void CxbxKrnlPrintUEM(ULONG ErrorCode)
+void CxbxKrnlPrintUEM(Native::ULONG ErrorCode)
 {
-	ULONG Type;
+	Native::ULONG Type;
 	XDK::XBOX_EEPROM Eeprom;
-	ULONG ResultSize;
+	Native::ULONG ResultSize;
 
 	int BootFlags;
 	g_EmuShared->GetBootFlags(&BootFlags);

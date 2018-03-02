@@ -35,13 +35,17 @@
 // ******************************************************************
 #define _XBOXKRNL_DEFEXTRN_
 
+namespace Native
+{
 #include <windows.h>
+}
+
 #include "EmuNtDll.h"
 
 // ******************************************************************
 // * Loaded at run-time to avoid linker conflicts
 // ******************************************************************
-static HMODULE hNtDll = GetModuleHandle("ntdll");
+static Native::HMODULE hNtDll = Native::GetModuleHandle("ntdll");
 
 #define IMPORT(API) NtDll::FPTR_##API NtDll::API = (NtDll::FPTR_##API)GetProcAddress(hNtDll, #API)
 

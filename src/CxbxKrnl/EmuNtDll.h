@@ -39,12 +39,12 @@ namespace NtDll
 
 #include <ctype.h>  // winnt ntndis
 
-// ******************************************************************
-// * fixes some compiler errors and warnings
 //// ******************************************************************
-#ifdef VOID
-#undef VOID
-#endif
+//// * fixes some compiler errors and warnings
+////// ******************************************************************
+//#ifdef VOID
+//#undef VOID
+//#endif
 
 // ******************************************************************
 // * dll import/export
@@ -57,57 +57,57 @@ namespace NtDll
 // ******************************************************************
 #define NTSYSAPI     DECLSPEC_IMPORT
 
-// ******************************************************************
-// * CONST
-// ******************************************************************
-#define CONST               const
-
-// ******************************************************************
-// * Basic types
-// ******************************************************************
-typedef char                CHAR, CCHAR;
-typedef short               SHORT;
-typedef long                LONG;
-typedef unsigned char       UCHAR;
-typedef unsigned char       BYTE;
-typedef unsigned char       BOOLEAN;
-typedef unsigned short      USHORT;
-typedef unsigned short      WORD;
-typedef unsigned long       ULONG;
-typedef unsigned long       DWORD;
-typedef unsigned long       SIZE_T, *PSIZE_T;
-typedef unsigned long       ACCESS_MASK;
-typedef unsigned long       PHYSICAL_ADDRESS;
-typedef long                INT_PTR;
-typedef int                 BOOL;
-
-
-typedef unsigned long       UINT32;
-
-// ******************************************************************
-// * Pointer types
-// ******************************************************************
-typedef CHAR               *PCHAR;
-typedef CHAR               *PCSZ;
-typedef BYTE               *PBYTE;
-typedef BOOLEAN            *PBOOLEAN;
-typedef UCHAR              *PUCHAR;
-typedef USHORT             *PUSHORT;
-typedef ULONG              *PULONG;
-typedef ULONG              *ULONG_PTR;
-typedef ACCESS_MASK        *PACCESS_MASK;
-typedef LONG               *PLONG, *LONG_PTR;
-typedef INT_PTR            *PINT_PTR;
-typedef void                VOID;
-typedef VOID               *PVOID;
-typedef void               *HANDLE;
-typedef HANDLE             *PHANDLE;
-typedef wchar_t             WCHAR, *PWCHAR;
-typedef WCHAR              *LPWCH, *PWCH;
-typedef CONST WCHAR        *LPCWCH, *PCWCH;
-typedef WCHAR              *NWPSTR;
-typedef WCHAR              *LPWSTR, *PWSTR;
-typedef CONST WCHAR        *LPCWSTR, *PCWSTR;
+//// ******************************************************************
+//// * CONST
+//// ******************************************************************
+//#define CONST               const
+//
+//// ******************************************************************
+//// * Basic types
+//// ******************************************************************
+//typedef char                CHAR, CCHAR;
+//typedef short               SHORT;
+//typedef long                LONG;
+//typedef unsigned char       UCHAR;
+//typedef unsigned char       BYTE;
+//typedef unsigned char       BOOLEAN;
+//typedef unsigned short      USHORT;
+//typedef unsigned short      WORD;
+//typedef unsigned long       ULONG;
+//typedef unsigned long       DWORD;
+//typedef unsigned long       SIZE_T, *PSIZE_T;
+//typedef unsigned long       ACCESS_MASK;
+//typedef unsigned long       PHYSICAL_ADDRESS;
+//typedef long                INT_PTR;
+//typedef int                 BOOL;
+//
+//
+//typedef unsigned long       UINT32;
+//
+//// ******************************************************************
+//// * Pointer types
+//// ******************************************************************
+//typedef CHAR               *PCHAR;
+//typedef CHAR               *PCSZ;
+//typedef BYTE               *PBYTE;
+//typedef BOOLEAN            *PBOOLEAN;
+//typedef UCHAR              *PUCHAR;
+//typedef USHORT             *PUSHORT;
+//typedef ULONG              *PULONG;
+//typedef ULONG              *ULONG_PTR;
+//typedef ACCESS_MASK        *PACCESS_MASK;
+//typedef LONG               *PLONG, *LONG_PTR;
+//typedef INT_PTR            *PINT_PTR;
+//typedef void                VOID;
+//typedef VOID               *PVOID;
+//typedef void               *HANDLE;
+//typedef HANDLE             *PHANDLE;
+//typedef wchar_t             WCHAR, *PWCHAR;
+//typedef WCHAR              *LPWCH, *PWCH;
+//typedef CONST WCHAR        *LPCWCH, *PCWCH;
+//typedef WCHAR              *NWPSTR;
+//typedef WCHAR              *LPWSTR, *PWSTR;
+//typedef CONST WCHAR        *LPCWSTR, *PCWSTR;
 
 // ******************************************************************
 // * NTSTATUS

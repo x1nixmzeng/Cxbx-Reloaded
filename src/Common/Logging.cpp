@@ -34,19 +34,17 @@
 // *
 // ******************************************************************
 
-#include <windows.h> // for PULONG
-
 #include "Logging.h"
 
 // For thread_local, see : http://en.cppreference.com/w/cpp/language/storage_duration
 // TODO : Use Boost.Format http://www.boost.org/doc/libs/1_53_0/libs/format/index.html
 thread_local std::string _logPrefix;
 
-const bool needs_escape(const wint_t _char)
+const bool needs_escape(const Native::wint_t _char)
 {
 	// Escaping is needed for control characters,
 	// for double quote, and for backslash :
-	return iswcntrl(_char) || (_char == '"') || (_char == '\\');
+	return Native::iswcntrl(_char) || (_char == '"') || (_char == '\\');
 }
 
 inline void output_char(std::ostream& os, char c)
@@ -76,7 +74,7 @@ inline void output_char(std::ostream& os, char c)
 
 inline void output_wchar(std::ostream& os, wchar_t c)
 {
-	if (needs_escape((wint_t)c))
+	if (needs_escape((Native::wint_t)c))
 	{
 		switch (c)
 		{
@@ -92,7 +90,7 @@ inline void output_wchar(std::ostream& os, wchar_t c)
 		case '\t': os << "\\t"; break;
 		case '\v': os << "\\v"; break;
 			// All other to-escape-characters are rendered as hexadecimal :
-		default: os << "\\x" << std::setfill('0') << std::setw(4) << std::right << std::hex << std::uppercase << (wint_t)c;
+		default: os << "\\x" << std::setfill('0') << std::setw(4) << std::right << std::hex << std::uppercase << (Native::wint_t)c;
 		}
 	}
 	else
@@ -186,7 +184,7 @@ LOG_SANITIZE_HEADER(sanitized_wchar_pointer, wchar_t *)
 	return os << "\"";
 }
 
-LOGRENDER_HEADER_BY_REF(PVOID)
+LOGRENDER_HEADER_BY_REF(Native::PVOID)
 {
 	return os << hex4((uint32_t)value);
 }

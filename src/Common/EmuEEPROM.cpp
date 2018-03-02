@@ -48,9 +48,9 @@ XDK::XBOX_EEPROM *EEPROM = nullptr; // Set using CxbxRestoreEEPROM()
 
 ULONG XboxFactoryGameRegion = 1; // = North America
 
-const EEPROMInfo* EmuFindEEPROMInfo(XC_VALUE_INDEX index)
+const EEPROMInfo* EmuFindEEPROMInfo(XDK::XC_VALUE_INDEX index)
 {
-	using XC_VALUE_INDEX;
+	using XDK::XC_VALUE_INDEX;
 
 	for (int i = 0; EEPROMInfos[i].index != XC_END_MARKER; i++)
 		if (EEPROMInfos[i].index == index)
@@ -82,7 +82,7 @@ static void EepromCRC(unsigned char *crc, unsigned char *data, long dataLen) {
     free(CRC_Data);
 }
 
-void gen_section_CRCs(XBOX_EEPROM* eeprom) {
+void gen_section_CRCs(XDK::XBOX_EEPROM* eeprom) {
     const long Factory_size = sizeof(eeprom->FactorySettings) - sizeof(eeprom->FactorySettings.Checksum);
     const long User_size = sizeof(eeprom->UserSettings) - sizeof(eeprom->UserSettings.Checksum);
     EepromCRC(
@@ -97,9 +97,9 @@ void gen_section_CRCs(XBOX_EEPROM* eeprom) {
     );
 }
 
-XBOX_EEPROM *CxbxRestoreEEPROM(char *szFilePath_EEPROM_bin)
+XDK::XBOX_EEPROM *CxbxRestoreEEPROM(char *szFilePath_EEPROM_bin)
 {
-	XBOX_EEPROM *pEEPROM;
+	XDK::XBOX_EEPROM *pEEPROM;
 
 	// First, try to open an existing EEPROM.bin file :
 	HANDLE hFileEEPROM = CreateFile(szFilePath_EEPROM_bin,
@@ -144,7 +144,7 @@ XBOX_EEPROM *CxbxRestoreEEPROM(char *szFilePath_EEPROM_bin)
 	}
 
 	// Map EEPROM.bin contents into memory :
-	pEEPROM = (XBOX_EEPROM *)MapViewOfFile(
+	pEEPROM = (XDK::XBOX_EEPROM *)MapViewOfFile(
 		hFileMappingEEPROM,
 		FILE_MAP_READ | FILE_MAP_WRITE,
 		/* dwFileOffsetHigh */0,

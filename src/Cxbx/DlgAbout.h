@@ -34,9 +34,7 @@
 #ifndef DLGABOUT_H
 #define DLGABOUT_H
 
-#include <windows.h>
-
 /*! show About dialog */
-extern VOID ShowAboutDialog(HWND hwnd);
+extern VOID ShowAboutDialog(Native::HWND hwnd);
 
 #endif

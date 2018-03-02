@@ -34,7 +34,10 @@
 #ifndef MUTEX_H
 #define MUTEX_H
 
+namespace Native
+{
 #include <windows.h>
+}
 
 // mutex object (intended to be inherited from)
 class Mutex
@@ -47,10 +50,10 @@ class Mutex
 		bool IsLocked() { return m_LockCount > 0; }
 
     private:
-        LONG m_MutexLock;      // Mutex lock
-        LONG m_OwnerProcess;   // Current owner process (or zero)
-        LONG m_OwnerThread;    // Current owner thread
-        LONG m_LockCount;      // Lock count within this thread
+        Native::LONG m_MutexLock;      // Mutex lock
+        Native::LONG m_OwnerProcess;   // Current owner process (or zero)
+        Native::LONG m_OwnerThread;    // Current owner thread
+        Native::LONG m_LockCount;      // Lock count within this thread
 };
 
 #endif

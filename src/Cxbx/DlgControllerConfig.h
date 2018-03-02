@@ -34,9 +34,7 @@
 #ifndef DLGCONTROLLERCONFIG_H
 #define DLGCONTROLLERCONFIG_H
 
-#include <windows.h>
-
 /*! show controller configuration dialog */
-extern VOID ShowControllerConfig(HWND hwnd);
+extern VOID ShowControllerConfig(Native::HWND hwnd);
 
 #endif

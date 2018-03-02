@@ -32,27 +32,31 @@
 // *
 // ******************************************************************
 
+namespace Native
+{
 #include <windows.h>
+}
+
 #include "Threads.h"
 
 // Exception structure and method from:
 // https://msdn.microsoft.com/en-us/library/xcb2z8hs.aspx
 
-const DWORD MS_VC_EXCEPTION = 0x406D1388;
+const Native::DWORD MS_VC_EXCEPTION = 0x406D1388;
 
 #pragma pack(push,8)  
 typedef struct tagTHREADNAME_INFO
 {
-	DWORD dwType; // Must be 0x1000.  
-	LPCSTR szName; // Pointer to name (in user addr space).  
-	DWORD dwThreadID; // Thread ID (-1=caller thread).  
-	DWORD dwFlags; // Reserved for future use, must be zero.  
+	Native::DWORD dwType; // Must be 0x1000.  
+	Native::LPCSTR szName; // Pointer to name (in user addr space).  
+	Native::DWORD dwThreadID; // Thread ID (-1=caller thread).  
+	Native::DWORD dwFlags; // Reserved for future use, must be zero.  
 } THREADNAME_INFO;
 #pragma pack(pop)  
 
-void SetThreadName(DWORD dwThreadID, const char* szThreadName)
+void SetThreadName(Native::DWORD dwThreadID, const char* szThreadName)
 {
-	if (!IsDebuggerPresent())
+	if (!Native::IsDebuggerPresent())
 		return;
 
 	THREADNAME_INFO info;
@@ -63,7 +67,7 @@ void SetThreadName(DWORD dwThreadID, const char* szThreadName)
 #pragma warning(push)  
 #pragma warning(disable: 6320 6322)  
 	__try {
-		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR*)&info);
+		Native::RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(Native::ULONG_PTR), (ULONG_PTR*)&info);
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER) {
 	}
@@ -72,5 +76,5 @@ void SetThreadName(DWORD dwThreadID, const char* szThreadName)
 
 void SetCurrentThreadName(const char* szThreadName)
 {
-	SetThreadName(GetCurrentThreadId(), szThreadName);
+	SetThreadName(Native::GetCurrentThreadId(), szThreadName);
 }

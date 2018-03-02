@@ -51,11 +51,11 @@ inline void NTAPI EmuWarning(const char *szWarningMessage, ...) { }
 #endif
 
 // exception handler
-extern int EmuException(LPEXCEPTION_POINTERS e);
+extern int EmuException(Native::LPEXCEPTION_POINTERS e);
 
 // print call stack trace
 #ifdef _DEBUG
-void EmuPrintStackTrace(PCONTEXT ContextRecord);
+void EmuPrintStackTrace(Native::PCONTEXT ContextRecord);
 #endif
 
 // global flags specifying current emulation state
@@ -66,21 +66,21 @@ extern volatile bool g_bEmuSuspended;
 extern void * funcExclude[2048];
 
 // partition emulation directory handles
-extern HANDLE g_hCurDir;
-extern CHAR  *g_strCurDrive;
-extern HWND   g_hEmuWindow;
+extern Native::HANDLE g_hCurDir;
+extern Native::CHAR  *g_strCurDrive;
+extern Native::HWND   g_hEmuWindow;
 
 // thread notification routine
-extern PVOID g_pfnThreadNotification[16];
+extern Native::PVOID g_pfnThreadNotification[16];
 extern int g_iThreadNotificationCount;
 
-extern DWORD_PTR g_CPUXbox;
-extern DWORD_PTR g_CPUOthers;
+extern Native::DWORD_PTR g_CPUXbox;
+extern Native::DWORD_PTR g_CPUOthers;
 
-extern HANDLE g_CurrentProcessHandle; // Set in CxbxKrnlMain
+extern Native::HANDLE g_CurrentProcessHandle; // Set in CxbxKrnlMain
 
 // Delta added to host SystemTime, used in KeQuerySystemTime and NtSetSystemTime
-extern LARGE_INTEGER HostSystemTimeDelta;
+extern Native::LARGE_INTEGER HostSystemTimeDelta;
 
 // NOTE: this is an arbitrary latency
 #define XINPUT_SETSTATE_LATENCY 4
@@ -89,9 +89,9 @@ extern LARGE_INTEGER HostSystemTimeDelta;
 // XInputSetState status waiters
 struct XInputSetStateStatus
 {
-    HANDLE  hDevice;
-    DWORD   dwLatency;
-    PVOID   pFeedback;
+    Native::HANDLE  hDevice;
+    Native::DWORD   dwLatency;
+    Native::PVOID   pFeedback;
 }
 g_pXInputSetStateStatus[XINPUT_SETSTATE_SLOTS];
 
@@ -99,14 +99,14 @@ g_pXInputSetStateStatus[XINPUT_SETSTATE_SLOTS];
 #define XINPUT_HANDLE_SLOTS 4
 
 extern bool g_XInputEnabled;
-extern HANDLE g_hInputHandle[XINPUT_HANDLE_SLOTS];
+extern Native::HANDLE g_hInputHandle[XINPUT_HANDLE_SLOTS];
 
 typedef struct DUMMY_KERNEL
 {
-	IMAGE_DOS_HEADER DosHeader;
-	DWORD Signature;
-	IMAGE_FILE_HEADER FileHeader;
-	IMAGE_SECTION_HEADER SectionHeader;
+	Native::IMAGE_DOS_HEADER DosHeader;
+	Native::DWORD Signature;
+	Native::IMAGE_FILE_HEADER FileHeader;
+	Native::IMAGE_SECTION_HEADER SectionHeader;
 } *PDUMMY_KERNEL;
 
 

@@ -57,7 +57,9 @@
 #include <locale>
 #include <codecvt>
 
-volatile DWORD HalInterruptRequestRegister = APC_LEVEL | DISPATCH_LEVEL;
+namespace Xbox
+{
+volatile XDK::DWORD HalInterruptRequestRegister = APC_LEVEL | DISPATCH_LEVEL;
 HalSystemInterrupt HalSystemInterrupts[MAX_BUS_INTERRUPT_LEVEL + 1];
 
 // variables used by the SMC to know a reset / shutdown is pending
@@ -72,7 +74,7 @@ LIST_ENTRY_INITIALIZE_HEAD(ShutdownRoutineList);
 // * Declaring this in a header causes errors with xboxkrnl
 // * namespace, so we must declare it within any file that uses it
 // ******************************************************************
-KPCR* KeGetPcr();
+XDK::KPCR* KeGetPcr();
 
 // ******************************************************************
 // * 0x0009 - HalReadSMCTrayState()
@@ -112,13 +114,13 @@ XBSYSAPI EXPORTNUM(9) VOID NTAPI HalReadSMCTrayState
 // Source:ReactOS
 XBSYSAPI EXPORTNUM(38) VOID FASTCALL HalClearSoftwareInterrupt
 (
-	KIRQL Request
+	XDK::KIRQL Request
 )
 {
 	LOG_FUNC_ONE_ARG_TYPE(KIRQL_TYPE, Request);
 
 	// Mask out this interrupt request
-	DWORD InterruptMask = 1 << Request;
+	XDK::DWORD InterruptMask = 1 << Request;
 	HalInterruptRequestRegister &= ~InterruptMask;
 }
 
@@ -127,7 +129,7 @@ XBSYSAPI EXPORTNUM(38) VOID FASTCALL HalClearSoftwareInterrupt
 // ******************************************************************
 XBSYSAPI EXPORTNUM(39) VOID NTAPI HalDisableSystemInterrupt
 (
-	IN ULONG BusInterruptLevel
+	IN XDK::ULONG BusInterruptLevel
 )
 {
 	LOG_FUNC_ONE_ARG(BusInterruptLevel);
@@ -140,27 +142,27 @@ XBSYSAPI EXPORTNUM(39) VOID NTAPI HalDisableSystemInterrupt
 // ******************************************************************
 // This specifies the number of Cache partitions available for game data caching
 // On real hardware, there are three, generally known as X, Y and Z in homebrew
-XBSYSAPI EXPORTNUM(40) ULONG HalDiskCachePartitionCount = 3; 
+XBSYSAPI EXPORTNUM(40) XDK::ULONG HalDiskCachePartitionCount = 3;
 
 // ******************************************************************
 // * 0x0029 - HalDiskModelNumber
 // ******************************************************************
 // Source:OpenXDK  TODO : Fill this with something sensible
-XBSYSAPI EXPORTNUM(41) PANSI_STRING HalDiskModelNumber = 0;
+XBSYSAPI EXPORTNUM(41) XDK::PANSI_STRING HalDiskModelNumber = 0;
 
 // ******************************************************************
 // * 0x002A - HalDiskSerialNumber
 // ******************************************************************
 // Source:OpenXDK  TODO : Fill this with something sensible
-XBSYSAPI EXPORTNUM(42) PANSI_STRING HalDiskSerialNumber = 0;	
+XBSYSAPI EXPORTNUM(42) XDK::PANSI_STRING HalDiskSerialNumber = 0;
 
 // ******************************************************************
 // * 0x002B - HalEnableSystemInterrupt()
 // ******************************************************************
 XBSYSAPI EXPORTNUM(43) VOID NTAPI HalEnableSystemInterrupt
 (
-	IN ULONG BusInterruptLevel,
-	IN KINTERRUPT_MODE InterruptMode
+	IN XDK::ULONG BusInterruptLevel,
+	IN XDK::KINTERRUPT_MODE InterruptMode
 )
 {
 	LOG_FUNC_BEGIN
@@ -209,10 +211,10 @@ char *IRQNames[MAX_BUS_INTERRUPT_LEVEL + 1] =
 // ******************************************************************
 // * 0x002C - HalGetInterruptVector()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(44) ULONG NTAPI HalGetInterruptVector
+XBSYSAPI EXPORTNUM(44) XDK::ULONG NTAPI HalGetInterruptVector
 (
-	IN ULONG   BusInterruptLevel,
-	OUT PKIRQL  Irql
+	IN XDK::ULONG   BusInterruptLevel,
+	OUT XDK::PKIRQL  Irql
 )
 {
 	LOG_FUNC_BEGIN
@@ -226,13 +228,13 @@ XBSYSAPI EXPORTNUM(44) ULONG NTAPI HalGetInterruptVector
 	// PLUS Cxbx will execute it's own preemptive thread-switching, after which
 	// interrupt handling must be implememented too, including this API.
 
-	ULONG dwVector = 0;
+	XDK::ULONG dwVector = 0;
 
 	if((BusInterruptLevel >=0) && (BusInterruptLevel <= MAX_BUS_INTERRUPT_LEVEL))
 	{
 		dwVector = IRQ2VECTOR(BusInterruptLevel);
 		if(Irql)
-			*Irql = (KIRQL)VECTOR2IRQL(dwVector);
+			*Irql = (XDK::KIRQL)VECTOR2IRQL(dwVector);
 
 #ifdef _DEBUG_TRACE
 		DbgPrintf("KRNL: HalGetInterruptVector(): Interrupt vector requested for %d (%s)\n", 
@@ -246,12 +248,12 @@ XBSYSAPI EXPORTNUM(44) ULONG NTAPI HalGetInterruptVector
 // ******************************************************************
 // * 0x002D - HalReadSMBusValue()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(45) NTSTATUS NTAPI HalReadSMBusValue
+XBSYSAPI EXPORTNUM(45) XDK::NTSTATUS NTAPI HalReadSMBusValue
 (
-	IN  UCHAR               Address,
-	IN  UCHAR               Command,
-	IN  BOOLEAN             ReadWord,
-	OUT PULONG              DataValue
+	IN  XDK::UCHAR               Address,
+	IN  XDK::UCHAR               Command,
+	IN  XDK::BOOLEAN             ReadWord,
+	OUT XDK::PULONG              DataValue
 )
 {
 	LOG_FUNC_BEGIN
@@ -263,7 +265,7 @@ XBSYSAPI EXPORTNUM(45) NTSTATUS NTAPI HalReadSMBusValue
 
 	// TODO : Prevent interrupts
 
-	NTSTATUS Status = STATUS_SUCCESS;
+	XDK::NTSTATUS Status = STATUS_SUCCESS;
 
 	g_SMBus->IOWrite(1, SMB_HOST_ADDRESS, Address);
 	g_SMBus->IOWrite(1, SMB_HOST_COMMAND, Command);
@@ -614,12 +616,12 @@ XBSYSAPI EXPORTNUM(49) VOID DECLSPEC_NORETURN NTAPI HalReturnToFirmware
 // ******************************************************************
 // * 0x0032 - HalWriteSMBusValue()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(50) NTSTATUS NTAPI HalWriteSMBusValue
+XBSYSAPI EXPORTNUM(50) XDK::NTSTATUS NTAPI HalWriteSMBusValue
 (
-	IN  UCHAR               Address,
-	IN  UCHAR               Command,
-	IN  BOOLEAN             WriteWord,
-	IN  ULONG               DataValue
+	IN  XDK::UCHAR               Address,
+	IN  XDK::UCHAR               Command,
+	IN  XDK::BOOLEAN             WriteWord,
+	IN  XDK::ULONG               DataValue
 )
 {
 	LOG_FUNC_BEGIN
@@ -631,7 +633,7 @@ XBSYSAPI EXPORTNUM(50) NTSTATUS NTAPI HalWriteSMBusValue
 
 	// TODO : Prevent interrupts
 
-	NTSTATUS Status = STATUS_SUCCESS;
+	XDK::NTSTATUS Status = STATUS_SUCCESS;
 
 	g_SMBus->IOWrite(1, SMB_HOST_ADDRESS, Address);
 	g_SMBus->IOWrite(1, SMB_HOST_COMMAND, Command);
@@ -835,16 +837,18 @@ XBSYSAPI EXPORTNUM(365) VOID NTAPI HalEnableSecureTrayEject
 // * 0x016E - HalWriteSMCScratchRegister()
 // ******************************************************************
 // Source:Dxbx
-XBSYSAPI EXPORTNUM(366) NTSTATUS NTAPI HalWriteSMCScratchRegister
+XBSYSAPI EXPORTNUM(366) XDK::NTSTATUS NTAPI HalWriteSMCScratchRegister
 (
-	IN DWORD ScratchRegister
+	IN XDK::DWORD ScratchRegister
 )
 {
 	LOG_FUNC_ONE_ARG(ScratchRegister);
 
 //	HalpSMCScratchRegister = ScratchRegister;
 
-	NTSTATUS Res = HalWriteSMBusValue(SMBUS_ADDRESS_SYSTEM_MICRO_CONTROLLER, SMC_COMMAND_SCRATCH, /*WordFlag:*/false, ScratchRegister);
+	XDK::NTSTATUS Res = HalWriteSMBusValue(SMBUS_ADDRESS_SYSTEM_MICRO_CONTROLLER, SMC_COMMAND_SCRATCH, /*WordFlag:*/false, ScratchRegister);
 
 	RETURN(Res);
 }
+
+} // Xbox

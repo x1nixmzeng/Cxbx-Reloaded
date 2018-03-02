@@ -40,20 +40,23 @@
 
 #include "XDK.h"
 
+namespace Xbox
+{
+
 // Certificate Key
 // Not exported but used to generate per-title keys
-XBOX_KEY_DATA XboxCertificateKey = { 0 };
+XDK::XBOX_KEY_DATA XboxCertificateKey = { 0 };
 
 // ******************************************************************
 // * 0x0141 - XboxEEPROMKey
 // ******************************************************************
 // TODO : What should we initialize this to?
-XBSYSAPI EXPORTNUM(321) XBOX_KEY_DATA XboxEEPROMKey = { 0 };
+XBSYSAPI EXPORTNUM(321) XDK::XBOX_KEY_DATA XboxEEPROMKey = { 0 };
 
 // ******************************************************************
 // * 0x0142 - XboxHardwareInfo
 // ******************************************************************
-XBSYSAPI EXPORTNUM(322) XBOX_HARDWARE_INFO XboxHardwareInfo =
+XBSYSAPI EXPORTNUM(322) XDK::XBOX_HARDWARE_INFO XboxHardwareInfo =
 {
 	0xC0000031, // Flags: 1=INTERNAL_USB, 2=DEVKIT, 4=MACROVISION, 8=CHIHIRO
 	0xA2, // GpuRevision, byte read from NV2A first register, at 0xFD0000000 - see NV_PMC_BOOT_0
@@ -65,13 +68,13 @@ XBSYSAPI EXPORTNUM(322) XBOX_HARDWARE_INFO XboxHardwareInfo =
 // ******************************************************************
 // * 0x0143 - XboxHDKey
 // ******************************************************************
-XBSYSAPI EXPORTNUM(323) XBOX_KEY_DATA XboxHDKey = { 0 };
+XBSYSAPI EXPORTNUM(323) XDK::XBOX_KEY_DATA XboxHDKey = { 0 };
 
 // ******************************************************************
 // * 0x0144 - XboxKrnlVersion
 // ******************************************************************
 // Xbox Kernel version (part of kernel thunk table)
-XBSYSAPI EXPORTNUM(324) XBOX_KRNL_VERSION XboxKrnlVersion =
+XBSYSAPI EXPORTNUM(324) XDK::XBOX_KRNL_VERSION XboxKrnlVersion =
 {
 	// Default Cxbx to emulating kernel version 5838 :
 	1, 0, 5838, 1 // TODO : Make this configurable
@@ -82,20 +85,20 @@ XBSYSAPI EXPORTNUM(324) XBOX_KRNL_VERSION XboxKrnlVersion =
 // Generated in SetupPerTitleKeys() using the Certificate Key and the 
 // XBE's Signature Key
 // ******************************************************************
-XBSYSAPI EXPORTNUM(325) XBOX_KEY_DATA XboxSignatureKey = { 0 };
+XBSYSAPI EXPORTNUM(325) XDK::XBOX_KEY_DATA XboxSignatureKey = { 0 };
 
 // ******************************************************************
 // * 0x0161 - XboxLANKey
 // Generated in SetupPerTitleKeys() using the Certificate Key and the 
 // XBE's LAN Key
 // ******************************************************************
-XBSYSAPI EXPORTNUM(353) XBOX_KEY_DATA XboxLANKey = { 0 };
+XBSYSAPI EXPORTNUM(353) XDK::XBOX_KEY_DATA XboxLANKey = { 0 };
 
 // ******************************************************************
 // * 0x0162 - XboxAlternateSignatureKeys
 // Generated in SetupPerTitleKeys() using the Certificate Key and the 
 // XBE's Alternate Signature Keys Key
 // ******************************************************************
-XBSYSAPI EXPORTNUM(354) XBOX_KEY_DATA XboxAlternateSignatureKeys[ALTERNATE_SIGNATURE_COUNT] = { 0 };
+XBSYSAPI EXPORTNUM(354) XDK::XBOX_KEY_DATA XboxAlternateSignatureKeys[XDK::ALTERNATE_SIGNATURE_COUNT] = { 0 };
 
-	
+} // Xbox

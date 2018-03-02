@@ -43,7 +43,10 @@
 
 #include "Emu.h"
 #include "CxbxKrnl.h"
+namespace Native
+{
 #include <windows.h>
+}
 #include <map>
 
 
@@ -57,10 +60,10 @@
 
 /* Global typedefs */
 
-typedef UINT_PTR VAddr;
-typedef UINT_PTR PAddr;
+typedef Native::UINT_PTR VAddr;
+typedef Native::UINT_PTR PAddr;
 typedef std::uint32_t u32;
-typedef DWORD PTEflags;
+typedef Native::DWORD PTEflags;
 enum class PageType : u32 { 
 	Unknown, // Verified to be called 'Unknown'
 	Stack, // Used by MmCreateKernelStack / VMManager::AllocateStack
@@ -76,7 +79,7 @@ enum class PageType : u32 {
 	COUNT
 };
 
-extern DWORD DefaultPageTypeProtection(const PageType page_type);
+extern Native::DWORD DefaultPageTypeProtection(const PageType page_type);
 
 /* PhysicalMemory class */
 
@@ -108,7 +111,7 @@ class PhysicalMemory
 		{
 			for (auto it = m_Fragmented_mem_map.begin(), end = m_Fragmented_mem_map.end(); it != end; ++it)
 			{
-				VirtualFree((void*)it->first, 0, MEM_RELEASE);
+				Native::VirtualFree((void*)it->first, 0, MEM_RELEASE);
 			}
 		}
 		// allocates a block of the mapped file, returns m_MaxContiguousAddress and sets an error code if unsuccessful

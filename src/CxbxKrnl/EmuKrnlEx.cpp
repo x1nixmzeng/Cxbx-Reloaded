@@ -51,34 +51,38 @@
 #include "EmuKrnl.h" // For InsertHeadList, InsertTailList, RemoveHeadList
 
 #include <atomic> // for std::atomic
+
+namespace Native
+{
 #pragma warning(disable:4005) // Ignore redefined status values
 #include <ntstatus.h> // For STATUS_BUFFER_TOO_SMALL
 #pragma warning(default:4005)
+}
 
 namespace Xbox
 {
-static RTL_CRITICAL_SECTION eeprom_crit_section;
+static XDK::RTL_CRITICAL_SECTION eeprom_crit_section;
 
-static PRTL_CRITICAL_SECTION get_eeprom_crit_section()
+static XDK::PRTL_CRITICAL_SECTION get_eeprom_crit_section()
 {
-    static PRTL_CRITICAL_SECTION crit_sec_ptr = NULL;
+    static XDK::PRTL_CRITICAL_SECTION crit_sec_ptr = NULL;
     if(crit_sec_ptr == NULL) {
         crit_sec_ptr = &eeprom_crit_section;
-        RtlInitializeCriticalSection(crit_sec_ptr);
+		XDK::RtlInitializeCriticalSection(crit_sec_ptr);
     }
     return crit_sec_ptr;
 }
 
 static bool section_does_not_require_checksum(
-    XC_VALUE_INDEX index
+	XDK::XC_VALUE_INDEX index
 )
 {
     switch(index) {
-        case XC_FACTORY_GAME_REGION:
+        case XDK::XC_FACTORY_GAME_REGION:
             return true;
-        case XC_ENCRYPTED_SECTION:
+        case XDK::XC_ENCRYPTED_SECTION:
             return true;
-        case XC_MAX_ALL:
+        case XDK::XC_MAX_ALL:
             return true;
         default:
             return false;
@@ -110,7 +114,7 @@ static uint32_t eeprom_section_checksum(
     return (uint32_t)(checksum & bitmask);
 }
 
-static bool eeprom_data_is_valid(XC_VALUE_INDEX index)
+static bool eeprom_data_is_valid(XDK::XC_VALUE_INDEX index)
 {
     const ULONG valid_checksum = 0xFFFFFFFF;
     const uint32_t* UserSettings_data = (uint32_t*)&EEPROM->UserSettings;
@@ -121,10 +125,10 @@ static bool eeprom_data_is_valid(XC_VALUE_INDEX index)
         return true;
     }
 
-    if((index >= XC_TIMEZONE_BIAS) && (index <= XC_MAX_OS)) {
+    if((index >= XDK::XC_TIMEZONE_BIAS) && (index <= XDK::XC_MAX_OS)) {
         checksum = eeprom_section_checksum(UserSettings_data, sizeof(EEPROM->UserSettings));
     }
-    else if((index >= XC_FACTORY_START_INDEX) && (index <= XC_MAX_FACTORY)) {
+    else if((index >= XDK::XC_FACTORY_START_INDEX) && (index <= XDK::XC_MAX_FACTORY)) {
         checksum = eeprom_section_checksum(FactorySettings_data, sizeof(EEPROM->FactorySettings));
     }
     else {
@@ -137,9 +141,9 @@ static bool eeprom_data_is_valid(XC_VALUE_INDEX index)
 // * 0x000C - ExAcquireReadWriteLockExclusive()
 // ******************************************************************
 // Source:APILogger - Uncertain
-XBSYSAPI EXPORTNUM(12) NTSTATUS NTAPI ExAcquireReadWriteLockExclusive
+XBSYSAPI EXPORTNUM(12) XDK::NTSTATUS NTAPI ExAcquireReadWriteLockExclusive
 (
-	IN PERWLOCK ReadWriteLock
+	IN XDK::PERWLOCK ReadWriteLock
 )
 {
 	LOG_FUNC_ONE_ARG(ReadWriteLock);
@@ -154,9 +158,9 @@ XBSYSAPI EXPORTNUM(12) NTSTATUS NTAPI ExAcquireReadWriteLockExclusive
 // * 0x000D - ExAcquireReadWriteLockShared()
 // ******************************************************************
 // Source:APILogger - Uncertain
-XBSYSAPI EXPORTNUM(13) NTSTATUS NTAPI ExAcquireReadWriteLockShared
+XBSYSAPI EXPORTNUM(13) XDK::NTSTATUS NTAPI ExAcquireReadWriteLockShared
 (
-	IN PERWLOCK ReadWriteLock
+	IN XDK::PERWLOCK ReadWriteLock
 )
 {
 	LOG_FUNC_ONE_ARG(ReadWriteLock);
@@ -170,9 +174,9 @@ XBSYSAPI EXPORTNUM(13) NTSTATUS NTAPI ExAcquireReadWriteLockShared
 // ******************************************************************
 // * 0x000E - ExAllocatePool()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(14) PVOID NTAPI ExAllocatePool
+XBSYSAPI EXPORTNUM(14) XDK::PVOID NTAPI ExAllocatePool
 (
-	IN SIZE_T NumberOfBytes
+	IN XDK::SIZE_T NumberOfBytes
 )
 {
 	LOG_FORWARD("ExAllocatePoolWithTag");
@@ -186,10 +190,10 @@ XBSYSAPI EXPORTNUM(14) PVOID NTAPI ExAllocatePool
 // * Differences from NT: There is no PoolType field, as the XBOX
 // * only has 1 pool, the non-paged pool.
 // ******************************************************************
-XBSYSAPI EXPORTNUM(15) PVOID NTAPI ExAllocatePoolWithTag
+XBSYSAPI EXPORTNUM(15) XDK::PVOID NTAPI ExAllocatePoolWithTag
 (
-	IN SIZE_T NumberOfBytes,
-	IN ULONG Tag
+	IN XDK::SIZE_T NumberOfBytes,
+	IN XDK::ULONG Tag
 )
 {
 	LOG_FUNC_BEGIN
@@ -197,7 +201,7 @@ XBSYSAPI EXPORTNUM(15) PVOID NTAPI ExAllocatePoolWithTag
 		LOG_FUNC_ARG(Tag)
 		LOG_FUNC_END;
 
-	PVOID pRet = (PVOID)g_VMManager.Allocate(NumberOfBytes, PageType::Pool);
+	XDK::PVOID pRet = (XDK::PVOID)g_VMManager.Allocate(NumberOfBytes, PageType::Pool);
 
 	if (pRet) {
 		memset(pRet, 0, NumberOfBytes); // Clear, to prevent side-effects on random contents
@@ -211,14 +215,14 @@ XBSYSAPI EXPORTNUM(15) PVOID NTAPI ExAllocatePoolWithTag
 // ******************************************************************
 // * 0x0010 - ExEventObjectType
 // ******************************************************************
-XBSYSAPI EXPORTNUM(16) OBJECT_TYPE ExEventObjectType =
+XBSYSAPI EXPORTNUM(16) XDK::OBJECT_TYPE ExEventObjectType =
 {
 	ExAllocatePoolWithTag,
 	ExFreePool,
 	NULL,
 	NULL,
 	NULL,
-	(PVOID)offsetof(KEVENT, Header),
+	(XDK::PVOID)offsetof(XDK::KEVENT, Header),
 	'vevE' // = first four characters of "Event" in reverse
 };
 
@@ -227,7 +231,7 @@ XBSYSAPI EXPORTNUM(16) OBJECT_TYPE ExEventObjectType =
 // ******************************************************************
 XBSYSAPI EXPORTNUM(17) VOID NTAPI ExFreePool
 (
-	IN PVOID	P
+	IN XDK::PVOID	P
 )
 {
 	LOG_FUNC_ONE_ARG(P);
@@ -241,7 +245,7 @@ XBSYSAPI EXPORTNUM(17) VOID NTAPI ExFreePool
 // Source:APILogger - Uncertain
 XBSYSAPI EXPORTNUM(18) VOID NTAPI ExInitializeReadWriteLock
 (
-	IN PERWLOCK ReadWriteLock
+	IN XDK::PERWLOCK ReadWriteLock
 )
 {
 	LOG_FUNC_ONE_ARG(ReadWriteLock);
@@ -250,7 +254,7 @@ XBSYSAPI EXPORTNUM(18) VOID NTAPI ExInitializeReadWriteLock
 	ReadWriteLock->WritersWaitingCount = 0;
 	ReadWriteLock->ReadersWaitingCount = 0;
 	ReadWriteLock->ReadersEntryCount = 0;
-	KeInitializeEvent(&ReadWriteLock->WriterEvent, SynchronizationEvent, FALSE);
+	KeInitializeEvent(&ReadWriteLock->WriterEvent, XDK::SynchronizationEvent, FALSE);
 	KeInitializeSemaphore(&ReadWriteLock->ReaderSemaphore, 0, MAXLONG);
 }
 
@@ -258,11 +262,11 @@ XBSYSAPI EXPORTNUM(18) VOID NTAPI ExInitializeReadWriteLock
 // * 0x0013 - ExInterlockedAddLargeInteger()
 // ******************************************************************
 // Source:ReactOS https://doxygen.reactos.org/d0/d35/ntoskrnl_2ex_2interlocked_8c_source.html#l00062
-XBSYSAPI EXPORTNUM(19) LARGE_INTEGER NTAPI ExInterlockedAddLargeInteger
+XBSYSAPI EXPORTNUM(19) XDK::LARGE_INTEGER NTAPI ExInterlockedAddLargeInteger
 (
-	IN OUT PLARGE_INTEGER Addend,
-	IN LARGE_INTEGER Increment,
-	IN OUT PKSPIN_LOCK Lock
+	IN OUT XDK::PLARGE_INTEGER Addend,
+	IN XDK::LARGE_INTEGER Increment,
+	IN OUT XDK::PKSPIN_LOCK Lock
 )
 {
 	LOG_FUNC_BEGIN
@@ -271,7 +275,7 @@ XBSYSAPI EXPORTNUM(19) LARGE_INTEGER NTAPI ExInterlockedAddLargeInteger
 		LOG_FUNC_ARG(Lock)
 		LOG_FUNC_END;
 
-	LARGE_INTEGER OldValue;
+	XDK::LARGE_INTEGER OldValue;
 // TODO :	BOOLEAN Enable;
 
 	/* Disable interrupts and acquire the spinlock */
@@ -337,29 +341,29 @@ XBSYSAPI EXPORTNUM(21) LONGLONG FASTCALL ExInterlockedCompareExchange64
 // ******************************************************************
 // * 0x0016 - ExMutantObjectType
 // ******************************************************************
-XBSYSAPI EXPORTNUM(22) OBJECT_TYPE ExMutantObjectType = 
+XBSYSAPI EXPORTNUM(22) XDK::OBJECT_TYPE ExMutantObjectType =
 {
 	ExAllocatePoolWithTag,
 	ExFreePool,
 	NULL,
 	NULL, // TODO : ExpDeleteMutant,
 	NULL,
-	(PVOID)offsetof(KMUTANT, Header),
+	(PVOID)offsetof(XDK::KMUTANT, Header),
 	'atuM' // = first four characters of "Mutant" in reverse
 };
 
 // ******************************************************************
 // * 0x0017 - ExQueryPoolBlockSize()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(23) ULONG NTAPI ExQueryPoolBlockSize
+XBSYSAPI EXPORTNUM(23) XDK::ULONG NTAPI ExQueryPoolBlockSize
 (
-	IN PVOID PoolBlock
+	IN XDK::PVOID PoolBlock
 )
 {
 	LOG_FUNC_ONE_ARG(PoolBlock);
 
 	// Not strictly correct, but it will do for now
-	ULONG ret = MmQueryAllocationSize(PoolBlock);
+	XDK::ULONG ret = XDK::MmQueryAllocationSize(PoolBlock);
 
 	RETURN(ret);
 }
@@ -367,34 +371,37 @@ XBSYSAPI EXPORTNUM(23) ULONG NTAPI ExQueryPoolBlockSize
 // ******************************************************************
 // * 0x0018 - ExQueryNonVolatileSetting()
 // ******************************************************************
-XBSYSAPI EXPORTNUM(24) NTSTATUS NTAPI ExQueryNonVolatileSetting
+XBSYSAPI EXPORTNUM(24) XDK::NTSTATUS NTAPI ExQueryNonVolatileSetting
 (
-	IN  DWORD   ValueIndex,
-	OUT DWORD   *Type,
-	OUT PVOID   Value,
-	IN  SIZE_T  ValueLength,
-	OUT PSIZE_T ResultLength OPTIONAL
+	IN  XDK::DWORD   ValueIndex,
+	OUT XDK::DWORD   *Type,
+	OUT XDK::PVOID   Value,
+	IN  XDK::SIZE_T  ValueLength,
+	OUT XDK::PSIZE_T ResultLength OPTIONAL
 )
 {
 	LOG_FUNC_BEGIN
-		LOG_FUNC_ARG_TYPE(XC_VALUE_INDEX, ValueIndex)
+		LOG_FUNC_ARG_TYPE(XDK::XC_VALUE_INDEX, ValueIndex)
 		LOG_FUNC_ARG_OUT(Type)
 		LOG_FUNC_ARG_OUT(Value)
 		LOG_FUNC_ARG(ValueLength)
 		LOG_FUNC_ARG_OUT(ResultLength)
 		LOG_FUNC_END;
 
-	NTSTATUS Status = STATUS_SUCCESS;
+	// For STATUS_SUCCESS macro
+	using XDK::NTSTATUS;
+
+	XDK::NTSTATUS Status = STATUS_SUCCESS;
 	void * value_addr = nullptr;
 	int value_type;
 	int result_length;
-	XC_VALUE_INDEX index = (XC_VALUE_INDEX)ValueIndex;
+	XDK::XC_VALUE_INDEX index = (XDK::XC_VALUE_INDEX)ValueIndex;
 
 	// handle eeprom read
-	if (index == XC_FACTORY_GAME_REGION) {
+	if (index == XDK::XC_FACTORY_GAME_REGION) {
 		value_addr = &XboxFactoryGameRegion;
 		value_type = REG_DWORD;
-		result_length = sizeof(ULONG);
+		result_length = sizeof(XDK::ULONG);
 	}
 	else {
 		const EEPROMInfo* info = EmuFindEEPROMInfo(index);
@@ -730,7 +737,7 @@ XBSYSAPI EXPORTNUM(33) PLIST_ENTRY FASTCALL ExfInterlockedInsertTailList
 // * 0x0022 - ExfInterlockedRemoveHeadList()
 // ******************************************************************
 // Source:ReactOS
-XBSYSAPI EXPORTNUM(34) PLIST_ENTRY FASTCALL ExfInterlockedRemoveHeadList
+XBSYSAPI EXPORTNUM(34) XDK::PLIST_ENTRY FASTCALL ExfInterlockedRemoveHeadList
 (
 	IN PLIST_ENTRY ListHead
 )

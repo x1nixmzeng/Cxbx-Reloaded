@@ -141,7 +141,8 @@ static void update_irq(NV2AState *d)
 		Xbox::HalSystemInterrupts[3].Assert(false);
 	}
 
-	SwitchToThread();
+	// TODO: Double-check this
+	Native::SwitchToThread();
 }
 
 
@@ -315,7 +316,7 @@ const NV2ABlockInfo* EmuNV2A_Block(xbaddr addr)
 // 
 #define X_D3DTS_STAGECOUNT 4
 
-HDC g_EmuWindowsDC = 0;
+Native::HDC g_EmuWindowsDC = 0;
 GLuint VertexProgramIDs[4] = { 0, 0, 0, 0 };
 uint ActiveVertexProgramID = 0;
 GLuint TextureIDs[X_D3DTS_STAGECOUNT] = { 0, 0, 0, 0 };
@@ -376,10 +377,10 @@ std::string DxbxVertexShaderHeader =
 "PARAM c[] = { program.env[0..191] };\n" // All constants in 1 array declaration (requires NV_gpu_program4?)
 "PARAM mvp[4] = { state.matrix.mvp };\n";
 
-void SetupPixelFormat(HDC DC)
+void SetupPixelFormat(Native::HDC DC)
 {
-	const PIXELFORMATDESCRIPTOR pfd = {
-		/* .nSize = */ sizeof(PIXELFORMATDESCRIPTOR), // size
+	const Native::PIXELFORMATDESCRIPTOR pfd = {
+		/* .nSize = */ sizeof(Native::PIXELFORMATDESCRIPTOR), // size
 		/* .nVersion = */ 1,   // version
 		/* .dwFlags = */ PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER, // support double-buffering
 		/* .iPixelType = */ PFD_TYPE_RGBA, // color type
@@ -465,10 +466,10 @@ void DxbxCompileShader(std::string Shader)
 }
 void InitOpenGLContext()
 {
-	HGLRC RC;
+	Native::HGLRC RC;
 	std::string szCode;
 
-	g_EmuWindowsDC = GetDC(g_hEmuWindow); // Actually, you can use any windowed control here
+	g_EmuWindowsDC = Native::GetDC(g_hEmuWindow); // Actually, you can use any windowed control here
 	SetupPixelFormat(g_EmuWindowsDC);
 
 	RC = wglCreateContext(g_EmuWindowsDC); // makes OpenGL window out of DC
@@ -604,8 +605,8 @@ static void nv2a_vblank_thread(NV2AState *d)
 void CxbxReserveNV2AMemory(NV2AState *d)
 {
 	// Reserve NV2A memory :
-	void *memory = (void *)VirtualAllocEx(
-		GetCurrentProcess(),
+	void *memory = (void *)Native::VirtualAllocEx(
+		Native::GetCurrentProcess(),
 		(void *)NV2A_ADDR,
 		NV2A_SIZE,
 		MEM_RESERVE, // Don't allocate actual physical storage in memory
@@ -616,12 +617,12 @@ void CxbxReserveNV2AMemory(NV2AState *d)
 	}
 
 	printf("[0x%.4X] INIT: Reserved %d MiB of Xbox NV2A memory at 0x%.8X to 0x%.8X\n",
-		GetCurrentThreadId(), NV2A_SIZE / ONE_MB, NV2A_ADDR, NV2A_ADDR + NV2A_SIZE - 1);
+		Native::GetCurrentThreadId(), NV2A_SIZE / ONE_MB, NV2A_ADDR, NV2A_ADDR + NV2A_SIZE - 1);
 
 	// Allocate PRAMIN Region
 	d->pramin.ramin_size = NV_PRAMIN_SIZE;
-	d->pramin.ramin_ptr = (uint8_t*)VirtualAllocEx(
-		GetCurrentProcess(),
+	d->pramin.ramin_ptr = (uint8_t*)Native::VirtualAllocEx(
+		Native::GetCurrentProcess(),
 		(void*)(NV2A_ADDR + NV_PRAMIN_ADDR),
 		d->pramin.ramin_size,
 		MEM_COMMIT, // No MEM_RESERVE |
@@ -632,7 +633,7 @@ void CxbxReserveNV2AMemory(NV2AState *d)
 	}
 
 	printf("[0x%.4X] INIT: Allocated %d MiB of Xbox NV2A PRAMIN memory at 0x%.8X to 0x%.8X\n",
-		GetCurrentThreadId(), d->pramin.ramin_size / ONE_MB, d->pramin.ramin_ptr, d->pramin.ramin_ptr + d->pramin.ramin_size - 1);
+		Native::GetCurrentThreadId(), d->pramin.ramin_size / ONE_MB, d->pramin.ramin_ptr, d->pramin.ramin_ptr + d->pramin.ramin_size - 1);
 }
 
 /* NV2ADevice */

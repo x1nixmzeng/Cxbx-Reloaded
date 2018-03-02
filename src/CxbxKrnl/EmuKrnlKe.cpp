@@ -52,7 +52,12 @@
 
 #include <chrono>
 #include <thread>
+
+namespace Native
+{
 #include <windows.h>
+}
+
 #include <map>
 
 // Copied over from Dxbx. 

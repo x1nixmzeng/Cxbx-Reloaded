@@ -35,11 +35,11 @@
 // ******************************************************************
 #define _XBOXKRNL_DEFEXTRN_
 
-#undef FIELD_OFFSET     // prevent macro redefinition warnings
-#include <windows.h>
-
 #include "CxbxKrnl.h" // For xbaddr
 #include "HLEDataBase.h" // For PairScanLibSec
+
+#undef FIELD_OFFSET     // prevent macro redefinition warnings
+#include <windows.h>
 
 const char *Lib_D3D8 = "D3D8";
 const char *Sec_D3D = "D3D";

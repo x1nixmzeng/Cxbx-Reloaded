@@ -314,7 +314,7 @@ typedef struct _X_D3DPRESENT_PARAMETERS
 	Native::D3DMULTISAMPLE_TYPE MultiSampleType;
 
 	Native::D3DSWAPEFFECT       SwapEffect;
-    HWND                hDeviceWindow;
+	Native::HWND                hDeviceWindow;
     BOOL                Windowed;
     BOOL                EnableAutoDepthStencil;
     X_D3DFORMAT         AutoDepthStencilFormat;

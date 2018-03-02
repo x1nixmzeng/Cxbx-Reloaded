@@ -50,15 +50,15 @@ namespace Xbox
 #define OBJECT_TO_OBJECT_HEADER(Object) \
     CONTAINING_RECORD(Object, OBJECT_HEADER, Body)
 
-void InitializeListHead(PLIST_ENTRY pListHead);
-bool IsListEmpty(PLIST_ENTRY pListHead);
-void InsertHeadList(PLIST_ENTRY pListHead, PLIST_ENTRY pEntry);
-void InsertTailList(PLIST_ENTRY pListHead, PLIST_ENTRY pEntry);
+void InitializeListHead(XDK::PLIST_ENTRY pListHead);
+bool IsListEmpty(XDK::PLIST_ENTRY pListHead);
+void InsertHeadList(XDK::PLIST_ENTRY pListHead, XDK::PLIST_ENTRY pEntry);
+void InsertTailList(XDK::PLIST_ENTRY pListHead, XDK::PLIST_ENTRY pEntry);
 //#define RemoveEntryList(e) do { PLIST_ENTRY f = (e)->Flink, b = (e)->Blink; f->Blink = b; b->Flink = f; (e)->Flink = (e)->Blink = NULL; } while (0)
 
-void RemoveEntryList(PLIST_ENTRY pEntry);
-PLIST_ENTRY RemoveHeadList(PLIST_ENTRY pListHead);
-PLIST_ENTRY RemoveTailList(PLIST_ENTRY pListHead);
+void RemoveEntryList(XDK::PLIST_ENTRY pEntry);
+XDK::PLIST_ENTRY RemoveHeadList(XDK::PLIST_ENTRY pListHead);
+XDK::PLIST_ENTRY RemoveTailList(XDK::PLIST_ENTRY pListHead);
 
 extern XDK::LAUNCH_DATA_PAGE DefaultLaunchDataPage;
 extern XDK::PKINTERRUPT EmuInterruptList[MAX_BUS_INTERRUPT_LEVEL + 1];
@@ -101,9 +101,12 @@ public:
 			m_Pending = false;
 		}
 
+		using Native::_exception_info;
+		using Native::_EXCEPTION_POINTERS;
+
 		__try {
-			BOOLEAN(__stdcall *ServiceRoutine)(XDK::PKINTERRUPT, void*) = (BOOLEAN(__stdcall *)(XDK::PKINTERRUPT, void*))Interrupt->ServiceRoutine;
-			BOOLEAN result = ServiceRoutine(Interrupt, Interrupt->ServiceContext);
+			XDK::BOOLEAN(__stdcall *ServiceRoutine)(XDK::PKINTERRUPT, void*) = (XDK::BOOLEAN(__stdcall *)(XDK::PKINTERRUPT, void*))Interrupt->ServiceRoutine;
+			XDK::BOOLEAN result = ServiceRoutine(Interrupt, Interrupt->ServiceContext);
 		}
 		__except (EmuException(GetExceptionInformation()))
 		{
