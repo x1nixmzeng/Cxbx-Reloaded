@@ -118,6 +118,9 @@ namespace CxbxDebugger
                 return "";
 
             byte[] Current = OwningProcess.ReadMemoryBlock(new IntPtr(PatchItem.Offset), (uint)Size);
+            if (Current == null)
+                return "??";
+
             return Format(PatchItem.DisplayAs, Current);
         }
 
