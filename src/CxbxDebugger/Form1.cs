@@ -505,13 +505,13 @@ namespace CxbxDebugger
                 if (Info.Succeeded)
                 {
                     frm.FileHandles.Add(Info);
-                    frm.DebugLog(string.Format("Opened file: \"{0}\"", Info.FileName));
+                    frm.DebugLog(string.Format("Open file: \"{0}\"", Info.FileName));
 
                     frm.DebugFileEvent(FileEvents.Opened(Info.FileName));
                 }
                 else
                 {
-                    frm.DebugLog(string.Format("Opened file FAILED: \"{0}\"", Info.FileName));
+                    frm.DebugLog(string.Format("Failed to open file: \"{0}\"", Info.FileName));
 
                     frm.DebugFileEvent(FileEvents.OpenedFailed(Info.FileName));
                 }
@@ -522,7 +522,6 @@ namespace CxbxDebugger
                 var Found = frm.FileHandles.Find(FileInfo => FileInfo.Handle == Info.Handle);
                 if (Found != null)
                 {
-                    frm.DebugLog(string.Format("Reading {0} byte(s) from: {1}", Info.Length, Found.FileName));
                     frm.DebugFileEvent(FileEvents.Read(Found.FileName, Info.Length, Info.Offset));
                 }
             }
@@ -532,7 +531,6 @@ namespace CxbxDebugger
                 var Found = frm.FileHandles.Find(FileInfo => FileInfo.Handle == Info.Handle);
                 if (Found != null)
                 {
-                    frm.DebugLog(string.Format("Writing {0} byte(s) to: {1}", Info.Length, Found.FileName));
                     frm.DebugFileEvent(FileEvents.Write(Found.FileName, Info.Length, Info.Offset));
                 }
             }
@@ -546,7 +544,7 @@ namespace CxbxDebugger
 
                     frm.DebugFileEvent(FileEvents.Closed(Found.FileName));
 
-                    frm.DebugLog(string.Format("Closed file: \"{0}\"", Found.FileName));
+                    frm.DebugLog(string.Format("File closed: \"{0}\"", Found.FileName));
                 }
             }
         }
