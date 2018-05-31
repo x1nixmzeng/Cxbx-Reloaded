@@ -30,6 +30,7 @@ namespace CxbxDebugger
         PatchManager patchMan;
 
         List<DebuggerMessages.FileOpened> FileHandles = new List<DebuggerMessages.FileOpened>();
+        List<string> AllUsedFilePaths = new List<string>();
 
         public Form1()
         {
@@ -59,9 +60,9 @@ namespace CxbxDebugger
 
             txDisassembly.InlineLinkClicked += OnDisassemblyNavigation;
 
-            foreach (string FileEventEnum in Enum.GetNames(typeof(FileEventType)))
+            foreach (FileEvent.Type Value in Enum.GetValues(typeof(FileEvent.Type)))
             {
-                cbAction.Items.Add(FileEventEnum);
+                cbAction.Items.Add(FileEvent.TypeString(Value));
             }
 
             cbAction.SelectedIndex = 0;
@@ -222,19 +223,19 @@ namespace CxbxDebugger
             }
         }
 
-        private void DebugFileEvent(FileEvents Event)
+        private void DebugFileEvent(FileEvent.Data Event)
         {
             Invoke(new MethodInvoker(delegate ()
             {
                 lvFileDetails.BeginUpdate();
                 {
-                    var lvi = lvFileDetails.Items.Insert(0, Event.Type.ToString());
+                    var lvi = lvFileDetails.Items.Insert(0, FileEvent.TypeString(Event.Type));
                     lvi.SubItems.Add(Event.Name);
 
                     switch (Event.Type)
                     {
-                        case FileEventType.Read:
-                        case FileEventType.Write:
+                        case FileEvent.Type.Read:
+                        case FileEvent.Type.Write:
                             string text = string.Format("{0} bytes", Event.Length.ToString());
 
                             if (Event.Offset != uint.MaxValue)
@@ -245,19 +246,30 @@ namespace CxbxDebugger
                             lvi.SubItems.Add(text);
                             break;
 
-                        case FileEventType.FailedOpen:
+                        case FileEvent.Type.FailedOpen:
                             lvi.SubItems.Add("Failed to open file");
                             break;
                     }
                 }
                 lvFileDetails.EndUpdate();
 
+                if (Event.Type == FileEvent.Type.Opened)
+                {
+                    if (AllUsedFilePaths.Find(FilePath => FilePath == Event.Name) == null)
+                    {
+                        AllUsedFilePaths.Add(Event.Name);
+
+                        lbFileHistory.BeginUpdate();
+                        lbFileHistory.Items.Insert(0, Event.Name);
+                        lbFileHistory.EndUpdate();
+                    }
+                }
+
                 switch (Event.Type)
                 {
-
-                    case FileEventType.Opened:
-                    case FileEventType.Closed:
-                    case FileEventType.FailedOpen:
+                    case FileEvent.Type.Opened:
+                    case FileEvent.Type.Closed:
+                    case FileEvent.Type.FailedOpen:
                         {
                             lbOpenedFiles.BeginUpdate();
                             lbOpenedFiles.Items.Clear();
@@ -507,13 +519,13 @@ namespace CxbxDebugger
                     frm.FileHandles.Add(Info);
                     frm.DebugLog(string.Format("Open file: \"{0}\"", Info.FileName));
 
-                    frm.DebugFileEvent(FileEvents.Opened(Info.FileName));
+                    frm.DebugFileEvent(FileEvent.Opened(Info.FileName));
                 }
                 else
                 {
                     frm.DebugLog(string.Format("Failed to open file: \"{0}\"", Info.FileName));
 
-                    frm.DebugFileEvent(FileEvents.OpenedFailed(Info.FileName));
+                    frm.DebugFileEvent(FileEvent.OpenFailed(Info.FileName));
                 }
             }
 
@@ -522,7 +534,7 @@ namespace CxbxDebugger
                 var Found = frm.FileHandles.Find(FileInfo => FileInfo.Handle == Info.Handle);
                 if (Found != null)
                 {
-                    frm.DebugFileEvent(FileEvents.Read(Found.FileName, Info.Length, Info.Offset));
+                    frm.DebugFileEvent(FileEvent.Read(Found.FileName, Info.Length, Info.Offset));
                 }
             }
 
@@ -531,7 +543,7 @@ namespace CxbxDebugger
                 var Found = frm.FileHandles.Find(FileInfo => FileInfo.Handle == Info.Handle);
                 if (Found != null)
                 {
-                    frm.DebugFileEvent(FileEvents.Write(Found.FileName, Info.Length, Info.Offset));
+                    frm.DebugFileEvent(FileEvent.Write(Found.FileName, Info.Length, Info.Offset));
                 }
             }
 
@@ -542,7 +554,7 @@ namespace CxbxDebugger
                 {
                     frm.FileHandles.Remove(Found);
 
-                    frm.DebugFileEvent(FileEvents.Closed(Found.FileName));
+                    frm.DebugFileEvent(FileEvent.Closed(Found.FileName));
 
                     frm.DebugLog(string.Format("File closed: \"{0}\"", Found.FileName));
                 }
@@ -952,7 +964,7 @@ namespace CxbxDebugger
 
         private void button1_Click_2(object sender, EventArgs e)
         {
-            FileEventType Event = (FileEventType)cbAction.SelectedIndex;
+            FileEvent.Type Event = (FileEvent.Type)cbAction.SelectedIndex;
             fileWatchMan.Add(Event, tbFilter.Text);
         }
 

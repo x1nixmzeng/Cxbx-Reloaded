@@ -12,7 +12,7 @@ namespace CxbxDebugger
 {
     class FileWatchInfo
     {
-        public FileEventType Type;
+        public FileEvent.Type Type;
         public string Filter;
         public bool Enabled;
     }
@@ -33,13 +33,13 @@ namespace CxbxDebugger
             Handler.Items.Clear();
             foreach (FileWatchInfo Info in WatchInfo)
             {
-                Handler.Items.Add(string.Format("Filter \"{0}\" with state {1}", Info.Filter, Info.Type), Info.Enabled);
+                Handler.Items.Add(string.Format("Filter \"{0}\" with state {1}", Info.Filter, FileEvent.TypeString(Info.Type)), Info.Enabled);
             }
 
             Handler.EndUpdate();
         }
 
-        public void Add(FileEventType Type, string Filter)
+        public void Add(FileEvent.Type Type, string Filter)
         {
             FileWatchInfo watch = new FileWatchInfo();
 
@@ -67,7 +67,7 @@ namespace CxbxDebugger
             RefreshUI();
         }
 
-        public bool Match(FileEvents FileEvent)
+        public bool Match(FileEvent.Data FileEvent)
         {
             var Result = WatchInfo.Find(
                 Info => Info.Enabled

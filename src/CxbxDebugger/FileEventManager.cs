@@ -2,60 +2,73 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CxbxDebugger
 {
-    enum FileEventType
+    class FileEvent
     {
-        Opened,
-        Read,
-        Write,
-        Closed,
-        FailedOpen,
-    }
-
-    struct FileEvents
-    {
-        public FileEventType Type;
-        public string Name;
-        public uint Length;
-        public uint Offset;
-
-        public FileEvents(FileEventType Type, string Name, uint Length = 0, uint Offset = uint.MaxValue)
+        public enum Type
         {
-            this.Type = Type;
-            this.Name = Name;
-            this.Length = Length;
-            this.Offset = Offset;
+            Opened,
+            Read,
+            Write,
+            Closed,
+            FailedOpen,
         }
 
-        public static FileEvents Opened(string Name)
+        public static string TypeString(Type Type)
         {
-            return new FileEvents(FileEventType.Opened, Name);
+            switch (Type)
+            {
+                case Type.Opened: return "File Opened";
+                case Type.Read: return "File Read";
+                case Type.Write: return "File Write";
+                case Type.Closed: return "File Closed";
+                case Type.FailedOpen: return "File Open Failed";
+            }
+
+            throw new MissingMemberException();
         }
 
-        public static FileEvents OpenedFailed(string Name)
+        public struct Data
         {
-            return new FileEvents(FileEventType.FailedOpen, Name);
+            public Type Type;
+            public string Name;
+            public uint Length;
+            public uint Offset;
+
+            public Data(Type Type, string Name, uint Length = 0, uint Offset = uint.MaxValue)
+            {
+                this.Type = Type;
+                this.Name = Name;
+                this.Length = Length;
+                this.Offset = Offset;
+            }
         }
 
-        public static FileEvents Read(string Name, uint Length, uint Offset)
+        public static Data Opened(string Name)
         {
-            return new FileEvents(FileEventType.Read, Name, Length, Offset);
+            return new Data(Type.Opened, Name);
         }
 
-        public static FileEvents Write(string Name, uint Length, uint Offset)
+        public static Data OpenFailed(string Name)
         {
-            return new FileEvents(FileEventType.Write, Name, Length, Offset);
+            return new Data(Type.FailedOpen, Name);
         }
 
-        public static FileEvents Closed(string Name)
+        public static Data Read(string Name, uint Length, uint Offset)
         {
-            return new FileEvents(FileEventType.Closed, Name);
+            return new Data(Type.Read, Name, Length, Offset);
+        }
+
+        public static Data Write(string Name, uint Length, uint Offset)
+        {
+            return new Data(Type.Write, Name, Length, Offset);
+        }
+
+        public static Data Closed(string Name)
+        {
+            return new Data(Type.Closed, Name);
         }
     }
 }

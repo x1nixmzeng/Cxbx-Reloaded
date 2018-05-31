@@ -112,6 +112,10 @@
             this.lbDebug = new System.Windows.Forms.ListBox();
             this.diagSaveMemory = new System.Windows.Forms.SaveFileDialog();
             this.diagBrowseCT = new System.Windows.Forms.OpenFileDialog();
+            this.splitContainer7 = new System.Windows.Forms.SplitContainer();
+            this.lbFileHistory = new System.Windows.Forms.ListBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.statusBar.SuspendLayout();
@@ -152,6 +156,12 @@
             this.splitContainer5.Panel1.SuspendLayout();
             this.splitContainer5.Panel2.SuspendLayout();
             this.splitContainer5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer7)).BeginInit();
+            this.splitContainer7.Panel1.SuspendLayout();
+            this.splitContainer7.Panel2.SuspendLayout();
+            this.splitContainer7.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // lbConsole
@@ -578,7 +588,7 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.lbOpenedFiles);
+            this.splitContainer1.Panel2.Controls.Add(this.splitContainer7);
             this.splitContainer1.Size = new System.Drawing.Size(714, 190);
             this.splitContainer1.SplitterDistance = 501;
             this.splitContainer1.TabIndex = 3;
@@ -619,9 +629,9 @@
             // 
             this.lbOpenedFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lbOpenedFiles.FormattingEnabled = true;
-            this.lbOpenedFiles.Location = new System.Drawing.Point(0, 0);
+            this.lbOpenedFiles.Location = new System.Drawing.Point(3, 16);
             this.lbOpenedFiles.Name = "lbOpenedFiles";
-            this.lbOpenedFiles.Size = new System.Drawing.Size(209, 190);
+            this.lbOpenedFiles.Size = new System.Drawing.Size(203, 76);
             this.lbOpenedFiles.TabIndex = 0;
             // 
             // tabMemory
@@ -1042,6 +1052,55 @@
             this.diagBrowseCT.Filter = "Cheat Engine Tables (*.CT)|*.ct";
             this.diagBrowseCT.Title = "Load cheat table";
             // 
+            // splitContainer7
+            // 
+            this.splitContainer7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer7.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer7.Name = "splitContainer7";
+            this.splitContainer7.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer7.Panel1
+            // 
+            this.splitContainer7.Panel1.Controls.Add(this.groupBox3);
+            // 
+            // splitContainer7.Panel2
+            // 
+            this.splitContainer7.Panel2.Controls.Add(this.groupBox5);
+            this.splitContainer7.Size = new System.Drawing.Size(209, 190);
+            this.splitContainer7.SplitterDistance = 95;
+            this.splitContainer7.TabIndex = 1;
+            // 
+            // lbFileHistory
+            // 
+            this.lbFileHistory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbFileHistory.FormattingEnabled = true;
+            this.lbFileHistory.Location = new System.Drawing.Point(3, 16);
+            this.lbFileHistory.Name = "lbFileHistory";
+            this.lbFileHistory.Size = new System.Drawing.Size(203, 72);
+            this.lbFileHistory.TabIndex = 1;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.lbOpenedFiles);
+            this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox3.Location = new System.Drawing.Point(0, 0);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(209, 95);
+            this.groupBox3.TabIndex = 1;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Open File Paths";
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.lbFileHistory);
+            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox5.Location = new System.Drawing.Point(0, 0);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(209, 91);
+            this.groupBox5.TabIndex = 2;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "All File Paths";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1103,6 +1162,12 @@
             this.splitContainer5.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).EndInit();
             this.splitContainer5.ResumeLayout(false);
+            this.splitContainer7.Panel1.ResumeLayout(false);
+            this.splitContainer7.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer7)).EndInit();
+            this.splitContainer7.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1192,6 +1257,10 @@
         private System.Windows.Forms.Button btnLoadCT;
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.SplitContainer splitContainer7;
+        private System.Windows.Forms.ListBox lbFileHistory;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox groupBox5;
     }
 }
 
