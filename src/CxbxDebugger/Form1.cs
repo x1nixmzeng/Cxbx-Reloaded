@@ -188,10 +188,7 @@ namespace CxbxDebugger
         {
             if (DebuggerWorkerThread != null)
             {
-                if (DebuggerWorkerThread.ThreadState == ThreadState.Running)
-                {
-                    DebuggerWorkerThread.Abort();
-                }
+                DebuggerWorkerThread.Abort();
             }
 
             if (DebuggerInst != null)
