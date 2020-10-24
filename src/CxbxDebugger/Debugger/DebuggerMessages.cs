@@ -97,20 +97,26 @@ namespace CxbxDebugger
 
         public class FileOpened
         {
-            public IntPtr Handle { get; set; }
+            public uint Handle { get; set; }
             public string FileName { get; set; }
             public bool Succeeded { get; set; }
         }
 
         public static FileOpened GetFileOpenedReport(DebuggerThread Context, DataProcessor Data)
         {
-            FileOpened Report = new FileOpened();
+            var Handle = Data.Pop();
 
-            Report.Handle = new IntPtr(Data.Pop());
+            // Skip invalid file handles
+            if (Handle == uint.MaxValue)
+                return null;
 
             var Type = (StringType)Data.Pop();
             if (Type != StringType.WCHAR)
                 throw new Exception("GetFileOpenedReport expects a widestring message");
+
+            FileOpened Report = new FileOpened();
+
+            Report.Handle = Handle;
 
             var Length = Data.Pop();
             var MessagePtr = new IntPtr(Data.Pop());
@@ -123,16 +129,22 @@ namespace CxbxDebugger
 
         public class FileRead
         {
-            public IntPtr Handle { get; set; }
+            public uint Handle { get; set; }
             public uint Length { get; set; }
             public uint Offset { get; set; }
         }
 
         public static FileRead GetFileReadReport(DebuggerThread Context, DataProcessor Data)
         {
+            var Handle = Data.Pop();
+
+            // Skip invalid file handles
+            if (Handle == uint.MaxValue)
+                return null;
+
             FileRead Report = new FileRead();
 
-            Report.Handle = new IntPtr(Data.Pop());
+            Report.Handle = Handle;
             Report.Length = Data.Pop();
             Report.Offset = Data.Pop();
 
@@ -141,16 +153,22 @@ namespace CxbxDebugger
 
         public class FileWrite
         {
-            public IntPtr Handle { get; set; }
+            public uint Handle { get; set; }
             public uint Length { get; set; }
             public uint Offset { get; set; }
         }
 
         public static FileWrite GetFileWriteReport(DebuggerThread Context, DataProcessor Data)
         {
+            var Handle = Data.Pop();
+
+            // Skip invalid file handles
+            if (Handle == uint.MaxValue)
+                return null;
+
             FileWrite Report = new FileWrite();
 
-            Report.Handle = new IntPtr(Data.Pop());
+            Report.Handle = Handle;
             Report.Length = Data.Pop();
             Report.Offset = Data.Pop();
 
@@ -159,23 +177,20 @@ namespace CxbxDebugger
 
         public class FileClosed
         {
-            public IntPtr Handle { get; set; }
+            public uint Handle { get; set; }
         }
 
         public static FileClosed GetFileClosedReport(DebuggerThread Context, DataProcessor Data)
         {
-            // TODO: Restructure this library
-            uint InvalidHandle = (uint)VsChromium.Core.Win32.Handles.NativeMethods.INVALID_HANDLE_VALUE;
-
             var Handle = Data.Pop();
 
             // Skip invalid file handles
-            if (Handle == InvalidHandle)
+            if (Handle == uint.MaxValue)
                 return null;
 
             FileClosed Report = new FileClosed();
 
-            Report.Handle = new IntPtr(Handle);
+            Report.Handle = Handle;
 
             return Report;
         }

@@ -267,7 +267,9 @@ namespace CxbxDebugger
 
         private void DebugLog(string Message)
         {
-            var MessageStamped = $"[{DateTime.Now.ToLongTimeString()}] {Message}";
+            // 24-hour timestamp with milliseconds
+            var time = DateTime.Now.ToString("HH:mm:ss.fff");
+            var MessageStamped = $"[{time}] {Message}";
 
             if (InvokeRequired)
             {
@@ -306,8 +308,11 @@ namespace CxbxDebugger
                             lvi.SubItems.Add(text);
                             break;
 
-                        case FileEventType.FailedOpen:
-                            lvi.SubItems.Add("Failed to open file");
+                        case FileEventType.Opened:
+                            if(!Event.Succeeded)
+                            {
+                                lvi.SubItems.Add("Failed to open file");
+                            }
                             break;
                     }
                 }
@@ -315,10 +320,8 @@ namespace CxbxDebugger
 
                 switch (Event.Type)
                 {
-
                     case FileEventType.Opened:
                     case FileEventType.Closed:
-                    case FileEventType.FailedOpen:
                         {
                             lbOpenedFiles.BeginUpdate();
                             lbOpenedFiles.Items.Clear();
@@ -341,7 +344,7 @@ namespace CxbxDebugger
                 {
                     Invoke(new MethodInvoker(delegate ()
                     {
-                        Suspend(DebugState.Breakpoint, "Hit file event");
+                        Suspend(DebugState.Breakpoint, $"Event triggered for \"{Event.Name}\"");
                     }));
                 }
             }
@@ -363,7 +366,7 @@ namespace CxbxDebugger
             return MessageBox.Show(Message, "Cxbx Debugger", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
-        private void DebugBreakpoint(DebuggerModule Module, uint Address)
+        private void DebugBreakpoint(DebuggerThread Thread, DebuggerModule Module, uint Address)
         {
             Invoke(new MethodInvoker(delegate ()
             {
@@ -578,7 +581,7 @@ namespace CxbxDebugger
                 var Module = frm.DebuggerInst.ResolveModule(Address);
                 if (Module != null)
                 {
-                    frm.DebugBreakpoint(Module, Address);
+                    frm.DebugBreakpoint(Thread, Module, Address);
                 }
             }
 
@@ -589,13 +592,13 @@ namespace CxbxDebugger
                     frm.FileHandles.Add(Info);
                     frm.DebugLog($"Opened file: \"{Info.FileName}\"");
 
-                    frm.DebugFileEvent(FileEvents.Opened(Info.FileName));
+                    frm.DebugFileEvent(FileEvents.Opened(Info.FileName, true));
                 }
                 else
                 {
-                    frm.DebugLog($"Opened file FAILED: \"{Info.FileName}\"");
+                    frm.DebugLog($"Opened file failed: \"{Info.FileName}\"");
 
-                    frm.DebugFileEvent(FileEvents.OpenedFailed(Info.FileName));
+                    frm.DebugFileEvent(FileEvents.Opened(Info.FileName, false));
                 }
             }
 
@@ -604,7 +607,6 @@ namespace CxbxDebugger
                 var Found = frm.FileHandles.Find(FileInfo => FileInfo.Handle == Info.Handle);
                 if (Found != null)
                 {
-                    frm.DebugLog($"Reading {Info.Length} byte(s) from: {Found.FileName}");
                     frm.DebugFileEvent(FileEvents.Read(Found.FileName, Info.Length, Info.Offset));
                 }
             }
@@ -614,7 +616,6 @@ namespace CxbxDebugger
                 var Found = frm.FileHandles.Find(FileInfo => FileInfo.Handle == Info.Handle);
                 if (Found != null)
                 {
-                    frm.DebugLog($"Writing {Info.Length} byte(s) to: {Found.FileName}");
                     frm.DebugFileEvent(FileEvents.Write(Found.FileName, Info.Length, Info.Offset));
                 }
             }
