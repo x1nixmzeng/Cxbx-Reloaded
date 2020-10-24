@@ -130,6 +130,11 @@ namespace CxbxDebugger
                     canResume = true;
                     break;
 
+                case DebugState.Breakpoint:
+                    stateString = "Suspended on breakpoint";
+                    canResume = true;
+                    break;
+
                 case DebugState.Running:
                     stateString = "Running";
                     canSuspend = true;
